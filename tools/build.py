@@ -638,14 +638,21 @@ def describe(s):
 
 def finish_slots(huas):
     speakers = collections.Counter()
+    spoke_in = collections.defaultdict(list)
     for h in huas:
         for _, s in h["lines"]:
             m = re.match(r"【([^】]+)】", s)
             if m:
                 speakers[m.group(1)] += 1
+                if h["n"] not in spoke_in[m.group(1)]:
+                    spoke_in[m.group(1)].append(h["n"])
     for who in M.FACE_CAST:
         if speakers[who] or any(x.get("who") == who for x in slots.values()):
-            slot("char", f"{who}_常态", None, {"who": who, "expr": "常态"})
+            sid = slot("char", f"{who}_常态", None, {"who": who, "expr": "常态"})
+            for n in spoke_in[who]:
+                if n not in slots[sid]["used_in"]:
+                    slots[sid]["used_in"].append(n)
+            slots[sid]["used_in"].sort()
     for e in ("常态", "微笑", "憔悴"):
         slot("char", f"姜仁宇_{e}", None, {"who": "姜仁宇", "expr": e, "note": "主角立绘，目前用于标题与将来的 CG，对话中不显示"})
     slot("bgm", "主题", None, {"note": "标题画面"})

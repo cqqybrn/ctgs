@@ -221,19 +221,28 @@ section.gal li .epi { margin-left: auto; font-family: var(--f-ui); font-size: 0.
 
 /* ---------- 引擎对话框（存档等） ---------- */
 #ui-overlay { background: #000; }
-#ui-dialog {
-  background: var(--surface); color: var(--fg); border: 1px solid var(--line);
-  font-family: var(--f-ui); max-width: calc(100vw - 32px);
+#ui-dialog { background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 4px; font-family: var(--f-ui); max-width: calc(100vw - 32px); }
+#ui-dialog-titlebar { background: var(--surface); border-bottom: 1px solid var(--line); }
+#ui-dialog-title { font-family: var(--f-ui); font-size: 1rem; font-weight: 700; letter-spacing: 0.2em; color: var(--fg); }
+#ui-dialog-close { color: var(--muted); }
+#ui-dialog-close:hover { background: var(--accent-soft); border-color: transparent; color: var(--accent); }
+#ui-dialog-body { background: var(--surface); color: var(--fg); border: 0; }
+#ui-dialog-body hr { background: var(--line); }
+#ui-dialog-body.saves > h2 { background: var(--bg); color: var(--muted); font-size: 0.8rem; letter-spacing: 0.15em; padding: 0.35em 0.6em; }
+#ui-dialog-body.saves #saves-list li { border-color: var(--line); }
+#ui-dialog-body.saves .empty, #ui-dialog-body.saves .datestamp { color: var(--muted); }
+#ui-dialog-body button, #ui-dialog-body.saves #saves-list button {
+  color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 3px; font-family: var(--f-ui);
 }
-#ui-dialog-titlebar { background: var(--bg); border-bottom: 1px solid var(--line); }
-#ui-dialog-title { font-family: var(--f-ui); }
-#ui-dialog-close { color: var(--fg); }
-#ui-dialog-body { color: var(--fg); }
-#ui-dialog button, #ui-dialog .button {
-  background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 3px; font-family: var(--f-ui);
+#ui-dialog-body button:not(:disabled):hover, #ui-dialog-body.saves #saves-list button:not(:disabled):hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+#ui-dialog-body.saves #saves-list button:disabled { color: var(--line); border-color: var(--line); background: transparent; }
+#ui-dialog-body.saves #saves-list button.load:not(:disabled) { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+#ui-dialog-body.saves #saves-list button.delete:not(:disabled), #ui-dialog-body.saves button[id=saves-clear]:not(:disabled) {
+  background: transparent; border-color: var(--blood); color: var(--blood);
 }
-#ui-dialog button:hover:not([disabled]) { background: var(--accent-soft); border-color: var(--accent); }
-#ui-dialog table, #ui-dialog td { border-color: var(--line); }
+#ui-dialog-body.saves button[id=saves-clear]:not(:disabled):hover { background: var(--blood); color: var(--surface); }
+#ui-dialog-body.list li a { color: var(--fg); }
+#ui-dialog-body.list li a:hover { background: var(--accent-soft); border-color: var(--accent); }
 
 #passages a:focus-visible, #bar a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
