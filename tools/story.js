@@ -35,6 +35,10 @@ Config.saves.descriptions = function () {
   Object.keys(zh).forEach(function (k) { try { l10nStrings[k] = zh[k]; } catch (e) {} });
 })();
 
+/* ---------- 创氏名（第一章选择，[018]：2 = 宫本仁） ---------- */
+setup.surname = function () { return State.variables.v018 === 2 ? "宫本" : "江原"; };
+setup.nm = function (t) { return String(t).replace(/江原(?!道)/g, setup.surname()); };
+
 /* ---------- 章节 ---------- */
 setup.chapLabel = function () {
   const t = (tags && tags()) || [];

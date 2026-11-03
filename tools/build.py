@@ -103,6 +103,12 @@ def simple_node(s, hua):
     """把一行非结构文本转换为节点；返回 None 表示忽略。"""
     if s.startswith("★数值"):
         return {"k": "set", "expr": s.split("：", 1)[1] if "：" in s else s[3:]}
+    m = re.match(r"⚑\s*锚点[：:]\s*(.+)$", s)
+    if m:
+        return {"k": "anchor", "name": m.group(1).strip()}
+    m = re.match(r"⇒\s*跳转[：:]?\s*⚑\s*([^（(]+?)\s*(?:[（(](.+)[）)])?\s*$", s)
+    if m:
+        return {"k": "jump", "anchor": m.group(1).strip(), "label": m.group(2) or "继续"}
     m = re.match(r"⇒\s*跳转[：:]?\s*第(\d+)话\s*(.*)$", s)
     if m:
         return {"k": "jump", "to": int(m.group(1)), "title": m.group(2).strip()}
@@ -341,6 +347,15 @@ def set_stmt(expr, hua):
 used_vars = set()
 
 # ---------------------------------------------------------------- 渲染
+SURNAME = re.compile(r"江原(?!道)")
+DYN = {"on": False}      # 第一章以外：创氏名在运行时按 [018] 显示
+
+def plain(p):
+    if not DYN["on"]:
+        return f'"""{p}"""'
+    bits = SURNAME.split(p)
+    return "<<print setup.surname()>>".join(f'"""{b}"""' if b else "" for b in bits)
+
 def verb(t):
     t = t.replace("\\|", "").replace("\\.", "").replace('"""', "“")
     parts = re.split(r"\*\*(.+?)\*\*", t)
@@ -348,7 +363,7 @@ def verb(t):
     for k, p in enumerate(parts):
         if not p:
             continue
-        out.append(f'<b>"""{p}"""</b>' if k % 2 else f'"""{p}"""')
+        out.append(f"<b>{plain(p)}</b>" if k % 2 else plain(p))
     return "".join(out)
 
 def render_line(s):
@@ -378,6 +393,8 @@ def q(s):
     return '"' + s.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 def link(label, target, extra=""):
+    if DYN["on"] and SURNAME.search(label):
+        return f"<<link `setup.nm({q(label)})` {q(target)}>>{extra}<</link>>"
     return f"<<link {q(label)} {q(target)}>>{extra}<</link>>"
 
 def inc(name):
@@ -461,6 +478,21 @@ def comp(nodes, ctx):
                 return "\n".join(out)
             if so_far:
                 out.append('<hr class="fade">')
+        elif k == "anchor":
+            name = f"h{ctx['hua']}⚑{nd['name']}"
+            passages[name] = None
+            ptags[name] = [f"c{ctx['chap']}"]
+            anchors[nd["name"]] = name
+            passages[name] = comp(nodes[i + 1:], ctx)
+            out.append(inc(name))
+            return "\n".join(out)
+        elif k == "jump" and nd.get("anchor"):
+            target = anchors.get(nd["anchor"])
+            if not target:
+                warn(f"第{ctx['hua']}话：找不到锚点 {nd['anchor']}（锚点必须写在跳转之前）")
+                target = f"h{ctx['hua']}"
+            out.append(f'<div class="choices next">{link(nd["label"], target)}</div>')
+            return "\n".join(out)
         elif k == "jump":
             to = nd["to"]
             target = resolve(to, nd.get("title", ""))
@@ -577,6 +609,7 @@ def render_end(name, tail, ctx):
     return "\n".join(parts)
 
 jump_targets = set()
+anchors = {}
 
 subs = collections.defaultdict(list)
 def resolve(n, title):
@@ -612,6 +645,7 @@ def build_passages(huas):
         else:
             cont = '<p class="stage">（剧本此处没有后续）</p><nav class="after"><<link "回到标题">><<run setup.toTitle()>><</link>></nav>'
         ctx = {"hua": n, "chap": h["chap"], "cont": cont, "brk": None, "choice": None}
+        DYN["on"] = not (10 <= n <= 19)
         title = re.sub(r"（对应.*?）", "", h["title"])
         head = f'<<hua {q(str(n))} {q(title)}>>\n'
         passages[name] = head + comp(nodes, ctx)
