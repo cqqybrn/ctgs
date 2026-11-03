@@ -2,7 +2,7 @@
 const { chromium } = require('playwright');
 const path = require('path');
 const GOAL = process.argv[2] || 'HE·白鹭';
-const MAX = +process.argv[3] || 20000;
+const MAX = +process.argv[3] || 60000;
 const URL = 'file://' + path.resolve(__dirname, '..', 'index.html');
 (async () => {
   const b = await chromium.launch();
@@ -14,7 +14,7 @@ const URL = 'file://' + path.resolve(__dirname, '..', 'index.html');
     const V = () => SugarCube.State.variables;
     const huaNum = P => +(/^h(\d+)/.exec(P) || [0, 0])[1];
     const score = () => { const v = V(); return v.v013 * 3 + v.v012 * 3 + v.v011 * 2 + v.v010 + v.v001 * 0.3 - v.v009 * 0.5 + v.v019 * 0.2; };
-    const sig = () => { const v = V(); const o = []; for (let i = 1; i <= 32; i++) o.push(v['v' + String(i).padStart(3, '0')]); return o.join(',') + JSON.stringify(v.used); };
+    const sig = () => { const v = V(); const o = []; for (let i = 1; i <= 32; i++) o.push(v['v' + String(i).padStart(3, '0')]); return o.join(','); };
     const links = () => [...document.querySelectorAll('#passages a.link-internal')].filter(a => !a.closest('nav.after'));
     document.querySelector('#passages .title-menu a').click(); await tick();
     const seen = new Set();
@@ -49,7 +49,7 @@ const URL = 'file://' + path.resolve(__dirname, '..', 'index.html');
         if (seen.has(k)) continue;
         seen.add(k);
         bestHua = Math.max(bestHua, huaNum(P));
-        heap.push({ save: SugarCube.Save.base64.save(), P, pri: huaNum(P) * 100 + score() + pathN.length * 0.01, path: pathN });
+        heap.push({ save: SugarCube.Save.base64.save(), P, pri: huaNum(P) * 1000 + pathN.length + score() * 0.2, path: pathN });
       }
     }
     return { ok: false, n, bestHua, endsSeen, left: heap.length };
