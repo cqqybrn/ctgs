@@ -79,6 +79,305 @@
       ],
       "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
       "duration_seconds": 89.97142857142858
+    },
+    "assets/bgm/奚琴.mp3": {
+      "sources": [
+        {
+          "title": "Jinyangjo-01",
+          "instrument": "해금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "S3-001-001"
+        },
+        {
+          "title": "Jinyangjo-02",
+          "instrument": "해금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "S3-001-002"
+        },
+        {
+          "title": "Jinyangjo-03",
+          "instrument": "해금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "S3-001-003"
+        },
+        {
+          "title": "Jinyangjo-04",
+          "instrument": "해금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "S3-001-004"
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 73.63419501133787
+    },
+    "assets/bgm/民谣哼唱.mp3": {
+      "sources": [
+        {
+          "title": "Voice_Arirang_01",
+          "instrument": "여창",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "V5-001-001",
+          "performer": "Kim Se-yun (김세윤)"
+        },
+        {
+          "title": "Voice_Arirang_02",
+          "instrument": "여창",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "V5-001-002",
+          "performer": "Kim Se-yun (김세윤)"
+        },
+        {
+          "title": "Voice_Arirang_03",
+          "instrument": "여창",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "V5-001-003",
+          "performer": "Kim Se-yun (김세윤)"
+        },
+        {
+          "title": "Voice_Arirang_04",
+          "instrument": "여창",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "V5-001-004",
+          "performer": "Kim Se-yun (김세윤)"
+        },
+        {
+          "title": "Voice_Arirang_05",
+          "instrument": "여창",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "V5-001-005",
+          "performer": "Kim Se-yun (김세윤)"
+        },
+        {
+          "title": "Voice_Arirang_06",
+          "instrument": "여창",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "V5-001-006",
+          "performer": "Kim Se-yun (김세윤)"
+        },
+        {
+          "title": "Voice_Arirang_07",
+          "instrument": "여창",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "V5-001-007",
+          "performer": "Kim Se-yun (김세윤)"
+        },
+        {
+          "title": "Voice_Arirang_08",
+          "instrument": "여창",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "V5-001-008",
+          "performer": "Kim Se-yun (김세윤)"
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 80.57943310657596
+    },
+    "assets/bgm/恩淑.mp3": {
+      "sources": [
+        {
+          "author": "Karoryfer x Bigcat, performed by Kamila Borowiak",
+          "source_url": "https://github.com/sfzinstruments/karoryfer-bigcat.cello",
+          "source_revision": "6fd75fbfc1dbb3109bf26220ba1adea46188a18b",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 87.27272108843538
+    },
+    "assets/bgm/夜·钢琴.mp3": {
+      "sources": [
+        {
+          "author": "AKAI Splendid Grand Piano, mapping by kinwie",
+          "source_url": "https://github.com/sfzinstruments/SplendidGrandPiano",
+          "source_revision": "1c595d827b7fd7f0be3134aaed0f90b3662a09cf",
+          "license": "Public domain (AKAI)",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 94.4262358276644
+    },
+    "assets/bgm/法庭.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 90.56603174603174
+    },
+    "assets/bgm/阴郁的宅邸.mp3": {
+      "sources": [
+        {
+          "author": "AKAI Splendid Grand Piano, mapping by kinwie",
+          "source_url": "https://github.com/sfzinstruments/SplendidGrandPiano",
+          "source_revision": "1c595d827b7fd7f0be3134aaed0f90b3662a09cf",
+          "license": "Public domain (AKAI)",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 88.88888888888889
+    },
+    "assets/bgm/不协和音.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 77.41936507936508
+    },
+    "assets/bgm/推理.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 73.84614512471656
+    },
+    "assets/bgm/紧张.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 85.71428571428571
+    },
+    "assets/bgm/追逐.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner, VCSL",
+          "source_url": "https://github.com/sgossner/VCSL",
+          "source_revision": "c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 69.06473922902494
+    },
+    "assets/bgm/手风琴.mp3": {
+      "sources": [
+        {
+          "author": "Jeff Stauffer, processed by michael02022 / FreePats",
+          "source_url": "https://github.com/freepats/button-accordion-HN",
+          "source_revision": "d70d16456fd99305d1c24c612b205ab38846eb0f",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 85.71428571428571
+    },
+    "assets/bgm/舞会.mp3": {
+      "sources": [
+        {
+          "author": "AKAI Splendid Grand Piano, mapping by kinwie",
+          "source_url": "https://github.com/sfzinstruments/SplendidGrandPiano",
+          "source_revision": "1c595d827b7fd7f0be3134aaed0f90b3662a09cf",
+          "license": "Public domain (AKAI)",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 81.3559410430839
+    },
+    "assets/bgm/阴湿的爵士.mp3": {
+      "sources": [
+        {
+          "author": "AKAI Splendid Grand Piano, mapping by kinwie",
+          "source_url": "https://github.com/sfzinstruments/SplendidGrandPiano",
+          "source_revision": "1c595d827b7fd7f0be3134aaed0f90b3662a09cf",
+          "license": "Public domain (AKAI)",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 85.97015873015873
     }
   }
 }
