@@ -73,7 +73,7 @@ const PRESETS = {
   }, PRESETS);
   const seen = new Set(res.visited);
   const miss = res.all.filter(n => !seen.has(n));
-  console.log(`段落覆盖 ${res.all.length - miss.length}/${res.all.length}；结局 ${Object.keys(res.ends).length}/68`);
+  console.log(`段落覆盖 ${res.all.length - miss.length}/${res.all.length}；结局 ${Object.keys(res.ends).length}/${await p.evaluate(() => SugarCube.setup.ENDINGS.length)}`);
   console.log('未覆盖段落：', miss.join(' '));
   console.log('死路/循环：', JSON.stringify(res.dead, null, 0));
   console.log('运行报错：', JSON.stringify(res.errs, null, 0).slice(0, 2000));

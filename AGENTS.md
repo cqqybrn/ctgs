@@ -33,7 +33,7 @@
 
 ```bash
 python3 tools/build.py            # 构建；有剧本问题会打印"警告"
-node tools/explore_hua.js         # 需要 playwright：逐话走遍所有选项，应报告 0 个运行报错、68/68 结局
+node tools/explore_hua.js         # 需要 playwright：逐话走遍所有选项，应报告 0 个运行报错、全部结局可达（目前 69 个）
 ```
 
 用浏览器打开 `index.html` 即可试玩，素材放好后会立刻显示。
