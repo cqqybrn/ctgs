@@ -125,88 +125,52 @@
     "assets/bgm/民谣哼唱.mp3": {
       "sources": [
         {
-          "title": "Voice_Arirang_01",
+          "title": "Gueum_09",
           "instrument": "여창",
           "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
           "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
           "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
           "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
-          "source_id": "V5-001-001",
-          "performer": "Kim Se-yun (김세윤)"
+          "source_id": "V4-005-009",
+          "performer": "Jeong Sunim (정순임)",
+          "vocal_style": "Traditional female wordless gueum, not closed-mouth studio humming."
         },
         {
-          "title": "Voice_Arirang_02",
+          "title": "Gueum_10",
           "instrument": "여창",
           "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
           "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
           "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
           "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
-          "source_id": "V5-001-002",
-          "performer": "Kim Se-yun (김세윤)"
+          "source_id": "V4-005-010",
+          "performer": "Jeong Sunim (정순임)",
+          "vocal_style": "Traditional female wordless gueum, not closed-mouth studio humming."
         },
         {
-          "title": "Voice_Arirang_03",
+          "title": "Gueum_11",
           "instrument": "여창",
           "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
           "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
           "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
           "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
-          "source_id": "V5-001-003",
-          "performer": "Kim Se-yun (김세윤)"
+          "source_id": "V4-005-011",
+          "performer": "Jeong Sunim (정순임)",
+          "vocal_style": "Traditional female wordless gueum, not closed-mouth studio humming."
         },
         {
-          "title": "Voice_Arirang_04",
+          "title": "Gueum_12",
           "instrument": "여창",
           "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
           "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
           "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
           "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
-          "source_id": "V5-001-004",
-          "performer": "Kim Se-yun (김세윤)"
-        },
-        {
-          "title": "Voice_Arirang_05",
-          "instrument": "여창",
-          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
-          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
-          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
-          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
-          "source_id": "V5-001-005",
-          "performer": "Kim Se-yun (김세윤)"
-        },
-        {
-          "title": "Voice_Arirang_06",
-          "instrument": "여창",
-          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
-          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
-          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
-          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
-          "source_id": "V5-001-006",
-          "performer": "Kim Se-yun (김세윤)"
-        },
-        {
-          "title": "Voice_Arirang_07",
-          "instrument": "여창",
-          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
-          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
-          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
-          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
-          "source_id": "V5-001-007",
-          "performer": "Kim Se-yun (김세윤)"
-        },
-        {
-          "title": "Voice_Arirang_08",
-          "instrument": "여창",
-          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
-          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
-          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
-          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
-          "source_id": "V5-001-008",
-          "performer": "Kim Se-yun (김세윤)"
+          "source_id": "V4-005-012",
+          "performer": "Jeong Sunim (정순임)",
+          "vocal_style": "Traditional female wordless gueum, not closed-mouth studio humming."
         }
       ],
       "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
-      "duration_seconds": 80.57943310657596
+      "duration_seconds": 108.96972789115647
     },
     "assets/bgm/恩淑.mp3": {
       "sources": [
