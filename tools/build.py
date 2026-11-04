@@ -529,6 +529,10 @@ def comp(nodes, ctx):
             R = rest_ref(nodes[i + 1:], ctx)
             C = newp(ctx["hua"], ctx["chap"])
             parts = []
+            for o in nd["opts"]:
+                for cid in CP_BY_OPT.get((ctx["hua"], o["label"]), []):
+                    parts.append(f"<<checkpoint {q(cid)}>>")
+                    cp_found.add(cid)
             if nd.get("ask"):
                 parts.append(f'<p class="ask">{verb(nd["ask"])}</p>')
             parts.append('<div class="choices">')
@@ -597,7 +601,15 @@ def render_end(name, tail, ctx):
     hints = [t for t in tail if t.startswith("💡")]
     others = [t for t in tail if not t.startswith("💡")]
     parts += [render_line(t) for t in others]
-    parts += [render_line(t) for t in hints]
+    rv = REVIEWS.get(name)
+    if hints or rv:
+        box = ['<section class="review">']
+        for t in hints:
+            box.append(f'<p class="hint1">{verb(re.sub(r"^💡\s*提示[：:]?\s*", "", t))}</p>')
+        if rv and rv.get("review"):
+            box.append(f'<p class="rv"><span class="rv-h">复盘</span>{verb(rv["review"])}</p>')
+        box.append("</section>")
+        parts.append("\n".join(box))
     links = ['<<link "退回上一步">><<run Engine.backward()>><</link>>',
              '<<link "读取存档">><<run UI.saves()>><</link>>',
              link("结局一览", "结局一览"),
@@ -605,11 +617,82 @@ def render_end(name, tail, ctx):
     epi = epi_map.get(name)
     if epi:
         links.insert(0, link("日后谈", f"h{epi}"))
+    if rv:
+        dojo_for[eid] = (name, ctx)
+        parts.append('<nav class="after dojo-go">' + link("去青丘书房补课", f"补课·{eid}") + "</nav>")
     parts.append('<nav class="after">' + "".join(links) + "</nav>")
     return "\n".join(parts)
 
 jump_targets = set()
 anchors = {}
+
+# ---------------------------------------------------------------- 复盘与补课
+REVIEWS = {}            # 结局名 -> {review, cps:[(cid,hua,label,title)], vars, grade, lines}
+CP_BY_OPT = collections.defaultdict(list)
+cp_found = set()
+dojo_for = {}
+
+def load_reviews():
+    for f in sorted(glob.glob(os.path.join(ROOT, "script", "复盘", "0*.md"))):
+        cur = None
+        for raw in open(f, encoding="utf-8"):
+            line = raw.strip()
+            if line.startswith("## "):
+                cur = {"review": "", "cps": [], "cpnames": [], "vars": [], "grade": "", "lines": [], "file": os.path.basename(f)}
+                REVIEWS[line[3:].strip()] = cur
+                continue
+            if cur is None or not line or line.startswith(("```", "#")):
+                continue
+            m = re.match(r"(复盘|检查点名|检查点|数值|评分)[：:]\s*(.*)$", line)
+            if m:
+                k, v = m.group(1), m.group(2).strip()
+                if k == "复盘":
+                    cur["review"] = v
+                elif k == "检查点":
+                    m2 = re.match(r"第(\d+)话\s*[｜|]\s*(.+)$", v)
+                    if m2:
+                        cur["cps"].append((int(m2.group(1)), m2.group(2).strip()))
+                    else:
+                        warn(f"复盘 {f}：检查点格式不对 {v}")
+                elif k == "检查点名":
+                    cur["cpnames"].append(v)
+                elif k == "数值":
+                    cur["vars"] = re.findall(r"\d{3}", v)
+                else:
+                    cur["grade"] = v[:1]
+                continue
+            cur["lines"].append(line)
+    for name, rv in REVIEWS.items():
+        rv["cpids"] = []
+        for k, (hua, label) in enumerate(rv["cps"]):
+            cid = f"cp{hua}-{label}"
+            title = rv["cpnames"][k] if k < len(rv["cpnames"]) else f"第{hua}话"
+            rv["cpids"].append((cid, title))
+            if cid not in CP_BY_OPT[(hua, label)]:
+                CP_BY_OPT[(hua, label)].append(cid)
+
+def build_dojo():
+    DYN["on"] = True
+    for eid, (name, ctx) in dojo_for.items():
+        rv = REVIEWS[name]
+        P = [f'<header class="hua-head dojo-head"><span class="no">青丘书房 · 补课</span><span class="tt">{html.escape(name)}</span></header>',
+             "<<dojoIntro>>"]
+        if rv["grade"]:
+            P.append(f'<div class="grade" aria-label="评分">{html.escape(rv["grade"])}</div>')
+        P += [render_line(t) for t in rv["lines"]]
+        if rv["vars"]:
+            P.append("<<varTable " + " ".join(q(v) for v in rv["vars"]) + ">>")
+        btns = []
+        for cid, title in rv["cpids"]:
+            btns.append(f'<<cpButton {q(cid)} {q(title)}>>')
+        if btns:
+            P.append('<p class="stage">想从埋坑的地方重来，可以直接回去：</p><nav class="after cps">' + "".join(btns) + "</nav>")
+        P.append('<nav class="after"><<link "回到结局">><<run Engine.backward()>><</link>>'
+                 + link("结局一览", "结局一览") + '<<link "回到标题">><<run setup.toTitle()>><</link>></nav>')
+        P.append(f"<<run setup.markDojo({q(eid)})>>")
+        pname = f"补课·{eid}"
+        passages[pname] = "\n".join(P)
+        ptags[pname] = ["dojo", f"c{ctx['chap']}"]
 
 subs = collections.defaultdict(list)
 def resolve(n, title):
@@ -758,7 +841,11 @@ def build_html(huas):
         init.append(f"<<set $v{v} to 0>>")
     passages["StoryInit"] = "\n".join(init)
     chap_names = CHAPTER_NAMES + ["尾声"]
-    data_js = ("setup.CHAPTERS = " + json.dumps(chap_names, ensure_ascii=False) + ";\n"
+    varnames = {}
+    for m in re.finditer(r"^\| (\d{3}) \| ([^|]+?) \|", open(os.path.join(ROOT, "script", "00-设定集与大纲.md"), encoding="utf-8").read(), re.M):
+        varnames[m.group(1)] = m.group(2).strip()
+    data_js = ("setup.VARNAMES = " + json.dumps(varnames, ensure_ascii=False) + ";\n"
+               "setup.CHAPTERS = " + json.dumps(chap_names, ensure_ascii=False) + ";\n"
                "setup.ENDINGS = " + json.dumps(endings, ensure_ascii=False) + ";\n"
                "setup.EPILOGUE = " + json.dumps(epi_map, ensure_ascii=False) + ";\n"
                "setup.ASSETS = " + json.dumps({s["id"]: s["file"] for s in slots.values()}, ensure_ascii=False) + ";\n")
@@ -792,7 +879,19 @@ def build_html(huas):
 def main():
     check_only = "--check" in sys.argv
     huas = load_huas()
+    load_reviews()
     build_passages(huas)
+    build_dojo()
+    ending_names = {e["name"] for e in endings}
+    for nm, rv in REVIEWS.items():
+        if nm not in ending_names:
+            warn(f"复盘 {rv['file']}：找不到结局「{nm}」")
+        for cid, title in rv["cpids"]:
+            if cid not in cp_found:
+                warn(f"复盘 {rv['file']}「{nm}」：检查点 {cid} 在剧本里找不到对应选项")
+    missing = [e["name"] for e in endings if not e["he"] and e["name"] not in REVIEWS]
+    if REVIEWS and missing:
+        print("还没有复盘的结局：", "、".join(missing))
     finish_slots(huas)
     # 引用检查
     existing = set(passages) | {"Start", "结局一览", "Bar", "StoryInterface", "StoryInit"}

@@ -182,8 +182,9 @@ setup.galleryHTML = function () {
     list.forEach(function (e) {
       const ok = !!seen[e.id];
       const epi = ok && setup.EPILOGUE[e.name] ? ' <a class="link-internal epi" data-passage="h' + setup.EPILOGUE[e.name] + '">日后谈</a>' : "";
+      const dojo = ok && !e.he && SugarCube.Story.has("补课·" + e.id) ? ' <a class="link-internal epi" data-passage="补课·' + e.id + '">补课</a>' : "";
       h += '<li class="' + (ok ? "ok" : "") + (e.he ? " he" : "") + '"><span class="h">第' + e.hua + '话</span><span class="nm">' +
-        (ok ? e.name : "？？？") + "</span>" + epi + "</li>";
+        (ok ? e.name : "？？？") + "</span>" + epi + dojo + "</li>";
     });
     h += "</ol></section>";
   });
@@ -200,3 +201,74 @@ setup.continueGame = function () {
     if (r && r.catch) r.catch(function () { UI.saves(); });
   } catch (e) { UI.saves(); }
 };
+
+/* ---------- 检查点（"回到那一刻"）---------- */
+setup.cpAll = function () {
+  try { return JSON.parse(localStorage.getItem("qf-cp") || "{}"); } catch (e) { return {}; }
+};
+Macro.add("checkpoint", {
+  handler() {
+    const id = this.args[0];
+    try {
+      const all = setup.cpAll();
+      all[id] = { s: Save.base64.save(), t: Date.now() };
+      localStorage.setItem("qf-cp", JSON.stringify(all));
+    } catch (e) { /* 存储不可用或已满：静默跳过 */ }
+  },
+});
+setup.loadCP = function (id) {
+  const c = setup.cpAll()[id];
+  if (!c) return;
+  Promise.resolve(Save.base64.load(c.s)).then(function () { Engine.show(); }).catch(function () {
+    UI.alert("这个检查点读取失败，可能是游戏更新后存档已不兼容。请从存档或标题重新开始。");
+  });
+};
+Macro.add("cpButton", {
+  handler() {
+    const id = this.args[0], title = this.args[1];
+    if (setup.cpAll()[id]) {
+      jQuery('<a class="link-internal cp-on" tabindex="0"></a>').text("回到：" + title)
+        .ariaClick(function () { setup.loadCP(id); }).appendTo(this.output);
+    } else {
+      jQuery('<span class="cp-off"></span>').text("回到：" + title + "（这一局还没有经过这里）").appendTo(this.output);
+    }
+  },
+});
+
+/* ---------- 补课页 ---------- */
+Macro.add("varTable", {
+  handler() {
+    const v = State.variables;
+    const tb = jQuery('<table class="vars"><caption>你死的时候</caption></table>');
+    this.args.forEach(function (n) {
+      const name = setup.VARNAMES[n] || ("变量 " + n);
+      jQuery("<tr></tr>").append(jQuery("<th></th>").text(name)).append(jQuery("<td></td>").text(v["v" + n])).appendTo(tb);
+    });
+    tb.appendTo(this.output);
+  },
+});
+setup.dojoSeen = function () {
+  try { return JSON.parse(localStorage.getItem("qf-dojo") || "{}"); } catch (e) { return {}; }
+};
+setup.markDojo = function (id) {
+  const s = setup.dojoSeen();
+  s[id] = 1;
+  try { localStorage.setItem("qf-dojo", JSON.stringify(s)); } catch (e) {}
+};
+Macro.add("dojoIntro", {
+  handler() {
+    const seen = setup.dojoSeen();
+    const first = Object.keys(seen).length === 0;
+    const lines = first ? [
+      ["n", "地下室的煤油灯亮着。书架比你记得的还要高，桌上摆着两只茶碗。"],
+      ["s", "徐明焕", "死了？好。死过一次的学生，才肯认真听课。"],
+      ["s", "文基哲", "坐吧，仁宇。茶是热的。在这里，你想死几次都可以。"],
+    ] : [["n", "煤油灯还亮着。老师已经把红笔拿在手里了。"]];
+    const out = this.output;
+    lines.forEach(function (l) {
+      if (l[0] === "n") jQuery('<p class="n"></p>').text(l[1]).appendTo(out);
+      else jQuery('<p class="say"></p>').append(jQuery('<span class="who"></span>').text(l[1]))
+        .append(jQuery('<span class="t"></span>').text(l[2])).appendTo(out);
+    });
+  },
+});

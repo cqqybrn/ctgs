@@ -253,3 +253,30 @@ section.gal li .epi { margin-left: auto; font-family: var(--f-ui); font-size: 0.
   .bar-in .tools a { padding: 6px 6px; }
   .hua-head .tt { font-size: 1.45rem; }
 }
+
+/* ---------- 复盘（结局页第一、二层）与补课 ---------- */
+section.review {
+  margin: 1.2em 0 0.4em; padding: 14px 16px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 3px; display: grid; gap: 8px;
+}
+section.review p { margin: 0; }
+p.hint1 { font-style: italic; color: var(--muted); }
+p.rv { font-family: var(--f-ui); font-size: 0.92rem; line-height: 1.8; }
+.rv-h {
+  display: inline-block; margin-right: 8px; padding: 0 6px; border: 1px solid var(--accent);
+  color: var(--accent); font-size: 0.75rem; letter-spacing: 0.2em; border-radius: 2px;
+}
+nav.dojo-go a, nav.dojo-go a:visited { border-color: var(--accent); color: var(--accent); }
+.dojo-head .no { color: var(--blood); }
+.grade {
+  float: right; width: 64px; height: 64px; margin: 0 0 8px 12px; display: grid; place-items: center;
+  border: 3px solid var(--blood); border-radius: 50%; color: var(--blood);
+  font-size: 2rem; font-weight: 900; transform: rotate(-12deg); opacity: 0.85;
+}
+table.vars { border-collapse: collapse; margin: 1.2em 0; font-family: var(--f-ui); font-size: 0.9rem; }
+table.vars caption { text-align: left; color: var(--muted); font-size: 0.8rem; letter-spacing: 0.15em; padding-bottom: 4px; }
+table.vars th, table.vars td { border-bottom: 1px solid var(--line); padding: 4px 16px 4px 0; text-align: left; font-weight: 400; }
+table.vars td { font-variant-numeric: tabular-nums; font-weight: 700; }
+nav.cps { flex-direction: column; align-items: flex-start; }
+nav.cps a.cp-on { border-color: var(--accent); color: var(--accent); }
+.cp-off { color: var(--muted); font-size: 0.85rem; padding: 4px 0; }
