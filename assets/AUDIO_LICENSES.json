@@ -1,0 +1,84 @@
+{
+  "notice": "Audio source credits and licenses. Game scripts and runtime were not modified.",
+  "assets": {
+    "assets/bgm/主题.mp3": {
+      "sources": [
+        {
+          "title": "I Want to go Home",
+          "author": "Eldritch Grim, based on Nostalgic Piano by Rafael Krux",
+          "license": "CC0 1.0",
+          "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "source_url": "https://opengameart.org/content/i-want-to-go-home"
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 120.0
+    },
+    "assets/bgm/奚琴·阿里郎.mp3": {
+      "sources": [
+        {
+          "title": "Arirang-01",
+          "instrument": "해금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "s3-914-001"
+        },
+        {
+          "title": "Arirang-02",
+          "instrument": "해금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "s3-914-002"
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 90.23927437641723
+    },
+    "assets/bgm/伽倻琴.mp3": {
+      "sources": [
+        {
+          "title": "Jinyangjo-01",
+          "instrument": "가야금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "s1-001-001"
+        },
+        {
+          "title": "Jinyangjo-02",
+          "instrument": "가야금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "s1-001-002"
+        },
+        {
+          "title": "Jinyangjo-03",
+          "instrument": "가야금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "s1-001-003"
+        },
+        {
+          "title": "Jinyangjo-04",
+          "instrument": "가야금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "s1-001-004"
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 89.97142857142858
+    }
+  }
+}
