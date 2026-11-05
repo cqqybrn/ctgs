@@ -22,6 +22,10 @@
 - 这是**公开的前端试玩调试入口**，不是带身份验证的后台；知道地址的人均可使用。正式版 `index.html` 不显示章节管理菜单。
 - `admin.html` 与 `index.html` 都由构建脚本生成，不要手动修改。
 
+## 手机竖屏界面参考（尚未实施）
+
+手机视觉小说的 A/B/C 样板图、390×844 单屏截图、自包含 HTML/CSS 演示、原始素材路径与实施要求见 [docs/mobile-vn-reference/README.md](docs/mobile-vn-reference/README.md)。请先看实际图片再实现，不只依据文字 prompt；三个方案尚未最终选定。本目录仅为设计参考，不改变当前游戏界面。
+
 ## 在线试玩 / 发布
 
 - 正式版：`https://cqqybrn.github.io/ctgs/`
