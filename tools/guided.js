@@ -1,7 +1,7 @@
 // 引导式求解：沿一条已知路线走，路线对不上时就地深度优先搜索，直到打出目标结局。
 // 用法：node tools/guided.js 路线文件 目标结局 [必选选项1|必选选项2|...] [禁选选项1|...]
 //   路线文件：每行 "N. 选项原文"（docs/ 下的通关路线即可，可先截取需要的那一段）
-//   必选：出现时一定选它（例如 "不碰电话|下山去|请先生赐一个名字。"）
+//   必选：出现时一定选它，几个同时出现时按给出的先后（例如 "不碰电话|下山去|请先生赐一个名字。"）
 //   禁选：永远不选
 const { chromium } = require('playwright');
 const fs = require('fs');
@@ -31,7 +31,7 @@ const URL = 'file://' + path.resolve(__dirname, '..', 'index.html');
     const order = (texts, i) => {
       // 排序：必选 > 路线上的下一个（允许跳过最多 60 步重新对齐）> 继续 > 其他
       const c = [];
-      for (const t of texts) if (FORCE.includes(t)) c.push({ t, i });
+      for (const f of FORCE) if (texts.includes(f)) c.push({ t: f, i }); // 必选按给出的先后排序
       let j = -1;
       for (let k = i; k < Math.min(route.length, i + 60); k++) if (texts.includes(route[k])) { j = k; break; }
       if (j >= 0 && !c.some(x => x.t === route[j])) c.push({ t: route[j], i: j + 1 });
