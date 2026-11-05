@@ -12,6 +12,7 @@ const URL = 'file://' + path.resolve(__dirname, '..', 'index.html');
   p.on('pageerror', e => pageErrors.push(e.message));
   await p.goto(URL);
   await p.waitForSelector('.title-screen');
+  await p.evaluate(() => { SugarCube.setup.vnAutoFollow = false; });   // 脚本直接点链接，不让竖屏导演器自动越过只含“继续”的过渡段
   // 1) 静态渲染
   const statics = await p.evaluate(() => {
     const bad = [];
@@ -37,6 +38,7 @@ const URL = 'file://' + path.resolve(__dirname, '..', 'index.html');
     await p.evaluate(() => { try { sessionStorage.clear(); } catch (e) {} });
     await p.goto(URL);
     await p.waitForSelector('.title-screen');
+    await p.evaluate(() => { SugarCube.setup.vnAutoFollow = false; });   // 脚本直接点链接，不让竖屏导演器自动越过只含“继续”的过渡段
     const res = await p.evaluate(async (tried) => {
       const vis = [];
       document.querySelector('#passages .title-menu a').click();

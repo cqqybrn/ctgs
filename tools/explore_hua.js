@@ -15,6 +15,7 @@ const PRESETS = {
   p.on('pageerror', e => pageErrors.push(e.message));
   await p.goto(URL);
   await p.waitForSelector('.title-screen');
+  await p.evaluate(() => { SugarCube.setup.vnAutoFollow = false; });   // 脚本直接点链接，不让竖屏导演器自动越过只含“继续”的过渡段
   const res = await p.evaluate(async (PRESETS) => {
     const tick = () => new Promise(r => setTimeout(r, 0));
     const all = [...document.querySelectorAll('tw-passagedata')].map(x => x.getAttribute('name'));

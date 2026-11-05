@@ -107,84 +107,240 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
 		<div id="init-lacking"><p>Browser lacks capabilities required to play.</p><p>Upgrade or switch to another browser.</p></div>
 		<div id="init-loading"><div>Loading&hellip;</div></div>
 	</div>
-	<tw-storydata name="潜伏之京城·管理员试玩" startnode="943" creator="tools/build.py" creator-version="1.0" ifid="EAD95480-3D36-4BAE-940D-B92113004764" zoom="1" format="SugarCube" format-version="2.37.3" options="" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css">/* 版式：单栏剧本阅读（约 36 字宽），顶部细条工具栏；场景图嵌在文字流中，选项是整行可点的卡片。 */
+	<tw-storydata name="潜伏之京城·管理员试玩" startnode="944" creator="tools/build.py" creator-version="1.0" ifid="EAD95480-3D36-4BAE-940D-B92113004764" zoom="1" format="SugarCube" format-version="2.37.3" options="" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css">/* 竖屏视觉小说（方案 A：大立绘 + 铺满背景 + 固定深色对白框）。
+   参考样板：docs/mobile-vn-reference/preview.html 与 a-classic-portrait.jpg。
+   舞台模式（html[data-mode="stage"]）固定一屏、逐句点按；标题 / 结局一览 / 音源署名 / 补课仍是面板内可滚动的页面（data-mode="page"）。 */
 :root {
-  --bg: #edf1ec;          /* 青瓷纸 */
-  --surface: #f7f9f6;
-  --fg: #1c2321;          /* 墨 */
-  --muted: #5d6a65;
-  --line: #c6d1cb;
-  --accent: #2d4b78;      /* 靛蓝（쪽빛） */
-  --accent-soft: #dfe6ef;
-  --blood: #a32020;       /* 枪声、剧终 */
-  --he: #2f6b52;          /* 活下来的结局 */
+  --bg: #0f1a18;          /* 深墨绿 */
+  --surface: #15221f;
+  --fg: #ece8da;
+  --muted: #9aa89f;
+  --line: #2f423d;
+  --accent: #d7c7a0;      /* 旧金 */
+  --accent-soft: #223630;
+  --blood: #e2685c;       /* 枪声、剧终 */
+  --he: #8cc3a6;          /* 活下来的结局 */
   --f-body: "Noto Serif SC", "Noto Serif KR", "Songti SC", "STSong", "SimSun", serif;
   --f-ui: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   --f-ko: "Noto Serif KR", "Nanum Myeongjo", serif;
-  --step-0: 1.06rem;
+  --step-0: 1.02rem;
   --step-1: 1.3rem;
-  --step-2: 1.7rem;
-  --measure: 36em;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #101417; --surface: #161c20; --fg: #dbe3de; --muted: #8b9792; --line: #2a333a;
-    --accent: #a3b9e0; --accent-soft: #1d2838; --blood: #e2685c; --he: #8cc3a6;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #101417; --surface: #161c20; --fg: #dbe3de; --muted: #8b9792; --line: #2a333a;
-  --accent: #a3b9e0; --accent-soft: #1d2838; --blood: #e2685c; --he: #8cc3a6;
+  --step-2: 1.6rem;
   color-scheme: dark;
 }
 
-html, body { background: var(--bg); color: var(--fg); }
-body {
-  margin: 0;
-  font-family: var(--f-body);
-  font-size: 16px;
-  line-height: 1.9;
-  -webkit-font-smoothing: antialiased;
-}
-body::before {
-  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
-  z-index: 10; background: var(--bg);
-}
-#app { min-height: 100%; }
+html, body { height: 100%; margin: 0; background: #060b0a; color: var(--fg); overflow: hidden; overscroll-behavior: none; }
+body { display: flex; justify-content: center; font-family: var(--f-ui); font-size: 16px; line-height: 1.8; -webkit-font-smoothing: antialiased; }
 
-/* ---------- 顶部工具栏 ---------- */
+/* 手机：占满可视区；桌面与平板：居中的竖屏舞台（不套手机外壳）。 */
+#app {
+  position: relative; height: 100vh; height: 100dvh;
+  width: min(100vw, max(360px, calc(100dvh * 0.4615))); max-width: 520px;
+  background: #0e1816; box-shadow: 0 0 0 1px #16211f, 0 24px 80px #000a;
+}
+#qf-stage {
+  position: absolute; inset: 0; overflow: hidden; container-type: inline-size;
+  --u: 1cqw;                           /* 一个“舞台单位”：舞台宽度的 1%；横屏矮屏时改按高度算 */
+  color: #f4f1e8; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  background: linear-gradient(#172421, #0b1210);
+}
+html[data-mode="stage"] #qf-stage { user-select: none; -webkit-user-select: none; cursor: pointer; }
+.u { }
+
+/* ---------- 舞台图层 ---------- */
+.qf-layer { position: absolute; inset: 0; }
+#qf-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; opacity: 0; transition: opacity 0.5s; }
+#qf-bg img.on { opacity: 1; }
+#qf-cg { opacity: 0; transition: opacity 0.4s; pointer-events: none; background: #050807; }
+html.qf-cg-on #qf-cg { opacity: 1; }
+#qf-cg::before { content: ""; position: absolute; inset: -6%; background: var(--cg, none) center / cover; filter: blur(18px) brightness(0.45); }
+#qf-cg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 50%; opacity: 0; transition: opacity 0.4s; }
+#qf-cg img.on { opacity: 1; }
+#qf-char {
+  position: absolute; left: -13%; width: 126%; bottom: 6%; height: 88%; pointer-events: none;
+  transition: opacity 0.3s, filter 0.3s; filter: drop-shadow(0 3px 8px #050e0c55);
+}
+#qf-char img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; opacity: 0; transition: opacity 0.35s; }
+#qf-char img.on { opacity: 1; }
+html.qf-dim #qf-char { opacity: 0.62; filter: brightness(0.62) drop-shadow(0 3px 8px #050e0c55); }
+html.qf-cg-on #qf-char, html[data-step="ending"] #qf-char, html[data-step="card"] #qf-char { opacity: 0; }
+#qf-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(#07110b42, transparent 35%, #07110b18 65%, #07110b9c); }
+#qf-place {
+  position: absolute; left: calc(var(--u) * 5); top: calc(var(--u) * 20); z-index: 2; pointer-events: none;
+  writing-mode: vertical-rl; font-family: var(--f-body); font-size: calc(var(--u) * 3.3); letter-spacing: 0.24em; color: #f0efe0aa;
+  transition: opacity 0.4s;
+}
+html.qf-cg-on #qf-place, html[data-mode="page"] #qf-place { opacity: 0; }
+html[data-mode="page"] #qf-char, html[data-mode="page"] #qf-cg { display: none; }
+html[data-mode="page"] #qf-bg { opacity: 0.35; }
+
+/* ---------- 顶栏与工具栏 ---------- */
 #bar {
-  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
-  background: var(--bg);
-  border-bottom: 1px solid var(--line);
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  position: absolute; top: 0; left: 0; right: 0; z-index: 6;
+  padding: calc(env(safe-area-inset-top, 0px) + var(--u) * 4) calc(var(--u) * 5) calc(var(--u) * 6);
+  background: linear-gradient(#0a171acc, transparent); pointer-events: none;
+  font-size: calc(var(--u) * 3.3); letter-spacing: 0.1em; color: #f0eee4;
 }
-.bar-in {
-  max-width: var(--measure); margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  min-height: 44px; font-family: var(--f-ui); font-size: 0.82rem;
+.bar-in { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.bar-in > * { pointer-events: auto; }
+.bar-in .chap { flex: 1; min-width: 0; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 3px #000a; }
+.bar-end { display: flex; align-items: center; gap: 6px; }
+#bar button {
+  font: inherit; color: inherit; cursor: pointer; background: transparent;
+  min-width: 44px; min-height: 44px; border: 1px solid #d8d6c055; border-radius: 50%; padding: 0;
+  display: grid; place-items: center; font-size: calc(var(--u) * 5);
 }
-.bar-in .chap { color: var(--muted); letter-spacing: 0.08em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.bar-in .tools { display: flex; gap: 2px; flex-shrink: 0; }
-#bar a, #bar a:visited {
-  color: var(--fg); text-decoration: none; padding: 6px 9px; border-radius: 3px;
-}
-#bar a:hover, #bar a:focus-visible { background: var(--accent-soft); color: var(--accent); }
-#bar .tools a:last-child::after { content: " 开"; color: var(--muted); }
-html.muted #bar .tools a:last-child::after { content: " 关"; }
-html[data-tags~="title"] #bar { display: none; }
+#bar button.qf-txt { border-radius: 999px; padding: 0 12px; font-size: calc(var(--u) * 3.2); letter-spacing: 0.1em; }
+#bar button:hover, #bar button:focus-visible { background: #ffffff18; outline: none; }
+html[data-tags~="title"] #bar, html[data-tags~="title"] #qf-tools { display: none; }
+html[data-mode="page"] #bar { background: linear-gradient(#0a1417f2 55%, transparent); }
 
-/* ---------- 正文 ---------- */
-#passages {
-  max-width: var(--measure); margin: 0 auto;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 28px 72px;
+#qf-tools {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 6;
+  display: flex; justify-content: space-evenly; align-items: stretch;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: #12201eec; border-top: 1px solid #c6c5a524;
 }
-.passage { font-size: var(--step-0); }
+#qf-tools button {
+  flex: 1; font: inherit; font-size: calc(var(--u) * 3.2); letter-spacing: 0.1em; color: #b8c2b7;
+  background: transparent; border: 0; min-height: max(44px, calc(var(--u) * 13)); cursor: pointer;
+}
+#qf-tools button:hover, #qf-tools button:focus-visible { color: var(--accent); background: #ffffff0d; outline: none; }
+.qf-music::after { content: " 开"; color: #7f8d84; }
+html.muted .qf-music::after { content: " 关"; }
+html[data-mode="page"] #qf-tools { display: none; }
+
+/* ---------- 舞台模式：正文叠层 ---------- */
+html[data-mode="stage"] #passages {
+  position: absolute; inset: 0; z-index: 4; padding: 0; margin: 0; max-width: none;
+  pointer-events: none; overflow: hidden;
+}
+html[data-mode="stage"] .passage {
+  position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: calc(var(--u) * 3);
+  padding: 0 calc(var(--u) * 4.5) calc(max(44px, var(--u) * 13) + env(safe-area-inset-bottom, 0px) + var(--u) * 3);
+  font-size: calc(var(--u) * 4.3); line-height: 1.85;
+}
+html[data-mode="stage"] .passage:not(.qf-ready) { visibility: hidden; }
+.qf-ev { display: none; }
+html[data-mode="stage"] .passage .qf-step:not(.qf-on) { display: none !important; }
+html[data-mode="stage"] .qf-step.qf-on { pointer-events: auto; }
+html[data-mode="stage"] .qf-line.qf-on, html[data-mode="stage"] .qf-card.qf-on { display: block; }
+
+/* 对白框 */
+html[data-mode="stage"] .qf-line.qf-on {
+  position: relative; flex: 0 1 auto; min-height: calc(var(--u) * 38); max-height: calc(var(--u) * 64); overflow-y: auto; overscroll-behavior: contain;
+  margin: 0; padding: calc(var(--u) * 6) calc(var(--u) * 5.5) calc(var(--u) * 8);
+  border: 1px solid #d4c49570; border-radius: 3px; background: #15201fea;
+  box-shadow: 0 0 0 3px #13201f48, 0 6px 28px #0002; color: #f2f0e6;
+}
+html[data-mode="stage"] .qf-line.qf-on::before {
+  content: ""; position: absolute; width: calc(var(--u) * 4); height: calc(var(--u) * 4); left: -1px; top: -1px;
+  border-left: 2px solid #d9c7a4; border-top: 2px solid #d9c7a4;
+}
+html[data-mode="stage"] .qf-line.qf-done::after {
+  content: "点击继续 ▸"; position: absolute; right: calc(var(--u) * 4.5); bottom: calc(var(--u) * 2.8);
+  font-size: calc(var(--u) * 2.7); letter-spacing: 0.13em; color: #cdbf98; animation: qfBlink 1.6s ease-in-out infinite;
+}
+html[data-step="choice"] .qf-line.qf-done::after { content: "请选择 ▾"; }
+.qf-line .qc { opacity: 0; }
+.qf-line.qf-typing .qc.on, .qf-line:not(.qf-typing) .qc { opacity: 1; }
+html[data-mode="stage"] .qf-line p, html[data-mode="stage"] p.qf-line { margin: 0; }
+html[data-mode="stage"] p.say { display: block; }
+html[data-mode="stage"] p.say .who {
+  display: block; font-size: calc(var(--u) * 4); font-weight: 600; letter-spacing: 0.2em; color: #d7c7a0;
+  margin: 0 0 calc(var(--u) * 3); padding-bottom: calc(var(--u) * 2); border-bottom: 1px solid #c7bd9e44; line-height: 1.6;
+}
+html[data-mode="stage"] p.say .t { display: block; letter-spacing: 0.05em; }
+html[data-mode="stage"] p.say.you .who { color: #9fb3ad; }
+html[data-mode="stage"] p.say.you .t { padding: 0; border: 0; }
+html[data-mode="stage"] p.n { letter-spacing: 0.05em; }
+html[data-mode="stage"] p.think { color: #c9d3cd; font-style: italic; border-left: 0; padding-left: calc(var(--u) * 5.5); letter-spacing: 0.05em; }
+html[data-mode="stage"] p.stage { color: #b9c4bd; font-size: calc(var(--u) * 3.9); letter-spacing: 0.05em; }
+html[data-mode="stage"] p.picked, html[data-mode="stage"] p.flash, html[data-mode="stage"] hr.fade { display: none !important; }
+html[data-mode="stage"] details.hint.qf-on { font-size: calc(var(--u) * 3.8); color: #c9d3cd; }
+html[data-mode="stage"] details.hint summary { cursor: pointer; color: var(--accent); }
+@keyframes qfBlink { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+
+/* 枪声 */
+html[data-mode="stage"] p.shot.qf-on {
+  position: absolute; inset: 0; margin: 0; display: grid; place-items: center; z-index: 5;
+  background: #000a; color: var(--blood); font-weight: 900; letter-spacing: 0.3em; font-size: calc(var(--u) * 11);
+  animation: qfShot 0.35s ease-out;
+}
+@keyframes qfShot { 0% { transform: translateX(-3px); } 30% { transform: translateX(3px); } 60% { transform: translateX(-2px); } 100% { transform: none; } }
+
+/* 选项：浮在最后一句台词之上，选项多时在自己的面板内滚动 */
+html[data-mode="stage"] .qf-pick.qf-on {
+  order: -1; display: flex; flex-direction: column; gap: calc(var(--u) * 2.6);
+  max-height: min(48dvh, calc(var(--u) * 92)); overflow-y: auto; overscroll-behavior: contain; padding: 2px;
+}
+.qf-pick p.ask { margin: 0; text-align: center; color: #e6e6d6; font-size: calc(var(--u) * 3.4); letter-spacing: 0.15em; text-shadow: 0 1px 3px #000; }
+.qf-pick .choices { display: grid; gap: calc(var(--u) * 2.6); margin: 0; }
+.qf-pick .choices .opt a, .qf-pick .choices .opt a:visited {
+  display: flex; align-items: center; justify-content: center; text-align: center; min-height: max(44px, calc(var(--u) * 12));
+  padding: calc(var(--u) * 3.2) calc(var(--u) * 3); box-sizing: border-box; border: 1px solid #d2d2b39c; border-radius: 3px;
+  background: #122b27ef; color: #f2f1e4; text-decoration: none; font-size: calc(var(--u) * 3.9); line-height: 1.55; letter-spacing: 0.08em;
+  box-shadow: 0 4px 16px #0002;
+}
+.qf-pick .choices .opt a::before { content: none; }
+.qf-pick .choices .opt a:hover, .qf-pick .choices .opt a:focus-visible { border-color: #e4d4a4; background: #29443bf0; outline: none; }
+.qf-pick .choices.next a, .qf-pick .choices.next a:visited { border-bottom: 1px solid #d2d2b39c; }
+.qf-pick .choices.next a::after { content: none; }
+
+/* 结局标题卡与结局信息卡 */
+html[data-mode="stage"] div.ending.qf-on {
+  position: absolute; inset: 0; z-index: 5; margin: 0; padding: 0; border: 0; background: #050907f2;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--u) * 3);
+}
+.ending .mark { font-size: calc(var(--u) * 3.4); letter-spacing: 0.5em; color: var(--blood); }
+.ending .name { font-size: calc(var(--u) * 9); font-weight: 900; letter-spacing: 0.12em; text-align: center; padding: 0 calc(var(--u) * 6); line-height: 1.4; }
+.ending.he .mark { color: var(--he); }
+html[data-mode="stage"] div.ending.qf-on::after { content: "点击继续 ▸"; position: absolute; bottom: calc(var(--u) * 18); font-size: calc(var(--u) * 2.7); letter-spacing: 0.13em; color: #cdbf98; }
+html[data-mode="stage"] .qf-card.qf-on {
+  position: absolute; inset: 0; z-index: 5; overflow-y: auto; overscroll-behavior: contain;
+  padding: calc(env(safe-area-inset-top, 0px) + var(--u) * 20) calc(var(--u) * 6) calc(max(44px, var(--u) * 13) + env(safe-area-inset-bottom, 0px) + var(--u) * 6);
+  background: #0a1412f4; display: flex; flex-direction: column; gap: calc(var(--u) * 3); font-size: calc(var(--u) * 3.9);
+}
+.qf-card section.review, .qf-card .review {
+  margin: 0; padding: calc(var(--u) * 4); background: #14221f; border: 1px solid #d4c49555; border-radius: 3px; display: grid; gap: 8px;
+}
+.qf-card p { margin: 0; }
+.qf-card nav.after { margin: 0; }
+
+nav.after { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1.4em; font-family: var(--f-ui); font-size: 0.88rem; }
+nav.after a, nav.after a:visited {
+  display: inline-flex; align-items: center; min-height: 44px; box-sizing: border-box;
+  padding: 7px 16px; border: 1px solid var(--line); border-radius: 999px; color: var(--fg); text-decoration: none;
+}
+nav.after a:hover, nav.after a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+.qf-card nav.after { font-size: calc(var(--u) * 3.6); }
+
+/* 过话横幅、闪光与渐暗 */
+#qf-banner {
+  position: absolute; left: 0; right: 0; top: calc(env(safe-area-inset-top, 0px) + var(--u) * 22); z-index: 3; pointer-events: none;
+  text-align: center; opacity: 0; transition: opacity 0.6s; text-shadow: 0 2px 8px #000;
+}
+#qf-banner.show { opacity: 1; }
+#qf-banner .no { display: block; font-size: calc(var(--u) * 3); letter-spacing: 0.4em; color: #d7c7a0; }
+#qf-banner .tt { display: block; font-size: calc(var(--u) * 6.4); font-weight: 700; letter-spacing: 0.12em; }
+#qf-fx { position: absolute; inset: 0; z-index: 7; pointer-events: none; opacity: 0; background: #fff; }
+#qf-fx.fx-flash { animation: qfFlash 0.7s ease-out; }
+#qf-fx.fx-fade { background: #000; animation: qfFade 0.9s ease-out; }
+@keyframes qfFlash { 0% { opacity: 0.9; } 100% { opacity: 0; } }
+@keyframes qfFade { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+/* ---------- 页面模式（标题 / 结局一览 / 音源署名 / 补课）：舞台里的可滚动面板 ---------- */
+html[data-mode="page"] #passages, html:not([data-mode]) #passages {
+  position: absolute; inset: 0; z-index: 4; overflow-y: auto; overscroll-behavior: contain;
+  background: #0a1412ee;
+  padding: calc(env(safe-area-inset-top, 0px) + 64px) max(20px, env(safe-area-inset-left, 0px)) calc(32px + env(safe-area-inset-bottom, 0px));
+}
+html[data-tags~="title"] #passages { padding-top: calc(env(safe-area-inset-top, 0px) + 8px); }
+html[data-mode="page"] #qf-stage, html:not([data-mode]) #qf-stage { cursor: auto; }
+.passage { font-size: var(--step-0); font-family: var(--f-body); }
+html[data-mode="stage"] .passage { font-family: var(--f-ui); }
 .passage p { margin: 0 0 0.75em; }
+html[data-mode="stage"] .passage p { margin: 0; }
 
 .hua-head {
   display: flex; flex-direction: column; gap: 2px;
@@ -193,10 +349,9 @@ html[data-tags~="title"] #bar { display: none; }
 .hua-head .no { font-family: var(--f-ui); font-size: 0.78rem; letter-spacing: 0.22em; color: var(--accent); }
 .hua-head .tt { font-size: var(--step-2); font-weight: 600; line-height: 1.35; text-wrap: balance; }
 
+/* 页面模式里的对白（补课书房）仍保留小头像 */
 p.n { color: var(--fg); }
-p.say {
-  display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: start;
-}
+p.say { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: start; }
 p.say .face {
   grid-row: span 2; width: 46px; height: 46px; border-radius: 50%;
   object-fit: cover; object-position: 50% 12%;
@@ -213,77 +368,15 @@ p.say:not(:has(.face)) { grid-template-columns: 1fr; }
 p.say:not(:has(.face)) .who, p.say:not(:has(.face)) .t { grid-column: 1; }
 p.say.you .who { color: var(--muted); }
 p.say.you .t { padding-left: 12px; border-left: 2px solid var(--accent); }
-
 p.think { color: var(--muted); font-style: italic; padding-left: 14px; border-left: 1px solid var(--line); }
 p.stage { font-family: var(--f-ui); font-size: 0.86rem; color: var(--muted); }
-p.ask { font-family: var(--f-ui); font-size: 0.9rem; color: var(--muted); margin-top: 1.4em; }
-p.picked {
-  font-family: var(--f-ui); font-size: 0.82rem; color: var(--muted);
-  margin-bottom: 1.2em; padding-bottom: 0.6em; border-bottom: 1px dashed var(--line);
-}
-p.picked::before { content: "你选择了　"; color: var(--accent); letter-spacing: 0.1em; }
 
-/* 场景：有图显示 16:9 图，没有图只显示地点 */
 figure.scene { margin: 1.6em 0 1.2em; }
-figure.scene img {
-  display: block; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; object-fit: cover;
-  border-radius: 2px; background: var(--surface);
-}
+figure.scene img { display: block; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 2px; background: var(--surface); }
 figure.scene figcaption {
   display: flex; align-items: center; gap: 10px;
   font-family: var(--f-ui); font-size: 0.76rem; letter-spacing: 0.18em; color: var(--muted);
 }
-figure.scene.ok figcaption { margin-top: 6px; }
-figure.scene figcaption::before, figure.scene figcaption::after {
-  content: ""; flex: 1; height: 1px; background: var(--line);
-}
-
-p.shot {
-  text-align: center; color: var(--blood); font-weight: 900; letter-spacing: 0.4em;
-  font-size: var(--step-1); margin: 1em 0; animation: shot 0.35s ease-out;
-}
-@keyframes shot { 0% { transform: translateX(-3px); } 30% { transform: translateX(3px); } 60% { transform: translateX(-2px); } 100% { transform: none; } }
-p.flash { height: 1px; background: var(--fg); opacity: 0.25; margin: 1.5em 0; }
-hr.fade { border: 0; height: 1px; margin: 2em 0 1.4em; background: linear-gradient(90deg, transparent, var(--line), transparent); }
-
-/* ---------- 选项 ---------- */
-.choices { display: grid; gap: 8px; margin: 1.4em 0 0.6em; }
-.choices .opt a, .choices .opt a:visited {
-  display: block; padding: 11px 14px 11px 34px; position: relative;
-  border: 1px solid var(--line); border-radius: 3px; background: var(--surface);
-  color: var(--fg); text-decoration: none; line-height: 1.6;
-}
-.choices .opt a::before { content: "▸"; position: absolute; left: 14px; color: var(--muted); }
-.choices .opt a:hover, .choices .opt a:focus-visible {
-  border-color: var(--accent); background: var(--accent-soft); outline: none;
-}
-.choices .opt a:hover::before, .choices .opt a:focus-visible::before { color: var(--accent); }
-.choices.next { justify-items: start; }
-.choices.next a, .choices.next a:visited {
-  font-family: var(--f-ui); font-size: 0.9rem; letter-spacing: 0.15em; color: var(--accent);
-  text-decoration: none; padding: 8px 2px; border-bottom: 1px solid var(--accent);
-}
-.choices.next a::after { content: "  →"; }
-
-/* ---------- 结局 ---------- */
-.ending {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  margin: 2.2em 0 1.4em; padding: 22px 0;
-  border-top: 3px double var(--blood); border-bottom: 3px double var(--blood);
-}
-.ending .mark { font-family: var(--f-ui); font-size: 0.8rem; letter-spacing: 0.5em; color: var(--blood); }
-.ending .name { font-size: var(--step-2); font-weight: 900; letter-spacing: 0.12em; text-align: center; }
-.ending.he { border-color: var(--he); }
-.ending.he .mark { color: var(--he); }
-
-nav.after { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1.4em; font-family: var(--f-ui); font-size: 0.88rem; }
-nav.after a, nav.after a:visited {
-  padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--fg); text-decoration: none;
-}
-nav.after a:hover, nav.after a:focus-visible { border-color: var(--accent); color: var(--accent); }
-
-details.hint { margin: 1em 0; font-family: var(--f-ui); font-size: 0.88rem; color: var(--muted); }
-details.hint summary { cursor: pointer; color: var(--accent); }
 
 /* ---------- 标题画面 ---------- */
 .title-screen {
@@ -300,19 +393,20 @@ details.hint summary { cursor: pointer; color: var(--accent); }
 .heron::after { bottom: -10px; width: 80px; height: 18px; opacity: 0.6; }
 .kicker { font-family: var(--f-ui); font-size: 0.8rem; letter-spacing: 0.3em; color: var(--accent); margin: 0; }
 h1.title {
-  font-size: clamp(2.6rem, 11vw, 4.4rem); font-weight: 900; letter-spacing: 0.14em; line-height: 1.15;
+  font-size: clamp(2.6rem, 14vw, 4rem); font-weight: 900; letter-spacing: 0.14em; line-height: 1.15;
   margin: 0; text-wrap: balance;
 }
 .title-ko { font-family: var(--f-ko); font-size: 1.05rem; letter-spacing: 0.3em; color: var(--muted); margin: 0 0 18px; }
 .lede { max-width: 30em; color: var(--fg); margin: 0 0 22px; }
 .title-menu { display: grid; gap: 8px; width: min(100%, 18rem); font-family: var(--f-ui); }
 .title-menu a, .title-menu a:visited {
-  display: block; padding: 11px 16px; border: 1px solid var(--line); border-radius: 3px;
+  display: flex; align-items: center; min-height: 44px; box-sizing: border-box; padding: 9px 16px; border: 1px solid var(--line); border-radius: 3px;
   background: var(--surface); color: var(--fg); text-decoration: none; letter-spacing: 0.12em;
 }
 .title-menu a:first-child { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-.title-menu a:hover, .title-menu a:focus-visible { border-color: var(--accent); }
+.title-menu a:hover, .title-menu a:focus-visible { border-color: var(--accent); outline: none; }
 .fine { font-family: var(--f-ui); font-size: 0.78rem; color: var(--muted); margin-top: 18px; }
+.fine a { color: var(--accent); }
 
 /* ---------- 结局一览 ---------- */
 .gal-count { font-family: var(--f-ui); color: var(--muted); }
@@ -328,14 +422,14 @@ section.gal li.ok { color: var(--fg); }
 section.gal li.ok.he .nm { color: var(--he); font-weight: 600; }
 section.gal li .epi { margin-left: auto; font-family: var(--f-ui); font-size: 0.8rem; color: var(--accent); }
 
-/* ---------- 引擎对话框（存档等） ---------- */
+/* ---------- 引擎对话框（存档、回看、菜单、管理） ---------- */
 #ui-overlay { background: #000; }
-#ui-dialog { background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 4px; font-family: var(--f-ui); max-width: calc(100vw - 32px); }
+#ui-dialog { background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 4px; font-family: var(--f-ui); max-width: calc(100vw - 24px); box-sizing: border-box; }
 #ui-dialog-titlebar { background: var(--surface); border-bottom: 1px solid var(--line); }
 #ui-dialog-title { font-family: var(--f-ui); font-size: 1rem; font-weight: 700; letter-spacing: 0.2em; color: var(--fg); }
-#ui-dialog-close { color: var(--muted); }
+#ui-dialog-close { color: var(--muted); min-width: 44px; min-height: 44px; }
 #ui-dialog-close:hover { background: var(--accent-soft); border-color: transparent; color: var(--accent); }
-#ui-dialog-body { background: var(--surface); color: var(--fg); border: 0; }
+#ui-dialog-body { background: var(--surface); color: var(--fg); border: 0; overscroll-behavior: contain; }
 #ui-dialog-body hr { background: var(--line); }
 #ui-dialog-body.saves > h2 { background: var(--bg); color: var(--muted); font-size: 0.8rem; letter-spacing: 0.15em; padding: 0.35em 0.6em; }
 #ui-dialog-body.saves #saves-list li { border-color: var(--line); }
@@ -345,13 +439,23 @@ section.gal li .epi { margin-left: auto; font-family: var(--f-ui); font-size: 0.
 }
 #ui-dialog-body button:not(:disabled):hover, #ui-dialog-body.saves #saves-list button:not(:disabled):hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
 #ui-dialog-body.saves #saves-list button:disabled { color: var(--line); border-color: var(--line); background: transparent; }
-#ui-dialog-body.saves #saves-list button.load:not(:disabled) { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+#ui-dialog-body.saves #saves-list button.load:not(:disabled) { background: var(--accent); border-color: var(--accent); color: #15201c; }
 #ui-dialog-body.saves #saves-list button.delete:not(:disabled), #ui-dialog-body.saves button[id=saves-clear]:not(:disabled) {
   background: transparent; border-color: var(--blood); color: var(--blood);
 }
 #ui-dialog-body.saves button[id=saves-clear]:not(:disabled):hover { background: var(--blood); color: var(--surface); }
 #ui-dialog-body.list li a { color: var(--fg); }
 #ui-dialog-body.list li a:hover { background: var(--accent-soft); border-color: var(--accent); }
+.qf-menubox { display: grid; gap: 8px; width: 18rem; max-width: 100%; }
+.qf-menubox button { min-height: 44px; padding: 8px 14px; text-align: left; font-size: 0.95rem; letter-spacing: 0.06em; cursor: pointer; }
+.qf-logbox { width: 24rem; max-width: 100%; }
+.qf-logbox .lg { margin: 0 0 0.7em; line-height: 1.7; font-size: 0.92rem; }
+.qf-logbox .lw { display: block; color: var(--accent); font-size: 0.8rem; letter-spacing: 0.12em; }
+.qf-logbox .lg.n, .qf-logbox .lg.stage, .qf-logbox .lg.think { color: #c9d3cd; }
+.qf-logbox .lg.think { font-style: italic; }
+.qf-logbox .lg.you .lw { color: var(--muted); }
+.qf-logbox .lg.pick { color: var(--accent); font-size: 0.85rem; }
+.qf-empty { color: var(--muted); }
 
 /* ---------- 管理员试玩与音源署名 ---------- */
 .admin-badge {
@@ -377,14 +481,24 @@ section.gal li .epi { margin-left: auto; font-family: var(--f-ui); font-size: 0.
 .credit-item li { margin-bottom: 16px; overflow-wrap: anywhere; }
 .credit-item p { margin-bottom: 4px; }
 
-#passages a:focus-visible, #bar a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#passages a:focus-visible, #qf-tools button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+a { color: var(--accent); }
 @media (prefers-reduced-motion: reduce) {
-  p.shot { animation: none; }
-  .passage, p.say .face { transition: none !important; }
+  p.shot, #qf-fx, .qf-line.qf-done::after { animation: none !important; }
+  #qf-bg img, #qf-char, #qf-char img, #qf-cg, #qf-cg img, #qf-banner { transition: none !important; }
 }
-@media (max-width: 420px) {
-  .bar-in .tools a { padding: 6px 6px; }
-  .hua-head .tt { font-size: 1.45rem; }
+
+/* 横屏矮屏（手机横放）：舞台放宽，单位改按高度算，人物靠右 */
+@media (orientation: landscape) and (max-height: 520px) {
+  #app { width: min(100vw, 760px); max-width: none; }
+  #qf-stage { --u: 0.8dvh; }
+  #qf-char { left: auto; right: -6%; width: 52%; height: 98%; bottom: 0; }
+  #bar { padding-top: calc(env(safe-area-inset-top, 0px) + 6px); padding-bottom: 14px; }
+  html[data-mode="stage"] .qf-line.qf-on { min-height: calc(var(--u) * 30); max-height: calc(var(--u) * 56); }
+  html[data-mode="stage"] .passage { padding-bottom: calc(44px + env(safe-area-inset-bottom, 0px) + 8px); }
+  #qf-tools button { min-height: 44px; }
+  html[data-mode="stage"] .qf-pick.qf-on { max-height: 56dvh; }
+  #qf-place { top: 22%; }
 }
 
 /* ---------- 复盘（结局页第一、二层）与补课 ---------- */
@@ -413,6 +527,7 @@ table.vars td { font-variant-numeric: tabular-nums; font-weight: 700; }
 nav.cps { flex-direction: column; align-items: flex-start; }
 nav.cps a.cp-on { border-color: var(--accent); color: var(--accent); }
 .cp-off { color: var(--muted); font-size: 0.85rem; padding: 4px 0; }
+.qf-card .hint1 { color: #c9d3cd; }
 </style><script role="script" id="twine-user-script" type="text/twine-javascript">setup.VARNAMES = {"001": "宫本信任", "008": "主要问题问完否", "009": "黑岩怀疑", "010": "素月好感", "011": "恩淑信任", "012": "证据", "013": "良知", "014": "卢昌珉存活", "015": "金正浩知情", "016": "千鹤真相", "017": "英子命运", "018": "创氏名", "019": "天玑评价", "020": "经过时间 / 021 总时间", "022": "素月存活", "023": "恩哲存活", "024": "北行", "025": "双重潜伏", "026": "宫本证词", "027": "崔大植被捕", "030": "誓约书上交", "031": "遗书去向", "032": "宫本评语页", "033": "宴会重来", "034": "黑岩存活", "036": "卢昌珉证词", "037": "千鹤笔记本", "038": "素月证言"};
 setup.ADMIN_MODE = true;
 setup.INITIAL_VARIABLES = {"v001": 0, "v002": 0, "v003": 0, "v004": 0, "v005": 0, "v006": 0, "v007": 0, "v008": 0, "v009": 0, "v010": 0, "v011": 0, "v012": 0, "v013": 0, "v014": 0, "v015": 0, "v016": 0, "v017": 0, "v018": 0, "v019": 0, "v020": 0, "v021": 0, "v022": 0, "v023": 0, "v024": 0, "v025": 0, "v026": 0, "v027": 0, "v028": 0, "v029": 0, "v030": 0, "v031": 0, "v032": 0, "v033": 0, "v034": 0, "v036": 0, "v037": 0, "v038": 0};
@@ -421,6 +536,8 @@ setup.AUDIO_CREDITS = {"assets/bgm/主题.mp3": {"sources": [{"title": "I Want t
 setup.CHAPTERS = ["序章", "第一章·创氏改名", "第二章·京城站", "第三章·辞典", "第四章·黑岩", "第五章·府民馆", "第六章·解放", "终章·反民特委", "尾声"];
 setup.ENDINGS = [{"id": "h3-无人认领", "name": "无人认领", "hua": 3, "chap": 0, "he": false}, {"id": "h4-回心转意", "name": "回心转意", "hua": 4, "chap": 0, "he": false}, {"id": "h5-穿帮", "name": "穿帮", "hua": 5, "chap": 0, "he": false}, {"id": "h6-白纸", "name": "白纸", "hua": 6, "chap": 0, "he": false}, {"id": "h7-本町之夜", "name": "本町之夜", "hua": 7, "chap": 0, "he": false}, {"id": "h11-原名", "name": "原名", "hua": 11, "chap": 1, "he": false}, {"id": "h12-报道班员", "name": "报道班员", "hua": 12, "chap": 1, "he": false}, {"id": "h13-唱片", "name": "唱片", "hua": 13, "chap": 1, "he": false}, {"id": "h14-求情", "name": "求情", "hua": 14, "chap": 1, "he": false}, {"id": "h15-大麦茶", "name": "大麦茶", "hua": 15, "chap": 1, "he": false}, {"id": "h15-空网", "name": "空网", "hua": 15, "chap": 1, "he": false}, {"id": "h16-好狗", "name": "好狗", "hua": 16, "chap": 1, "he": false}, {"id": "h19-夹层", "name": "夹层", "hua": 19, "chap": 1, "he": false}, {"id": "h21-重要的人", "name": "重要的人", "hua": 21, "chap": 2, "he": false}, {"id": "h22-喜鹊的报告", "name": "喜鹊的报告", "hua": 22, "chap": 2, "he": false}, {"id": "h23-银妆刀", "name": "银妆刀", "hua": 23, "chap": 2, "he": false}, {"id": "h24-先动手的人", "name": "先动手的人", "hua": 24, "chap": 2, "he": false}, {"id": "h25-自己人", "name": "自己人", "hua": 25, "chap": 2, "he": false}, {"id": "h26-清溪川", "name": "清溪川", "hua": 26, "chap": 2, "he": false}, {"id": "h27-梅花酒", "name": "梅花酒", "hua": 27, "chap": 2, "he": false}, {"id": "h29-海行かば", "name": "海行かば", "hua": 29, "chap": 2, "he": false}, {"id": "h31-回头", "name": "回头", "hua": 31, "chap": 3, "he": false}, {"id": "h32-焚稿", "name": "焚稿", "hua": 32, "chap": 3, "he": false}, {"id": "h34-隔墙", "name": "隔墙", "hua": 34, "chap": 3, "he": false}, {"id": "h35-说谎的人", "name": "说谎的人", "hua": 35, "chap": 3, "he": false}, {"id": "h35-借名", "name": "借名", "hua": 35, "chap": 3, "he": false}, {"id": "h36-署名", "name": "署名", "hua": 36, "chap": 3, "he": false}, {"id": "h37-唱针", "name": "唱针", "hua": 37, "chap": 3, "he": false}, {"id": "h37-目录", "name": "目录", "hua": 37, "chap": 3, "he": false}, {"id": "h37-钟路的鬼", "name": "钟路的鬼", "hua": 37, "chap": 3, "he": false}, {"id": "h41-搜身", "name": "搜身", "hua": 41, "chap": 4, "he": false}, {"id": "h42-音乐让人诚实", "name": "音乐让人诚实", "hua": 42, "chap": 4, "he": false}, {"id": "h43-没用的狗", "name": "没用的狗", "hua": 43, "chap": 4, "he": false}, {"id": "h44-欣赏", "name": "欣赏", "hua": 44, "chap": 4, "he": false}, {"id": "h46-回拨", "name": "回拨", "hua": 46, "chap": 4, "he": false}, {"id": "h47-来电登记", "name": "来电登记", "hua": 47, "chap": 4, "he": false}, {"id": "h48-全曲", "name": "全曲", "hua": 48, "chap": 4, "he": false}, {"id": "h51-好价钱", "name": "好价钱", "hua": 51, "chap": 5, "he": false}, {"id": "h52-阴沟", "name": "阴沟", "hua": 52, "chap": 5, "he": false}, {"id": "h53-掌声", "name": "掌声", "hua": 53, "chap": 5, "he": false}, {"id": "h54-空椅子", "name": "空椅子", "hua": 54, "chap": 5, "he": false}, {"id": "h55-刀鞘", "name": "刀鞘", "hua": 55, "chap": 5, "he": false}, {"id": "h56-引线", "name": "引线", "hua": 56, "chap": 5, "he": false}, {"id": "h57-座次", "name": "座次", "hua": 57, "chap": 5, "he": false}, {"id": "h57-侧幕", "name": "侧幕", "hua": 57, "chap": 5, "he": false}, {"id": "h57-一个问题", "name": "一个问题", "hua": 57, "chap": 5, "he": false}, {"id": "h57-交换", "name": "交换", "hua": 57, "chap": 5, "he": false}, {"id": "h58-一次也没用过", "name": "一次也没用过", "hua": 58, "chap": 5, "he": false}, {"id": "h61-找零", "name": "找零", "hua": 61, "chap": 6, "he": false}, {"id": "h62-一百二十步", "name": "一百二十步", "hua": 62, "chap": 6, "he": false}, {"id": "h63-台阶", "name": "台阶", "hua": 63, "chap": 6, "he": false}, {"id": "h64-送信", "name": "送信", "hua": 64, "chap": 6, "he": false}, {"id": "h66-说情", "name": "说情", "hua": 66, "chap": 6, "he": false}, {"id": "h68-第三颗星", "name": "第三颗星", "hua": 68, "chap": 6, "he": false}, {"id": "h70-BE·拒捕", "name": "BE·拒捕", "hua": 70, "chap": 7, "he": false}, {"id": "h71-BE·伪造", "name": "BE·伪造", "hua": 71, "chap": 7, "he": false}, {"id": "h73-BE·掩护", "name": "BE·掩护", "hua": 73, "chap": 7, "he": false}, {"id": "h74-BE·气窗", "name": "BE·气窗", "hua": 74, "chap": 7, "he": false}, {"id": "h74-BE·夺枪", "name": "BE·夺枪", "hua": 74, "chap": 7, "he": false}, {"id": "h75-BE·时势", "name": "BE·时势", "hua": 75, "chap": 7, "he": false}, {"id": "h76-BE·同事", "name": "BE·同事", "hua": 76, "chap": 7, "he": false}, {"id": "h77-BE·无名", "name": "BE·无名", "hua": 77, "chap": 7, "he": false}, {"id": "h78-BE·烈士", "name": "BE·烈士", "hua": 78, "chap": 7, "he": false}, {"id": "h79-BE·两面", "name": "BE·两面", "hua": 79, "chap": 7, "he": false}, {"id": "h79-BE·敏锐", "name": "BE·敏锐", "hua": 79, "chap": 7, "he": false}, {"id": "h80-HE·白鹭", "name": "HE·白鹭", "hua": 80, "chap": 8, "he": true}, {"id": "h81-HE·樱花", "name": "HE·樱花", "hua": 81, "chap": 8, "he": true}, {"id": "h82-HE·人民的法庭", "name": "HE·人民的法庭", "hua": 82, "chap": 8, "he": true}, {"id": "h87-HE·宫本仁", "name": "HE·宫本仁", "hua": 87, "chap": 8, "he": true}];
 setup.EPILOGUE = {"BE·时势": 83, "BE·同事": 84, "BE·夺枪": 84, "BE·无名": 85, "BE·伪造": 85, "BE·掩护": 85, "BE·烈士": 85, "BE·两面": 86, "BE·敏锐": 86, "HE·人民的法庭": 86};
+setup.FACE_CAST = ["徐明焕", "徐恩淑", "徐恩哲", "文基哲", "玄俊植", "金正浩", "卢昌珉", "黄有善", "宫本谦造", "宫本千鹤", "黑岩辰雄", "朴炳吉", "闵泳达", "卞泰龙", "佐川", "韩素月", "吴英子", "具泰山", "马三", "韩秉道", "安敬顺", "吕镇宇", "少年", "老太太", "中年妇人"];
+setup.BG_FOCUS = {"bg/北村_徐家书房": "48% 50%"};
 setup.ASSETS = {"bgm/海风": "assets/bgm/海风.mp3", "bg/玄海滩_清晨": "assets/bg/玄海滩_清晨.jpg", "bg/回忆_钟路_游行": "assets/bg/回忆_钟路_游行.jpg", "sfx/汽笛": "assets/sfx/汽笛.mp3", "bg/京城站_白天": "assets/bg/京城站_白天.jpg", "bgm/阴郁的宅邸": "assets/bgm/阴郁的宅邸.mp3", "bg/北村_徐家书房": "assets/bg/北村_徐家书房.jpg", "char/徐明焕_平静": "assets/char/徐明焕_平静.png", "char/金正浩_常态": "assets/char/金正浩_常态.png", "char/卢昌珉_常态": "assets/char/卢昌珉_常态.png", "char/徐恩淑_惊讶": "assets/char/徐恩淑_惊讶.png", "sfx/粉笔折断": "assets/sfx/粉笔折断.mp3", "sfx/拍桌子": "assets/sfx/拍桌子.mp3", "bg/北村_小巷_黄昏": "assets/bg/北村_小巷_黄昏.jpg", "bgm/夜·钢琴": "assets/bgm/夜·钢琴.mp3", "char/徐恩淑_悲伤": "assets/char/徐恩淑_悲伤.png", "bg/钟路_书店_夜": "assets/bg/钟路_书店_夜.jpg", "bgm/推理": "assets/bgm/推理.mp3", "char/文基哲_眼镜": "assets/char/文基哲_眼镜.png", "bg/密室": "assets/bg/密室.jpg", "char/徐明焕_微笑": "assets/char/徐明焕_微笑.png", "bg/本町_咖啡馆_夜": "assets/bg/本町_咖啡馆_夜.jpg", "bgm/舞会": "assets/bgm/舞会.mp3", "sfx/碰撞": "assets/sfx/碰撞.mp3", "bg/章节标题_第一章": "assets/bg/章节标题_第一章.jpg", "bg/每日新报社_编辑局_白天": "assets/bg/每日新报社_编辑局_白天.jpg", "bgm/手风琴": "assets/bgm/手风琴.mp3", "bg/社长室": "assets/bg/社长室.jpg", "char/闵泳达_得意": "assets/char/闵泳达_得意.png", "sfx/电话铃": "assets/sfx/电话铃.mp3", "bg/南山庄_外景_黄昏": "assets/bg/南山庄_外景_黄昏.jpg", "bgm/奚琴·阿里郎": "assets/bgm/奚琴·阿里郎.mp3", "bg/南山庄_书房": "assets/bg/南山庄_书房.jpg", "char/宫本谦造_奚琴": "assets/char/宫本谦造_奚琴.png", "char/宫本谦造_微笑": "assets/char/宫本谦造_微笑.png", "bg/社长室_夜": "assets/bg/社长室_夜.jpg", "bg/南山庄_书房_雪": "assets/bg/南山庄_书房_雪.jpg", "char/宫本谦造_平静": "assets/char/宫本谦造_平静.png", "bg/南山庄_客厅_夜": "assets/bg/南山庄_客厅_夜.jpg", "sfx/拉门声": "assets/sfx/拉门声.mp3", "char/宫本千鹤_笑": "assets/char/宫本千鹤_笑.png", "bg/钟路_后巷_雪夜": "assets/bg/钟路_后巷_雪夜.jpg", "bg/酒幕_内": "assets/bg/酒幕_内.jpg", "char/徐恩淑_怒": "assets/char/徐恩淑_怒.png", "char/朴炳吉_笑": "assets/char/朴炳吉_笑.png", "bg/南山庄_书房_白天": "assets/bg/南山庄_书房_白天.jpg", "char/黑岩辰雄_笑": "assets/char/黑岩辰雄_笑.png", "bg/南山庄_书房_黄昏": "assets/bg/南山庄_书房_黄昏.jpg", "bgm/奚琴": "assets/bgm/奚琴.mp3", "bg/每日新报社_校对部": "assets/bg/每日新报社_校对部.jpg", "bg/北海道_煤矿": "assets/bg/北海道_煤矿.jpg", "bg/南洋_椰林": "assets/bg/南洋_椰林.jpg", "sfx/飞机轰鸣": "assets/sfx/飞机轰鸣.mp3", "bg/钟路署_地下室": "assets/bg/钟路署_地下室.jpg", "bgm/军歌唱片": "assets/bgm/军歌唱片.mp3", "bg/汉江铁桥_雨夜": "assets/bg/汉江铁桥_雨夜.jpg", "sfx/雨声": "assets/sfx/雨声.mp3", "bg/汽车内_白天": "assets/bg/汽车内_白天.jpg", "sfx/唱片底噪": "assets/sfx/唱片底噪.mp3", "char/徐明焕_伤": "assets/char/徐明焕_伤.png", "bg/汽车内_黄昏": "assets/bg/汽车内_黄昏.jpg", "bg/旅馆房间_夜": "assets/bg/旅馆房间_夜.jpg", "bg/钟路_药铺": "assets/bg/钟路_药铺.jpg", "char/黄有善_常态": "assets/char/黄有善_常态.png", "bg/安国洞_宿舍": "assets/bg/安国洞_宿舍.jpg", "bg/嘉会洞_韩屋门口": "assets/bg/嘉会洞_韩屋门口.jpg", "bg/钟路_茶房": "assets/bg/钟路_茶房.jpg", "char/卢昌珉_惊": "assets/char/卢昌珉_惊.png", "sfx/枪声": "assets/sfx/枪声.mp3", "sfx/火车驶过": "assets/sfx/火车驶过.mp3", "bg/大事记_1940": "assets/bg/大事记_1940.jpg", "char/朴炳吉_平静": "assets/char/朴炳吉_平静.png", "bg/南山庄_书房_清晨": "assets/bg/南山庄_书房_清晨.jpg", "bg/总督府警务局_走廊": "assets/bg/总督府警务局_走廊.jpg", "sfx/打字机": "assets/sfx/打字机.mp3", "char/吴英子_惊喜": "assets/char/吴英子_惊喜.png", "bg/南山庄_书房_午后": "assets/bg/南山庄_书房_午后.jpg", "bg/明月楼_宴会厅_夜": "assets/bg/明月楼_宴会厅_夜.jpg", "char/卞泰龙_大笑": "assets/char/卞泰龙_大笑.png", "char/佐川_无表情": "assets/char/佐川_无表情.png", "char/具泰山_吃面": "assets/char/具泰山_吃面.png", "char/吴英子_紧张": "assets/char/吴英子_紧张.png", "char/韩素月_弹琴": "assets/char/韩素月_弹琴.png", "bgm/伽倻琴": "assets/bgm/伽倻琴.mp3", "sfx/杯盘": "assets/sfx/杯盘.mp3", "bg/朝鲜饭店_走廊_夜": "assets/bg/朝鲜饭店_走廊_夜.jpg", "bg/朝鲜饭店_茶房_夜": "assets/bg/朝鲜饭店_茶房_夜.jpg", "char/吴英子_微笑": "assets/char/吴英子_微笑.png", "sfx/敲门": "assets/sfx/敲门.mp3", "char/韩素月_冷笑": "assets/char/韩素月_冷笑.png", "bgm/紧张": "assets/bgm/紧张.mp3", "sfx/瓷碗碎裂": "assets/sfx/瓷碗碎裂.mp3", "bg/朝鲜饭店_套房_夜": "assets/bg/朝鲜饭店_套房_夜.jpg", "char/朴炳吉_阴笑": "assets/char/朴炳吉_阴笑.png", "bg/朝鲜饭店_后院_黎明": "assets/bg/朝鲜饭店_后院_黎明.jpg", "sfx/奚琴长音": "assets/sfx/奚琴长音.mp3", "bg/东大门市场_清晨": "assets/bg/东大门市场_清晨.jpg", "bg/钟路_小巷_夜": "assets/bg/钟路_小巷_夜.jpg", "bg/绸缎庄_里屋_夜": "assets/bg/绸缎庄_里屋_夜.jpg", "bg/大事记_1940冬": "assets/bg/大事记_1940冬.jpg", "bg/明月楼_后院_梅花": "assets/bg/明月楼_后院_梅花.jpg", "char/韩素月_平静": "assets/char/韩素月_平静.png", "bg/大事记_1941": "assets/bg/大事记_1941.jpg", "bg/钟路_书店_白天": "assets/bg/钟路_书店_白天.jpg", "bg/汉江_渡口_夜": "assets/bg/汉江_渡口_夜.jpg", "sfx/连响四枪": "assets/sfx/连响四枪.mp3", "bg/大事记_1941-1942": "assets/bg/大事记_1941-1942.jpg", "bg/钟路警察署_证物室": "assets/bg/钟路警察署_证物室.jpg", "sfx/划火柴": "assets/sfx/划火柴.mp3", "bg/钟路警察署_走廊_黄昏": "assets/bg/钟路警察署_走廊_黄昏.jpg", "bg/京城站_货运仓库_火": "assets/bg/京城站_货运仓库_火.jpg", "bg/钟路警察署_院子_白天": "assets/bg/钟路警察署_院子_白天.jpg", "sfx/火": "assets/sfx/火.mp3", "bg/钟路警察署_拘留所_面会室": "assets/bg/钟路警察署_拘留所_面会室.jpg", "char/韩秉道_憔悴": "assets/char/韩秉道_憔悴.png", "bg/钟路警察署_走廊": "assets/bg/钟路警察署_走廊.jpg", "bg/南山庄_书库_白天": "assets/bg/南山庄_书库_白天.jpg", "char/宫本千鹤_微笑": "assets/char/宫本千鹤_微笑.png", "bgm/民谣哼唱": "assets/bgm/民谣哼唱.mp3", "bg/钟路_绸缎庄_里屋": "assets/bg/钟路_绸缎庄_里屋.jpg", "char/具泰山_常态": "assets/char/具泰山_常态.png", "bg/南山庄_书房_夜": "assets/bg/南山庄_书房_夜.jpg", "bg/京城站_货运仓库_白天": "assets/bg/京城站_货运仓库_白天.jpg", "bg/京城站_货运仓库_夜": "assets/bg/京城站_货运仓库_夜.jpg", "sfx/汽车刹车": "assets/sfx/汽车刹车.mp3", "bg/排水沟_黑": "assets/bg/排水沟_黑.jpg", "sfx/心跳": "assets/sfx/心跳.mp3", "char/文基哲_火光": "assets/char/文基哲_火光.png", "bg/铁桥下_黎明": "assets/bg/铁桥下_黎明.jpg", "sfx/唱针落下": "assets/sfx/唱针落下.mp3", "bg/东大门_汤饭店_白天": "assets/bg/东大门_汤饭店_白天.jpg", "char/玄俊植_平静": "assets/char/玄俊植_平静.png", "char/宫本千鹤_紧张": "assets/char/宫本千鹤_紧张.png", "bg/南山庄_回廊_夜": "assets/bg/南山庄_回廊_夜.jpg", "char/宫本千鹤_平静": "assets/char/宫本千鹤_平静.png", "bg/大事记_1943": "assets/bg/大事记_1943.jpg", "bg/过场_1943_学徒出阵": "assets/bg/过场_1943_学徒出阵.jpg", "bgm/军乐进行曲": "assets/bgm/军乐进行曲.mp3", "bg/公会堂_礼堂": "assets/bg/公会堂_礼堂.jpg", "sfx/嘈杂人声": "assets/sfx/嘈杂人声.mp3", "char/徐恩哲_制服": "assets/char/徐恩哲_制服.png", "sfx/掌声": "assets/sfx/掌声.mp3", "bg/公会堂_后台走廊_黄昏": "assets/bg/公会堂_后台走廊_黄昏.jpg", "bg/过场_京城_初雪": "assets/bg/过场_京城_初雪.jpg", "bg/警察部_地下室": "assets/bg/警察部_地下室.jpg", "sfx/水声": "assets/sfx/水声.mp3", "bg/警察部_门口_夜": "assets/bg/警察部_门口_夜.jpg", "bgm/风雪": "assets/bgm/风雪.mp3", "bg/公会堂_出口": "assets/bg/公会堂_出口.jpg", "char/玄俊植_眼镜": "assets/char/玄俊植_眼镜.png", "bg/京城站_月台_冬": "assets/bg/京城站_月台_冬.jpg", "bg/仁宇住处_夜": "assets/bg/仁宇住处_夜.jpg", "bg/宫本宅_书房_夜": "assets/bg/宫本宅_书房_夜.jpg", "char/宫本谦造_沉思": "assets/char/宫本谦造_沉思.png", "sfx/拨号盘": "assets/sfx/拨号盘.mp3", "sfx/座钟": "assets/sfx/座钟.mp3", "bg/明月楼_夜": "assets/bg/明月楼_夜.jpg", "bg/钟路_绸缎庄_后屋": "assets/bg/钟路_绸缎庄_后屋.jpg", "bg/明月楼_后院_夜": "assets/bg/明月楼_后院_夜.jpg", "char/韩素月_冷": "assets/char/韩素月_冷.png", "bg/明月楼_空房": "assets/bg/明月楼_空房.jpg", "bg/宫本宅_书房_白天": "assets/bg/宫本宅_书房_白天.jpg", "char/黑岩辰雄_怒": "assets/char/黑岩辰雄_怒.png", "bg/钟路_夜": "assets/bg/钟路_夜.jpg", "bg/钟路后巷_夜": "assets/bg/钟路后巷_夜.jpg", "sfx/唱针卡住": "assets/sfx/唱针卡住.mp3", "char/韩素月_黑衣": "assets/char/韩素月_黑衣.png", "bg/钟路后巷_白天": "assets/bg/钟路后巷_白天.jpg", "bg/宫本宅_客厅_白天": "assets/bg/宫本宅_客厅_白天.jpg", "bg/过场_1944_夏": "assets/bg/过场_1944_夏.jpg", "char/徐恩淑_憔悴": "assets/char/徐恩淑_憔悴.png", "bg/大事记_1944": "assets/bg/大事记_1944.jpg", "sfx/琴弦余音": "assets/sfx/琴弦余音.mp3", "bg/南山_石阶_夜": "assets/bg/南山_石阶_夜.jpg", "bg/报社_编辑部_白天": "assets/bg/报社_编辑部_白天.jpg", "bg/酒幕_夜": "assets/bg/酒幕_夜.jpg", "char/金正浩_微笑": "assets/char/金正浩_微笑.png", "sfx/布帘掀开": "assets/sfx/布帘掀开.mp3", "bg/钟路_后巷_夜": "assets/bg/钟路_后巷_夜.jpg", "bg/桂洞_住处_清晨": "assets/bg/桂洞_住处_清晨.jpg", "bg/府民馆_走廊": "assets/bg/府民馆_走廊.jpg", "bg/府民馆_讲台": "assets/bg/府民馆_讲台.jpg", "sfx/爆炸": "assets/sfx/爆炸.mp3", "bg/明月楼_正门_夜": "assets/bg/明月楼_正门_夜.jpg", "bg/钟路_后巷_白天": "assets/bg/钟路_后巷_白天.jpg", "sfx/绳索绷紧、木梁断裂": "assets/sfx/绳索绷紧、木梁断裂.mp3", "bg/青丘书房_废墟": "assets/bg/青丘书房_废墟.jpg", "char/卢昌珉_光复军": "assets/char/卢昌珉_光复军.png", "sfx/日语号子": "assets/sfx/日语号子.mp3", "bg/报社_编辑部_黄昏": "assets/bg/报社_编辑部_黄昏.jpg", "bg/桂洞_住处_夜": "assets/bg/桂洞_住处_夜.jpg", "sfx/窗棂轻响": "assets/sfx/窗棂轻响.mp3", "char/韩素月_便装": "assets/char/韩素月_便装.png", "char/徐恩哲_常态": "assets/char/徐恩哲_常态.png", "sfx/纸张摩擦": "assets/sfx/纸张摩擦.mp3", "bg/南山庄_廊下_夜": "assets/bg/南山庄_廊下_夜.jpg", "char/宫本千鹤_常态": "assets/char/宫本千鹤_常态.png", "bg/西大门_钟表铺_夜": "assets/bg/西大门_钟表铺_夜.jpg", "char/玄俊植_常态": "assets/char/玄俊植_常态.png", "bg/府民馆_外景_白天": "assets/bg/府民馆_外景_白天.jpg", "bg/府民馆_后台": "assets/bg/府民馆_后台.jpg", "bgm/国歌齐唱": "assets/bgm/国歌齐唱.mp3", "char/闵泳达_演讲": "assets/char/闵泳达_演讲.png", "char/安敬顺_常态": "assets/char/安敬顺_常态.png", "char/吕镇宇_常态": "assets/char/吕镇宇_常态.png", "bg/府民馆_后台_混乱": "assets/bg/府民馆_后台_混乱.jpg", "sfx/哨子、皮靴": "assets/sfx/哨子、皮靴.mp3", "char/朴炳吉_冷": "assets/char/朴炳吉_冷.png", "bg/明月楼_后门_夜": "assets/bg/明月楼_后门_夜.jpg", "bg/明月楼_后屋_夜": "assets/bg/明月楼_后屋_夜.jpg", "char/韩素月_负伤": "assets/char/韩素月_负伤.png", "char/徐恩淑_冷": "assets/char/徐恩淑_冷.png", "sfx/瓦片碎裂": "assets/sfx/瓦片碎裂.mp3", "bg/明月楼_地窖": "assets/bg/明月楼_地窖.jpg", "bg/每日新报_头版": "assets/bg/每日新报_头版.jpg", "bg/南山庄_大厅_白天": "assets/bg/南山庄_大厅_白天.jpg", "sfx/收音机杂音": "assets/sfx/收音机杂音.mp3", "bg/南山庄_廊下_黄昏": "assets/bg/南山庄_廊下_黄昏.jpg", "char/宫本谦造_便服": "assets/char/宫本谦造_便服.png", "sfx/远处的人声，像涨潮": "assets/sfx/远处的人声，像涨潮.mp3", "bg/钟路_白天_人群": "assets/bg/钟路_白天_人群.jpg", "bgm/万岁合唱": "assets/bgm/万岁合唱.mp3", "cg/改画的太极旗": "assets/cg/改画的太极旗.jpg", "bg/西大门刑务所_正门": "assets/bg/西大门刑务所_正门.jpg", "bg/钟路_墙壁_传单": "assets/bg/钟路_墙壁_传单.jpg", "bgm/不协和音": "assets/bgm/不协和音.mp3", "char/少年_学生帽": "assets/char/少年_学生帽.png", "bg/钟路署_门前": "assets/bg/钟路署_门前.jpg", "sfx/人群怒吼": "assets/sfx/人群怒吼.mp3", "bg/南山庄_庭院_夜": "assets/bg/南山庄_庭院_夜.jpg", "sfx/纸张燃烧": "assets/sfx/纸张燃烧.mp3", "char/宫本谦造_浴衣": "assets/char/宫本谦造_浴衣.png", "char/宫本千鹤_悲伤": "assets/char/宫本千鹤_悲伤.png", "bg/京城站_站台_白天": "assets/bg/京城站_站台_白天.jpg", "bgm/人潮": "assets/bgm/人潮.mp3", "char/中年妇人_常态": "assets/char/中年妇人_常态.png", "char/老太太_白头巾": "assets/char/老太太_白头巾.png", "char/朴炳吉_便装": "assets/char/朴炳吉_便装.png", "bg/京城站_广场": "assets/bg/京城站_广场.jpg", "bgm/追逐": "assets/bgm/追逐.mp3", "bg/社稷洞_石阶_黄昏": "assets/bg/社稷洞_石阶_黄昏.jpg", "bg/钟路_党部_里屋": "assets/bg/钟路_党部_里屋.jpg", "char/玄俊植_西装": "assets/char/玄俊植_西装.png", "bg/麻浦渡口_夜": "assets/bg/麻浦渡口_夜.jpg", "sfx/江水": "assets/sfx/江水.mp3", "bg/火车车厢_夜": "assets/bg/火车车厢_夜.jpg", "sfx/火车行进": "assets/sfx/火车行进.mp3", "bg/釜山_码头_白天": "assets/bg/釜山_码头_白天.jpg", "char/宫本千鹤_头巾": "assets/char/宫本千鹤_头巾.png", "bg/光化门_街道": "assets/bg/光化门_街道.jpg", "bg/社稷洞_家门口_黄昏": "assets/bg/社稷洞_家门口_黄昏.jpg", "bgm/恩淑": "assets/bgm/恩淑.mp3", "sfx/玻璃碎裂": "assets/sfx/玻璃碎裂.mp3", "bg/钟路_墙壁_传单_层叠": "assets/bg/钟路_墙壁_传单_层叠.jpg", "bgm/喧嚣的秋天": "assets/bgm/喧嚣的秋天.mp3", "bg/美军政厅_通译室": "assets/bg/美军政厅_通译室.jpg", "bgm/打字机": "assets/bgm/打字机.mp3", "char/金正浩_西装": "assets/char/金正浩_西装.png", "bg/明洞_酒馆_夜": "assets/bg/明洞_酒馆_夜.jpg", "bgm/阴湿的爵士": "assets/bgm/阴湿的爵士.mp3", "char/朴炳吉_警服": "assets/char/朴炳吉_警服.png", "bg/社稷洞_家门口_清晨": "assets/bg/社稷洞_家门口_清晨.jpg", "bg/钟路_印刷厂_查封": "assets/bg/钟路_印刷厂_查封.jpg", "sfx/警笛": "assets/sfx/警笛.mp3", "bg/钟路_后巷_米店_夜": "assets/bg/钟路_后巷_米店_夜.jpg", "char/玄俊植_便装": "assets/char/玄俊植_便装.png", "bg/山路_夜": "assets/bg/山路_夜.jpg", "bgm/大事记": "assets/bgm/大事记.mp3", "bg/报纸_特写": "assets/bg/报纸_特写.jpg", "bg/敦岩洞_出租屋_夜": "assets/bg/敦岩洞_出租屋_夜.jpg", "sfx/急促的敲门声": "assets/sfx/急促的敲门声.mp3", "bg/西大门刑务所_牢房": "assets/bg/西大门刑务所_牢房.jpg", "char/闵泳达_憔悴": "assets/char/闵泳达_憔悴.png", "bg/特委_审讯室": "assets/bg/特委_审讯室.jpg", "char/徐恩淑_调查官": "assets/char/徐恩淑_调查官.png", "bg/特委法庭_旧剧场": "assets/bg/特委法庭_旧剧场.jpg", "bgm/法庭": "assets/bgm/法庭.mp3", "bg/特委大楼_地下室": "assets/bg/特委大楼_地下室.jpg", "sfx/卡车急刹": "assets/sfx/卡车急刹.mp3", "sfx/撞门声": "assets/sfx/撞门声.mp3", "char/朴炳吉_制服": "assets/char/朴炳吉_制服.png", "char/徐恩淑_狼狈": "assets/char/徐恩淑_狼狈.png", "bg/钟路_茶房_秋": "assets/bg/钟路_茶房_秋.jpg", "bg/警察厅_院子_夜": "assets/bg/警察厅_院子_夜.jpg", "bg/特委大楼_走廊": "assets/bg/特委大楼_走廊.jpg", "bg/平壤_办公室": "assets/bg/平壤_办公室.jpg", "char/玄俊植_制服": "assets/char/玄俊植_制服.png", "bg/东京_神田_旧书店_1958": "assets/bg/东京_神田_旧书店_1958.jpg", "bg/洛杉矶_洗衣店": "assets/bg/洛杉矶_洗衣店.jpg", "bg/江原道_山村小学_教室": "assets/bg/江原道_山村小学_教室.jpg", "bg/首尔_国家报勋处_窗口": "assets/bg/首尔_国家报勋处_窗口.jpg", "sfx/风声": "assets/sfx/风声.mp3", "bg/下关港_雨": "assets/bg/下关港_雨.jpg", "bg/东京_夜校_教室": "assets/bg/东京_夜校_教室.jpg", "bg/府民馆_人民法庭": "assets/bg/府民馆_人民法庭.jpg", "char/徐恩淑_囚服": "assets/char/徐恩淑_囚服.png", "char/金正浩_红袖章": "assets/char/金正浩_红袖章.png", "bg/钟路_报社_1958": "assets/bg/钟路_报社_1958.jpg", "bg/山谷_发掘现场": "assets/bg/山谷_发掘现场.jpg", "bg/平壤_法庭_1953": "assets/bg/平壤_法庭_1953.jpg", "char/宫本仁_战后": "assets/char/宫本仁_战后.png", "bg/东京_会议室": "assets/bg/东京_会议室.jpg", "char/宫本仁_中年": "assets/char/宫本仁_中年.png", "char/金正浩_中年": "assets/char/金正浩_中年.png", "cg/东京会谈_隔桌相认": "assets/cg/东京会谈_隔桌相认.jpg", "cg/东京走廊_递烟重逢": "assets/cg/东京走廊_递烟重逢.jpg", "cg/京都书房_共著书稿": "assets/cg/京都书房_共著书稿.jpg", "bg/报纸": "assets/bg/报纸.jpg", "char/宫本仁_老年": "assets/char/宫本仁_老年.png", "char/徐明焕_常态": "assets/char/徐明焕_常态.png", "char/徐恩淑_常态": "assets/char/徐恩淑_常态.png", "char/文基哲_常态": "assets/char/文基哲_常态.png", "char/宫本谦造_常态": "assets/char/宫本谦造_常态.png", "char/黑岩辰雄_常态": "assets/char/黑岩辰雄_常态.png", "char/朴炳吉_常态": "assets/char/朴炳吉_常态.png", "char/闵泳达_常态": "assets/char/闵泳达_常态.png", "char/卞泰龙_常态": "assets/char/卞泰龙_常态.png", "char/佐川_常态": "assets/char/佐川_常态.png", "char/韩素月_常态": "assets/char/韩素月_常态.png", "char/吴英子_常态": "assets/char/吴英子_常态.png", "char/马三_常态": "assets/char/马三_常态.png", "char/韩秉道_常态": "assets/char/韩秉道_常态.png", "char/少年_常态": "assets/char/少年_常态.png", "char/老太太_常态": "assets/char/老太太_常态.png", "char/姜仁宇_常态": "assets/char/姜仁宇_常态.png", "char/姜仁宇_微笑": "assets/char/姜仁宇_微笑.png", "char/姜仁宇_憔悴": "assets/char/姜仁宇_憔悴.png", "bgm/主题": "assets/bgm/主题.mp3"};
 /* 潜伏之京城 · 运行时脚本（由 tools/build.py 嵌入 index.html） */
 
@@ -483,9 +600,26 @@ setup.assetPath = function (id) {
   return "assets/" + kind + "/" + name + ext;
 };
 
+/* ---------- 舞台模式 ----------
+   带章节标签 c0…c7 的段落（剧情话、选项、过渡段）用“固定一屏、逐句推进”的竖屏舞台演出；
+   标题、结局一览、音源署名、青丘书房补课仍是可滚动页面。 */
+setup.isStage = function (name) {
+  try {
+    const t = Story.get(name || State.passage).tags;
+    return t.some(function (x) { return /^c\d+$/.test(x); }) && !t.includes("dojo");
+  } catch (e) { return false; }
+};
+
+/* 舞台模式下，演出宏不再在渲染时立刻执行，而是在正文里留下一个“事件标记”；
+   由 setup.vn（见文末）按剧情顺序、随点按逐步执行，避免背景/人物/声音抢跑到后文。 */
+function qfEvent(out, data) {
+  jQuery('<span class="qf-ev"></span>').attr("data-ev", JSON.stringify(data)).appendTo(out);
+}
+
 Macro.add("bg", {
   handler() {
     const id = this.args[0], cap = this.args[1] || "";
+    if (setup.isStage()) { qfEvent(this.output, { k: "bg", id: id, cap: cap }); return; }
     const fig = jQuery('<figure class="scene noimg"></figure>');
     const img = jQuery('<img alt="" loading="lazy" decoding="async">');
     img.on("load", function () { fig.removeClass("noimg").addClass("ok"); });
@@ -498,14 +632,17 @@ Macro.add("bg", {
 
 Macro.add("expr", {
   handler() {
+    if (setup.isStage()) { qfEvent(this.output, { k: "expr", who: this.args[0], e: this.args[1] }); return; }
     const v = State.variables;
     if (!v.expr) v.expr = {};
     v.expr[this.args[0]] = this.args[1];
   },
 });
 
+/* 舞台模式下，说话人的立绘由舞台层显示，不再用小头像替代主立绘；只有可滚动页面（补课）保留头像。 */
 Macro.add("face", {
   handler() {
+    if (setup.isStage()) return;
     const who = this.args[0];
     const v = State.variables;
     const e = (v.expr && v.expr[who]) || "常态";
@@ -524,6 +661,7 @@ Macro.add("face", {
 Macro.add("hua", {
   handler() {
     State.temporary.huaTitle = this.args[1];
+    if (setup.isStage()) { qfEvent(this.output, { k: "hua", no: this.args[0], title: this.args[1] }); return; }
     jQuery('<header class="hua-head"></header>')
       .append(jQuery('<span class="no"></span>').text("第" + this.args[0] + "话"))
       .append(jQuery('<span class="tt"></span>').text(this.args[1]))
@@ -620,7 +758,9 @@ setup.admin = (function () {
       Object.keys(v).forEach(function (k) { delete v[k]; });
       Object.assign(v, setup.INITIAL_VARIABLES, selected.values);
     }
-    v.used = {}; v.expr = {}; v.bgm = null;
+    // 跳章要同时重置演出状态：否则进入新章会残留上一章的背景、人物与音乐。
+    v.used = {}; v.expr = {}; v.bgm = null; v.stage = setup.freshStage();
+    delete v.qfStep; delete v.qfSeen;
     pending = null;
   });
   function jump(name, preset) {
@@ -630,6 +770,7 @@ setup.admin = (function () {
     const previous = Save.base64.save();
     pending = { passage: name, preset: preset };
     setup.audio.reset();
+    setup.vn.reset();
     try { Engine.play(name); }
     finally { pending = null; }
     backup = previous;
@@ -638,6 +779,7 @@ setup.admin = (function () {
     if (!enabled || !backup) return;
     const saved = backup;
     setup.audio.reset();
+    setup.vn.reset();
     await Save.base64.load(saved);
     Engine.show();
     backup = null;
@@ -715,8 +857,18 @@ Macro.add("audioCredits", {
   },
 });
 
-Macro.add("bgm", { handler() { setup.audio.bgm(this.args[0]); } });
-Macro.add("sfx", { handler() { if (!State.temporary.replaying) setup.audio.sfx(this.args[0]); } });
+Macro.add("bgm", {
+  handler() {
+    if (setup.isStage()) qfEvent(this.output, { k: "bgm", id: this.args[0] || null });
+    else setup.audio.bgm(this.args[0]);
+  },
+});
+Macro.add("sfx", {
+  handler() {
+    if (setup.isStage()) qfEvent(this.output, { k: "sfx", id: this.args[0] });
+    else setup.audio.sfx(this.args[0]);
+  },
+});
 $(document).on(":passageend", function () { setup.audio.sync(); });
 
 /* ---------- 结局记录（跨存档，存在本浏览器） ---------- */
@@ -768,13 +920,18 @@ setup.cpAll = function () {
 Macro.add("checkpoint", {
   handler() {
     const id = this.args[0];
-    try {
-      const all = setup.cpAll();
-      all[id] = { s: Save.base64.save(), t: Date.now() };
-      localStorage.setItem(setup.storageKey("cp"), JSON.stringify(all));
-    } catch (e) { /* 存储不可用或已满：静默跳过 */ }
+    // 舞台模式：等演出推进到该选项画面时再存，检查点里带着“停在选项处”的游标。
+    if (setup.isStage()) { qfEvent(this.output, { k: "cp", id: id }); return; }
+    setup.cpSave(id);
   },
 });
+setup.cpSave = function (id) {
+  try {
+    const all = setup.cpAll();
+    all[id] = { s: Save.base64.save(), t: Date.now() };
+    localStorage.setItem(setup.storageKey("cp"), JSON.stringify(all));
+  } catch (e) { /* 存储不可用或已满：静默跳过 */ }
+};
 setup.loadCP = function (id) {
   const c = setup.cpAll()[id];
   if (!c) return;
@@ -831,6 +988,464 @@ Macro.add("dojoIntro", {
     });
   },
 });
+
+
+/* ======================================================================
+   竖屏视觉小说导演器 setup.vn（由 tools/build.py 接在 story.js 之后嵌入）
+   - 舞台模式的段落先整体渲染成 DOM（数值、条件、跳转照旧在渲染时执行，剧情逻辑不变），
+     再由导演器把其中的“台词 / 选项 / 事件标记 / 结局卡”按原顺序逐步展示。
+   - 背景、人物、CG、音乐、音效都是事件，走到才执行；读档、后退、检查点恢复时静默重放到游标位置。
+   - 游标写进当前历史节点（State.current.variables.qfStep）。SugarCube 的历史节点保存的是“渲染前”变量，
+     活动变量（State.variables）不会入档，所以不能把游标只放在活动变量里。
+   ====================================================================== */
+setup.freshStage = function () { return { bg: null, cg: null, who: null, lead: null, date: "", cap: "" }; };
+
+setup.vn = (function () {
+  const $ = jQuery;
+  const D = { root: null, steps: [], k: -1, start: null, typing: null, ready: false, busy: false,
+              log: [], logBase: [], lastAt: 0, boot: true, dim: false, unknown: [] };
+  const LEAD = ["宫本仁"];
+  const DISPLAY ={ line: 1, shot: 1, hint: 1, ending: 1, choice: 1, card: 1 };
+  const clone = function (o) { return JSON.parse(JSON.stringify(o)); };
+  const V = function () { return State.variables; };
+  const $id = function (id) { return document.getElementById(id); };
+  const html = document.documentElement;
+  function stage() {
+    const v = V();
+    if (!v.stage || typeof v.stage !== "object") v.stage = setup.freshStage();
+    return v.stage;
+  }
+  function isStageMode() { return html.getAttribute("data-mode") === "stage"; }
+  function typingOn() {
+    try { if (localStorage.getItem("qf-type") === "off") return false; } catch (e) {}
+    return !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
+
+  /* ---------- 图层 ---------- */
+  function putImage(box, src, opt) {
+    if (!box) return;
+    opt = opt || {};
+    const key = src || "";
+    if ((box.getAttribute("data-src") || "") === key) return;
+    box.setAttribute("data-src", key);
+    const olds = Array.prototype.slice.call(box.children);
+    const drop = function () { olds.forEach(function (n) { if (n.parentNode) n.parentNode.removeChild(n); }); };
+    if (!src) {
+      if (opt.instant) drop();
+      else { olds.forEach(function (n) { n.classList.remove("on"); }); setTimeout(drop, 450); }
+      return;
+    }
+    const img = document.createElement("img");
+    img.alt = ""; img.decoding = "async";
+    if (opt.pos) img.style.objectPosition = opt.pos;
+    img.onload = function () { img.classList.add("on"); if (opt.instant) drop(); else setTimeout(drop, 520); };
+    img.onerror = function () {
+      if (opt.fallback && !img.getAttribute("data-fb")) { img.setAttribute("data-fb", "1"); img.src = opt.fallback; return; }
+      if (img.parentNode) img.parentNode.removeChild(img);
+      drop();
+    };
+    img.src = src;
+    box.appendChild(img);
+  }
+  function render(instant) {
+    const s = stage(), v = V();
+    putImage($id("qf-bg"), s.bg ? setup.assetPath(s.bg) : null, { instant: instant, pos: (setup.BG_FOCUS || {})[s.bg] });
+    const cgBox = $id("qf-cg");
+    putImage(cgBox, s.cg ? setup.assetPath(s.cg) : null, { instant: instant });
+    if (cgBox) cgBox.style.setProperty("--cg", s.cg ? 'url("' + encodeURI(setup.assetPath(s.cg)) + '")' : "none");
+    html.classList.toggle("qf-cg-on", !!s.cg);
+    const who = s.who || s.lead, e = (who && v.expr && v.expr[who]) || "常态";
+    putImage($id("qf-char"), who ? setup.assetPath("char/" + who + "_" + e) : null,
+      { instant: instant, fallback: who ? setup.assetPath("char/" + who + "_常态") : null });
+    html.classList.toggle("qf-dim", !!D.dim);
+    const place = $id("qf-place");
+    if (place) place.textContent = s.date || "";
+  }
+  function fx(name) {
+    const f = $id("qf-fx");
+    if (!f) return;
+    f.className = "";
+    void f.offsetWidth;
+    f.className = "fx-" + name;
+  }
+  let bannerTimer = null;
+  function banner(no, title) {
+    const b = $id("qf-banner");
+    if (!b) return;
+    b.innerHTML = "";
+    $('<span class="no"></span>').text("第" + no + "话").appendTo(b);
+    $('<span class="tt"></span>').text(title.replace(/（[^）]*）/g, "").trim()).appendTo(b);
+    b.className = "show";
+    clearTimeout(bannerTimer);
+    bannerTimer = setTimeout(function () { b.className = ""; }, 2600);
+  }
+
+  /* ---------- 事件 ---------- */
+  function nextDisplay(i) {
+    for (let j = i + 1; j < D.steps.length; j++) if (DISPLAY[D.steps[j].t]) return j;
+    return -1;
+  }
+  function applyEv(ev, silent, idx) {
+    const v = V(), s = stage();
+    switch (ev.k) {
+      case "bg":
+        if (/^cg\//.test(ev.id)) s.cg = ev.id; else { s.bg = ev.id; s.cg = null; }
+        s.who = null; s.cap = ev.cap || "";
+        render(silent);
+        break;
+      case "expr":
+        if (!v.expr) v.expr = {};
+        v.expr[ev.who] = ev.e;
+        // 第87话的宫本仁（姜仁宇）没有对话头像：由 🖼 立绘 指令按年代直接立在场上，直到下一次指令或下一话。
+        if (LEAD.indexOf(ev.who) >= 0) s.lead = ev.who;
+        if ((s.who || s.lead) === ev.who) render(silent);
+        break;
+      case "bgm":
+        if (silent) v.bgm = ev.id || null; else setup.audio.bgm(ev.id);
+        break;
+      case "sfx":
+        if (!silent) setup.audio.sfx(ev.id);
+        break;
+      case "hua": {
+        const m = /（([^）]+)）/.exec(ev.title);
+        s.date = m ? m[1].replace(/\s*→.*$/, "") : "";
+        s.lead = null; s.who = null;
+        render(silent);
+        if (!silent) banner(ev.no, ev.title);
+        break;
+      }
+      case "cp":
+        if (!silent) { const j = nextDisplay(idx); if (j >= 0) setCursor(j); setup.cpSave(ev.id); }
+        break;
+      case "flash": if (!silent) fx("flash"); break;
+      case "fade": if (!silent) fx("fade"); break;
+    }
+  }
+
+  /* ---------- 台词、回看 ---------- */
+  function logPush(who, text, cls) {
+    D.log.push({ who: who, text: text, cls: cls });
+    if (D.log.length > 300) D.log.shift();
+  }
+  function noteLine(step) {
+    const e = step.el, s = stage();
+    if (step.t !== "line") return;
+    if (e.matches("p.say")) {
+      const who = $(e).find(".who").first().text(), text = $(e).find(".t").first().text();
+      if (e.classList.contains("you")) {
+        // 有主角立绘（第87话）时由主角自己说话；否则让上一位人物变暗，表示说话的是画外的“你”。
+        if (s.lead) { s.who = null; D.dim = false; } else D.dim = true;
+        logPush("你", text, "you");
+      }
+      else {
+        D.dim = false;
+        s.who = (setup.FACE_CAST.indexOf(who) >= 0) ? who : null;
+        logPush(who, text, "say");
+      }
+    } else if (e.matches("p.think")) logPush("", e.textContent, "think");
+    else if (e.matches("p.stage")) logPush("", e.textContent, "stage");
+    else logPush("", e.textContent, "n");
+  }
+
+  /* ---------- 逐字显示 ---------- */
+  function cancelTyping() {
+    if (D.typing) { D.typing.cancel(); D.typing = null; }
+  }
+  function startTyping(el) {
+    cancelTyping();
+    const target = $(el).find(".t").first()[0] || el;
+    // 每个字包一层 span，先占好版面再逐个显现，避免对白框边打字边抖动。
+    const walker = document.createTreeWalker(target, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    const chars = [];
+    nodes.forEach(function (n) {
+      const frag = document.createDocumentFragment();
+      Array.from(n.data).forEach(function (ch) {
+        const sp = document.createElement("span");
+        sp.className = "qc"; sp.textContent = ch;
+        frag.appendChild(sp); chars.push(sp);
+      });
+      n.parentNode.replaceChild(frag, n);
+    });
+    el.classList.add("qf-typing");
+    let shown = 0;
+    const t0 = performance.now(), cps = 42;
+    const timer = setInterval(function () {
+      const want = Math.min(chars.length, Math.ceil((performance.now() - t0) / 1000 * cps));
+      while (shown < want) chars[shown++].classList.add("on");
+      if (shown >= chars.length) finish();
+    }, 30);
+    function finish() {
+      clearInterval(timer);
+      chars.forEach(function (c) { c.classList.add("on"); });
+      el.classList.remove("qf-typing");
+      el.classList.add("qf-done");
+      D.typing = null;
+    }
+    D.typing = { finish: finish, cancel: function () { clearInterval(timer); el.classList.remove("qf-typing"); } };
+  }
+
+  /* ---------- 步骤构建 ---------- */
+  function build(root) {
+    const raw = [];
+    (function walk(parent) {
+      Array.prototype.forEach.call(parent.children, function (n) {
+        if (n.classList.contains("qf-ev")) raw.push({ t: "ev", el: n, ev: JSON.parse(n.getAttribute("data-ev")) });
+        else if (n.matches("p.n, p.say, p.think, p.stage")) raw.push({ t: "line", el: n });
+        else if (n.matches("p.shot")) raw.push({ t: "shot", el: n });
+        else if (n.matches("p.flash")) raw.push({ t: "ev", el: n, ev: { k: "flash" } });
+        else if (n.matches("hr.fade")) raw.push({ t: "ev", el: n, ev: { k: "fade" } });
+        else if (n.matches("p.picked")) raw.push({ t: "picked", el: n });
+        else if (n.matches("p.ask")) raw.push({ t: "ask", el: n });
+        else if (n.matches("details.hint")) raw.push({ t: "hint", el: n });
+        else if (n.matches("div.ending")) raw.push({ t: "ending", el: n });
+        else if (n.matches("div.choices")) {
+          const link = n.querySelector("a");
+          const plainNext = n.classList.contains("next") && link && link.textContent.trim() === "继续";
+          raw.push({ t: plainNext ? "next" : "choice", el: n });
+        } else if (n.matches("section.review, nav.after, .grade, table.vars")) raw.push({ t: "card", el: n });
+        else if (n.children.length) walk(n);
+        else if (n.textContent.trim()) { D.unknown.push(n.outerHTML.slice(0, 120)); raw.push({ t: "card", el: n }); }
+      });
+    })(root);
+    const steps = [];
+    for (let i = 0; i < raw.length; i++) {
+      const r = raw[i], last = steps[steps.length - 1];
+      if (r.t === "ask") {
+        let j = i + 1;
+        while (j < raw.length && raw[j].t === "ev") j++;
+        if (j < raw.length && raw[j].t === "choice") { raw[j].ask = r.el; continue; }
+        r.t = "line";
+      }
+      if (r.t === "choice") {
+        const wrap = document.createElement("div");
+        wrap.className = "qf-pick";
+        r.el.parentNode.insertBefore(wrap, r.el);
+        if (r.ask) wrap.appendChild(r.ask);
+        wrap.appendChild(r.el);
+        r.el = wrap;
+      }
+      if (r.t === "card") {
+        if (last && last.t === "card") { last.el.appendChild(r.el); continue; }
+        const wrap = document.createElement("div");
+        wrap.className = "qf-card";
+        r.el.parentNode.insertBefore(wrap, r.el);
+        wrap.appendChild(r.el);
+        r.el = wrap;
+      }
+      if (r.t !== "ev") r.el.classList.add("qf-step");
+      if (r.t === "line" || r.t === "hint") r.el.classList.add("qf-line");
+      steps.push(r);
+    }
+    return steps;
+  }
+
+  /* ---------- 游标 ---------- */
+  function setCursor(k) {
+    try { State.current.variables.qfStep = k; State.current.variables.qfSeen = 1; } catch (e) {}
+    try { sessionStorage.setItem("qf-step", JSON.stringify({ p: State.passage, i: State.activeIndex, k: k })); } catch (e) {}
+  }
+  function bootCursor() {
+    try {
+      const r = JSON.parse(sessionStorage.getItem("qf-step") || "null");
+      if (r && r.p === State.passage && r.i === State.activeIndex && Number.isInteger(r.k)) return r.k;
+    } catch (e) {}
+    return null;
+  }
+
+  /* ---------- 展示与推进 ---------- */
+  function setOn(step, on) {
+    if (!step || !step.el) return;
+    step.el.classList.toggle("qf-on", on);
+    if (!on) step.el.classList.remove("qf-typing", "qf-done");
+  }
+  function show(i, o) {
+    o = o || {};
+    cancelTyping();
+    setOn(D.steps[D.k], false);
+    D.k = i;
+    const s = D.steps[i];
+    noteLine(s);
+    setOn(s, true);
+    if (s.t === "choice") {
+      // 选项浮在最后一句台词之上，问题的上下文不消失。
+      for (let j = i - 1; j >= 0; j--) {
+        const p = D.steps[j];
+        if (!DISPLAY[p.t]) continue;
+        if (p.t === "line") p.el.classList.add("qf-on", "qf-done");
+        break;
+      }
+    }
+    html.setAttribute("data-step", s.t);
+    render(!!o.instant);
+    setCursor(i);
+    if (s.t === "line") {
+      if (o.instant || !typingOn()) s.el.classList.add("qf-done"); else startTyping(s.el);
+    } else s.el.classList.add("qf-done");
+  }
+  function follow(step) {
+    const a = step.el.querySelector("a");
+    if (!a || setup.vnAutoFollow === false) return;   // 自动检查脚本会自己点链接，关掉自动越过
+    D.busy = true;
+    setTimeout(function () { a.click(); }, 0);
+    setTimeout(function () { D.busy = false; }, 1500);
+  }
+  function goTo(i) {
+    while (i < D.steps.length) {
+      const s = D.steps[i];
+      if (s.t === "ev") { applyEv(s.ev, false, i); i++; continue; }
+      if (s.t === "picked") { logPush("", "▸ " + s.el.textContent, "pick"); i++; continue; }
+      if (s.t === "next") { follow(s); return; }
+      show(i);
+      return;
+    }
+  }
+  function replay(k) {
+    const v = V();
+    cancelTyping();
+    D.steps.forEach(function (s) { setOn(s, false); });
+    v.stage = clone(D.start.stage); v.expr = clone(D.start.expr); v.bgm = D.start.bgm;
+    D.log = D.logBase.slice(); D.dim = false; D.k = -1;
+    let i = 0;
+    for (; i < D.steps.length; i++) {
+      const s = D.steps[i];
+      if (DISPLAY[s.t] && i >= k) break;
+      if (s.t === "next") break;
+      if (s.t === "ev") applyEv(s.ev, true, i);
+      else if (s.t === "picked") logPush("", "▸ " + s.el.textContent, "pick");
+      else if (DISPLAY[s.t]) noteLine(s);
+    }
+    if (i >= D.steps.length) return;
+    if (D.steps[i].t === "next") { goTo(i); return; }
+    show(i, { instant: true });
+  }
+  function advance(force) {
+    if (!D.ready || D.busy || !isStageMode()) return;
+    const now = Date.now();
+    if (!force && now - D.lastAt < 60) return;   // 防双击；自动化测试可传 force
+    D.lastAt = now;
+    if (D.typing) { D.typing.finish(); return; }
+    const cur = D.steps[D.k];
+    if (!cur || cur.t === "choice" || cur.t === "card") return;
+    goTo(D.k + 1);
+  }
+  function prev() {
+    if (isStageMode() && D.ready && !D.busy) {
+      if (D.typing) D.typing.cancel();
+      let j = D.k - 1;
+      while (j >= 0 && !DISPLAY[D.steps[j].t]) j--;
+      if (j >= 0) { replay(j); setup.audio.sync(); return; }
+    }
+    try { Engine.backward(); } catch (e) {}
+  }
+
+  function init() {
+    cancelTyping();
+    D.ready = false; D.busy = false; D.k = -1; D.dim = false; D.unknown = [];
+    const root = $("#passages > .passage").last()[0];
+    if (!root) return;
+    D.root = root;
+    D.steps = build(root);
+    if (D.unknown.length && window.console) console.warn("舞台模式遇到未归类元素：", D.unknown);
+    const v = V();
+    const seen = !!v.qfSeen;
+    let k = Number.isInteger(v.qfStep) ? v.qfStep : null;
+    // 游标只留在历史节点里；活动变量里的副本要删掉，否则下一次跳转会被新节点继承。
+    delete v.qfStep; delete v.qfSeen;
+    try { State.current.variables.qfSeen = 1; } catch (e) {}
+    if (k === null && D.boot) k = bootCursor();
+    D.boot = false;
+    D.start = { stage: clone(stage()), expr: clone(v.expr || {}), bgm: v.bgm || null };
+    D.logBase = (seen || k !== null) ? [] : D.log.slice();
+    if (seen || k !== null) D.log = [];
+    root.classList.add("qf-ready");
+    D.ready = true;
+    if (k === null) goTo(0); else replay(k);
+    setup.audio.sync();
+  }
+
+  /* ---------- 面板 ---------- */
+  function openLog() {
+    if (Dialog.isOpen()) return;
+    Dialog.create("回看", "qf-log");
+    const box = $('<div class="qf-logbox"></div>');
+    if (!D.log.length) box.append($('<p class="qf-empty"></p>').text("这一段还没有可回看的台词。"));
+    D.log.forEach(function (it) {
+      const row = $('<p class="lg"></p>').addClass(it.cls);
+      if (it.who) row.append($('<b class="lw"></b>').text(it.who));
+      row.append($('<span class="lt"></span>').text(it.text));
+      box.append(row);
+    });
+    Dialog.append(box[0]).open();
+    setTimeout(function () { const b = document.getElementById("ui-dialog-body"); if (b) b.scrollTop = b.scrollHeight; }, 30);
+  }
+  function openMenu() {
+    if (Dialog.isOpen()) return;
+    Dialog.create("菜单", "qf-menu");
+    const box = $('<div class="qf-menubox"></div>');
+    function item(label, fn, keepOpen) {
+      return $('<button type="button"></button>').text(label).on("click", function () {
+        if (!keepOpen) Dialog.close();
+        setTimeout(fn, 0);
+      }).appendTo(box);
+    }
+    item("存档 / 读取", function () { UI.saves(); });
+    item("结局一览", function () { Engine.play("结局一览"); });
+    item("音源署名", function () { Engine.play("音源署名"); });
+    const typeBtn = item("", function () {
+      try { localStorage.setItem("qf-type", typingOn() ? "off" : "on"); } catch (e) {}
+      typeBtn.text("文字逐字显示：" + (typingOn() ? "开" : "关"));
+    }, true);
+    typeBtn.text("文字逐字显示：" + (typingOn() ? "开" : "关"));
+    if (setup.admin.enabled) item("管理员章节试玩", function () { setup.admin.open(); });
+    item("回到标题", function () { UI.restart(); });
+    Dialog.append(box[0]).open();
+  }
+
+  /* ---------- 事件绑定 ---------- */
+  $(document).on(":passagestart.qfVn", function (ev) {
+    const name = ev.detail && ev.detail.passage ? ev.detail.passage.name : State.passage;
+    html.setAttribute("data-mode", setup.isStage(name) ? "stage" : "page");
+    html.removeAttribute("data-step");
+  });
+  $(document).on(":passagedisplay.qfVn", function () {
+    if (isStageMode()) init();
+    else { cancelTyping(); D.ready = false; D.boot = false; }   // 刷新恢复只用于刷新后的第一个段落
+  });
+  $(document).on("click.qfVn", "#qf-stage", function (ev) {
+    if (!isStageMode() || Dialog.isOpen()) return;
+    if ($(ev.target).closest("a, button, input, select, textarea, summary, details, .qf-pick, .qf-card, #bar, #qf-tools").length) return;
+    advance();
+  });
+  $(document).on("click.qfVn", "[data-qf]", function (ev) {
+    ev.preventDefault();
+    const what = this.getAttribute("data-qf");
+    if (Dialog.isOpen()) return;
+    if (what === "prev") prev();
+    else if (what === "log") openLog();
+    else if (what === "menu") openMenu();
+    else if (what === "save") UI.saves();
+    else if (what === "music") setup.audio.toggle();
+    else if (what === "ends") Engine.play("结局一览");
+    else if (what === "admin") setup.admin.open();
+  });
+  $(document).on("keydown.qfVn", function (ev) {
+    if (!isStageMode() || Dialog.isOpen()) return;
+    if (/^(INPUT|SELECT|TEXTAREA|BUTTON|A|SUMMARY)$/.test(ev.target.tagName)) return;
+    if (ev.key === " " || ev.key === "Enter" || ev.key === "ArrowRight" || ev.key === "PageDown") { ev.preventDefault(); advance(); }
+    else if (ev.key === "ArrowLeft" || ev.key === "PageUp") { ev.preventDefault(); prev(); }
+  });
+
+  return Object.freeze({
+    advance: advance, prev: prev, openLog: openLog, openMenu: openMenu,
+    reset: function () { D.log = []; D.logBase = []; D.boot = false; },
+    debug: function () {
+      return { k: D.k, ready: D.ready, typing: !!D.typing, busy: D.busy, stage: clone(stage()), log: D.log.length,
+               steps: D.steps.map(function (s) { return s.t; }), unknown: D.unknown.slice() };
+    },
+  });
+})();
 </script><tw-passagedata pid="1" name="h1" tags="c0 hua" position="100,0" size="100,100">&lt;&lt;hua &quot;1&quot; &quot;玄海滩（1939年3月·关釜连络船）&quot;&gt;&gt;
 &lt;&lt;set $v011 to 0&gt;&gt;
 &lt;&lt;set $v013 to 0&gt;&gt;
@@ -10029,7 +10644,7 @@ Macro.add("dojoIntro", {
 &lt;p class=&quot;say&quot;&gt;&lt;&lt;face &quot;徐明焕&quot;&gt;&gt;&lt;span class=&quot;who&quot;&gt;徐明焕&lt;/span&gt;&lt;span class=&quot;t&quot;&gt;&quot;&quot;&quot;知道一件事和说出一件事之间，隔着一条命。我用一辈子守住了这条线，你一句话就跨过去了。&quot;&quot;&quot;&lt;/span&gt;&lt;/p&gt;
 &lt;p class=&quot;stage&quot;&gt;想从埋坑的地方重来，可以直接回去：&lt;/p&gt;&lt;nav class=&quot;after cps&quot;&gt;&lt;&lt;cpButton &quot;cp79-1944年，把那个小组的名单交给宫本的，是谁？&quot; &quot;终章·平壤内务省的名单&quot;&gt;&gt;&lt;&lt;cpButton &quot;cp69-我留下。&quot; &quot;第六章·米店后门的道别&quot;&gt;&gt;&lt;/nav&gt;
 &lt;nav class=&quot;after&quot;&gt;&lt;&lt;link &quot;回到结局&quot;&gt;&gt;&lt;&lt;run Engine.backward()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;&lt;link &quot;结局一览&quot; &quot;结局一览&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;&lt;link &quot;回到标题&quot;&gt;&gt;&lt;&lt;run setup.toTitle()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/nav&gt;
-&lt;&lt;run setup.markDojo(&quot;h79-BE·敏锐&quot;)&gt;&gt;</tw-passagedata><tw-passagedata pid="941" name="StoryInterface" tags="" position="4100,1800" size="100,100">&lt;div id=&quot;app&quot;&gt;&lt;header id=&quot;bar&quot; data-passage=&quot;Bar&quot;&gt;&lt;/header&gt;&lt;main id=&quot;passages&quot;&gt;&lt;/main&gt;&lt;/div&gt;</tw-passagedata><tw-passagedata pid="942" name="Bar" tags="" position="4200,1800" size="100,100">&lt;div class=&quot;bar-in&quot;&gt;&lt;span class=&quot;chap&quot;&gt;&lt;&lt;if setup.admin.enabled&gt;&gt;管理 · &lt;&lt;/if&gt;&gt;&lt;&lt;print setup.chapLabel()&gt;&gt;&lt;/span&gt;&lt;nav class=&quot;tools&quot;&gt;&lt;&lt;link &quot;后退&quot;&gt;&gt;&lt;&lt;run Engine.backward()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;&lt;link &quot;存档&quot;&gt;&gt;&lt;&lt;run UI.saves()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;&lt;link &quot;结局&quot;&gt;&gt;&lt;&lt;goto &quot;结局一览&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;&lt;if setup.admin.enabled&gt;&gt;&lt;&lt;link &quot;管理&quot;&gt;&gt;&lt;&lt;run setup.admin.open()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;link &quot;音乐&quot;&gt;&gt;&lt;&lt;run setup.audio.toggle()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/nav&gt;&lt;/div&gt;</tw-passagedata><tw-passagedata pid="943" name="Start" tags="title" position="4300,1800" size="100,100">&lt;&lt;bgm &quot;bgm/主题&quot;&gt;&gt;
+&lt;&lt;run setup.markDojo(&quot;h79-BE·敏锐&quot;)&gt;&gt;</tw-passagedata><tw-passagedata pid="941" name="StoryInterface" tags="" position="4100,1800" size="100,100">&lt;div id=&quot;app&quot;&gt;&lt;div id=&quot;qf-stage&quot;&gt;&lt;div id=&quot;qf-bg&quot; class=&quot;qf-layer&quot;&gt;&lt;/div&gt;&lt;div id=&quot;qf-cg&quot; class=&quot;qf-layer&quot;&gt;&lt;/div&gt;&lt;div id=&quot;qf-char&quot; class=&quot;qf-layer&quot;&gt;&lt;/div&gt;&lt;div id=&quot;qf-shade&quot;&gt;&lt;/div&gt;&lt;div id=&quot;qf-place&quot; aria-hidden=&quot;true&quot;&gt;&lt;/div&gt;&lt;header id=&quot;bar&quot; data-passage=&quot;Bar&quot;&gt;&lt;/header&gt;&lt;main id=&quot;passages&quot;&gt;&lt;/main&gt;&lt;nav id=&quot;qf-tools&quot; data-passage=&quot;Tools&quot; aria-label=&quot;工具栏&quot;&gt;&lt;/nav&gt;&lt;div id=&quot;qf-banner&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;&lt;div id=&quot;qf-fx&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</tw-passagedata><tw-passagedata pid="942" name="Bar" tags="" position="4200,1800" size="100,100">&lt;div class=&quot;bar-in&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;qf-ic&quot; data-qf=&quot;prev&quot; aria-label=&quot;上一句&quot;&gt;‹&lt;/button&gt;&lt;span class=&quot;chap&quot;&gt;&lt;&lt;if setup.admin.enabled&gt;&gt;管理 · &lt;&lt;/if&gt;&gt;&lt;&lt;print setup.chapLabel()&gt;&gt;&lt;/span&gt;&lt;span class=&quot;bar-end&quot;&gt;&lt;&lt;if setup.admin.enabled&gt;&gt;&lt;button type=&quot;button&quot; class=&quot;qf-txt&quot; data-qf=&quot;admin&quot;&gt;管理&lt;/button&gt;&lt;&lt;/if&gt;&gt;&lt;button type=&quot;button&quot; class=&quot;qf-ic&quot; data-qf=&quot;menu&quot; aria-label=&quot;菜单&quot;&gt;≡&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;</tw-passagedata><tw-passagedata pid="943" name="Tools" tags="" position="4300,1800" size="100,100">&lt;button type=&quot;button&quot; data-qf=&quot;log&quot;&gt;回看&lt;/button&gt;&lt;button type=&quot;button&quot; data-qf=&quot;save&quot;&gt;存档&lt;/button&gt;&lt;button type=&quot;button&quot; data-qf=&quot;ends&quot;&gt;结局&lt;/button&gt;&lt;button type=&quot;button&quot; data-qf=&quot;music&quot; class=&quot;qf-music&quot;&gt;音乐&lt;/button&gt;</tw-passagedata><tw-passagedata pid="944" name="Start" tags="title" position="4400,1800" size="100,100">&lt;&lt;bgm &quot;bgm/主题&quot;&gt;&gt;
 &lt;div class=&quot;title-screen&quot;&gt;
 &lt;&lt;if setup.admin.enabled&gt;&gt;&lt;p class=&quot;admin-badge&quot;&gt;管理员试玩 · 独立存档&lt;/p&gt;&lt;&lt;/if&gt;&gt;
 &lt;div class=&quot;heron&quot; aria-hidden=&quot;true&quot;&gt;&lt;/div&gt;
@@ -10047,14 +10662,15 @@ Macro.add("dojoIntro", {
 &lt;/nav&gt;
 &lt;p class=&quot;fine&quot;&gt;存档保存在当前浏览器里，可在「存档」中导出为文件。共 &lt;&lt;print setup.ENDINGS.length&gt;&gt; 个结局。&lt;/p&gt;
 &lt;&lt;if setup.admin.enabled&gt;&gt;&lt;p class=&quot;fine&quot;&gt;&lt;a href=&quot;index.html&quot;&gt;退出管理，返回正式版&lt;/a&gt;。本入口是公开的试玩调试工具，不是账号权限后台。&lt;/p&gt;&lt;&lt;/if&gt;&gt;
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="944" name="结局一览" tags="gallery" position="4400,1800" size="100,100">&lt;header class=&quot;hua-head&quot;&gt;&lt;span class=&quot;no&quot;&gt;结局一览&lt;/span&gt;&lt;span class=&quot;tt&quot;&gt;走过的路，会在这里留下名字&lt;/span&gt;&lt;/header&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="945" name="结局一览" tags="gallery" position="4500,1800" size="100,100">&lt;header class=&quot;hua-head&quot;&gt;&lt;span class=&quot;no&quot;&gt;结局一览&lt;/span&gt;&lt;span class=&quot;tt&quot;&gt;走过的路，会在这里留下名字&lt;/span&gt;&lt;/header&gt;
 &lt;&lt;print setup.galleryHTML()&gt;&gt;
-&lt;nav class=&quot;after&quot;&gt;&lt;&lt;link &quot;返回&quot;&gt;&gt;&lt;&lt;run Engine.backward()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;&lt;link &quot;回到标题&quot;&gt;&gt;&lt;&lt;run setup.toTitle()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/nav&gt;</tw-passagedata><tw-passagedata pid="945" name="音源署名" tags="credits" position="4500,1800" size="100,100">&lt;header class=&quot;hua-head&quot;&gt;&lt;span class=&quot;no&quot;&gt;音源署名&lt;/span&gt;&lt;span class=&quot;tt&quot;&gt;声音的来处&lt;/span&gt;&lt;/header&gt;
+&lt;nav class=&quot;after&quot;&gt;&lt;&lt;link &quot;返回&quot;&gt;&gt;&lt;&lt;run Engine.backward()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;&lt;link &quot;回到标题&quot;&gt;&gt;&lt;&lt;run setup.toTitle()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/nav&gt;</tw-passagedata><tw-passagedata pid="946" name="音源署名" tags="credits" position="4600,1800" size="100,100">&lt;header class=&quot;hua-head&quot;&gt;&lt;span class=&quot;no&quot;&gt;音源署名&lt;/span&gt;&lt;span class=&quot;tt&quot;&gt;声音的来处&lt;/span&gt;&lt;/header&gt;
 &lt;p class=&quot;fine&quot;&gt;配乐包含原创采样编排与授权录音剪辑；部分音效为拟声或物理建模，并非年代档案实录。以下列出各文件的音源、作者与许可；完整处理说明见 &lt;a href=&quot;assets/AUDIO_LICENSES.json&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;音源许可清单&lt;/a&gt;。&lt;/p&gt;
 &lt;&lt;audioCredits&gt;&gt;
-&lt;nav class=&quot;after&quot;&gt;&lt;&lt;link &quot;返回&quot;&gt;&gt;&lt;&lt;run Engine.backward()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;&lt;link &quot;回到标题&quot;&gt;&gt;&lt;&lt;run setup.toTitle()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/nav&gt;</tw-passagedata><tw-passagedata pid="946" name="StoryInit" tags="" position="4600,1800" size="100,100">&lt;&lt;set $used to {}&gt;&gt;
+&lt;nav class=&quot;after&quot;&gt;&lt;&lt;link &quot;返回&quot;&gt;&gt;&lt;&lt;run Engine.backward()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;&lt;link &quot;回到标题&quot;&gt;&gt;&lt;&lt;run setup.toTitle()&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/nav&gt;</tw-passagedata><tw-passagedata pid="947" name="StoryInit" tags="" position="4700,1800" size="100,100">&lt;&lt;set $used to {}&gt;&gt;
 &lt;&lt;set $expr to {}&gt;&gt;
 &lt;&lt;set $bgm to null&gt;&gt;
+&lt;&lt;set $stage to setup.freshStage()&gt;&gt;
 &lt;&lt;set $v001 to 0&gt;&gt;
 &lt;&lt;set $v002 to 0&gt;&gt;
 &lt;&lt;set $v003 to 0&gt;&gt;
