@@ -27,8 +27,10 @@ def warn(msg):
 # ---------------------------------------------------------------- 读入与切分
 def load_huas():
     huas = []
-    files = sorted(glob.glob(os.path.join(ROOT, "script", "chapters", "[0-9][0-9]-*.md")))
-    for ci, f in enumerate(files):
+    files = sorted(glob.glob(os.path.join(ROOT, "script", "chapters", "[0-9][0-9]*-*.md")))
+    for f in files:
+        # 章按文件名前两位数字归属：05a-… 与 05-… 同属第四章
+        ci = int(os.path.basename(f)[:2]) - 1
         chap = CHAPTER_NAMES[ci] if ci < len(CHAPTER_NAMES) else os.path.basename(f)
         cur = None
         for raw in open(f, encoding="utf-8"):
@@ -634,7 +636,7 @@ cp_found = set()
 dojo_for = {}
 
 def load_reviews():
-    for f in sorted(glob.glob(os.path.join(ROOT, "script", "复盘", "[0-9][0-9]-*.md"))):
+    for f in sorted(glob.glob(os.path.join(ROOT, "script", "复盘", "[0-9][0-9]*-*.md"))):
         cur = None
         for raw in open(f, encoding="utf-8"):
             line = raw.strip()
