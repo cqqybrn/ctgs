@@ -14,7 +14,8 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import asset_meta as M  # noqa: E402
 
 CHAPTER_NAMES = ["序章", "第一章·创氏改名", "第二章·京城站", "第三章·辞典", "第四章·黑岩",
-                 "第五章·府民馆", "第六章·解放", "终章·反民特委"]
+                 "第五章·府民馆", "第六章·解放", "终章·反民特委",
+                 "支线·借名", "支线·白鹭同志"]
 SKIP_HUA = {8}           # 演出模板，不生成
 GALLERY_HUA = 89         # 结局一览，由程序生成
 EPILOGUE_RANGE = range(83, 87)
@@ -26,7 +27,7 @@ def warn(msg):
 # ---------------------------------------------------------------- 读入与切分
 def load_huas():
     huas = []
-    files = sorted(glob.glob(os.path.join(ROOT, "script", "chapters", "0*.md")))
+    files = sorted(glob.glob(os.path.join(ROOT, "script", "chapters", "[0-9][0-9]-*.md")))
     for ci, f in enumerate(files):
         chap = CHAPTER_NAMES[ci] if ci < len(CHAPTER_NAMES) else os.path.basename(f)
         cur = None
@@ -36,8 +37,8 @@ def load_huas():
             if m:
                 n = int(m.group(1))
                 cur = {"n": n, "title": m.group(2).strip(), "chap": ci, "lines": []}
-                # 第80话以后归入"尾声"
-                if n >= 80:
+                # 第80–89话归入"尾声"（90 以后是 v2 支线，按所在文件归章）
+                if 80 <= n <= 89:
                     cur["chap"] = len(CHAPTER_NAMES)
                 huas.append(cur)
                 continue
@@ -633,7 +634,7 @@ cp_found = set()
 dojo_for = {}
 
 def load_reviews():
-    for f in sorted(glob.glob(os.path.join(ROOT, "script", "复盘", "0*.md"))):
+    for f in sorted(glob.glob(os.path.join(ROOT, "script", "复盘", "[0-9][0-9]-*.md"))):
         cur = None
         for raw in open(f, encoding="utf-8"):
             line = raw.strip()
