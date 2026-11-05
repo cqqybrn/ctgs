@@ -7,9 +7,10 @@ Config.saves.maxSlotSaves = 8;
 Config.saves.maxAutoSaves = 1;
 Config.saves.version = 1;
 Config.saves.descriptions = function () {
-  const p = Story.get(passage());
-  return setup.chapLabel() + (State.temporary.huaTitle ? " · " + State.temporary.huaTitle : "");
+  return (setup.ADMIN_MODE ? "管理员试玩 · " : "") + setup.chapLabel() + (State.temporary.huaTitle ? " · " + State.temporary.huaTitle : "");
 };
+// SugarCube 的 Story 名称与 IFID 在管理版独立；自定义跨局记录也使用独立键。
+setup.storageKey = function (name) { return (setup.ADMIN_MODE ? "qf-admin-" : "qf-") + name; };
 
 /* ---------- 中文界面 ---------- */
 (function () {
@@ -110,17 +111,20 @@ Macro.add("hua", {
 setup.audio = (function () {
   let on = true;
   try { on = localStorage.getItem("qf-audio") !== "off"; } catch (e) {}
-  let bgmEl = null, bgmId = null, fadeTimer = null;
+  let bgmEl = null, bgmId = null, fadeTimer = null, fadingEl = null;
+  const sfxEls = new Set();
   function applyClass() { document.documentElement.classList.toggle("muted", !on); }
   function stop(fade) {
+    clearInterval(fadeTimer);
+    if (fadingEl) { fadingEl.pause(); fadingEl = null; }
     const el = bgmEl;
     bgmEl = null; bgmId = null;
     if (!el) return;
     if (!fade) { el.pause(); return; }
-    clearInterval(fadeTimer);
+    fadingEl = el;
     fadeTimer = setInterval(function () {
       el.volume = Math.max(0, el.volume - 0.05);
-      if (el.volume <= 0.01) { el.pause(); clearInterval(fadeTimer); }
+      if (el.volume <= 0.01) { el.pause(); clearInterval(fadeTimer); fadingEl = null; }
     }, 80);
   }
   function play(id) {
@@ -141,9 +145,12 @@ setup.audio = (function () {
     sfx: function (id) {
       if (!on) return;
       const el = new Audio(setup.assetPath(id));
+      sfxEls.add(el);
+      el.addEventListener("ended", function () { sfxEls.delete(el); }, { once: true });
+      el.addEventListener("error", function () { sfxEls.delete(el); }, { once: true });
       el.volume = 0.8;
       const p = el.play();
-      if (p && p.catch) p.catch(function () {});
+      if (p && p.catch) p.catch(function () { sfxEls.delete(el); });
     },
     toggle: function () {
       on = !on;
@@ -152,9 +159,137 @@ setup.audio = (function () {
       if (!on) stop(false); else { bgmId = null; play(State.variables.bgm || null); }
     },
     init: applyClass,
+    reset: function () {
+      stop(false);
+      sfxEls.forEach(function (el) { el.pause(); });
+      sfxEls.clear();
+    },
   };
 })();
 setup.audio.init();
+
+/* ---------- 管理员试玩（仅 admin.html 启用） ---------- */
+setup.admin = (function () {
+  const enabled = setup.ADMIN_MODE === true;
+  const presets = {
+    fresh: { label: "新局初始值", values: {} },
+    favorable: { label: "顺境测试（非真实通关存档）", values: { v001: 12, v010: 10, v011: 8, v012: 6, v013: 9, v014: 1, v017: 1, v018: 1, v019: 6, v022: 1, v023: 1, v036: 1, v037: 1, v038: 1 } },
+    adverse: { label: "险境测试（非真实通关存档）", values: { v001: 3, v009: 7, v010: 2, v011: 1, v012: 1, v013: 1, v015: 1, v016: 1, v018: 2, v019: 1, v024: 1, v025: 1, v026: 1, v030: 1, v031: 2, v032: 1 } },
+    current: { label: "保留当前剧情变量", values: null },
+  };
+  let pending = null, backup = null;
+  $(document).on("keydown.qfAdmin", function (ev) {
+    if (enabled && ev.key === "Escape" && Dialog.isOpen("admin-panel")) {
+      ev.preventDefault();
+      Dialog.close();
+    }
+  });
+  function entry(name) {
+    return setup.ADMIN_CHAPTERS.some(function (c) { return c.entries.some(function (e) { return e.passage === name; }); });
+  }
+  $(document).on(":passageinit.qfAdmin", function (ev) {
+    if (!enabled || !pending || ev.detail.passage.name !== pending.passage) return;
+    // 在创建新历史节点前设置输入变量。State.variables 是活动副本，
+    // 不改写旧的 pre-play 历史；新节点会把预设一并存档并用于刷新/回放。
+    const v = State.variables, selected = presets[pending.preset];
+    if (pending.preset !== "current") {
+      Object.keys(v).forEach(function (k) { delete v[k]; });
+      Object.assign(v, setup.INITIAL_VARIABLES, selected.values);
+    }
+    v.used = {}; v.expr = {}; v.bgm = null;
+    pending = null;
+  });
+  function jump(name, preset) {
+    if (!enabled) throw new Error("请从 admin.html 打开管理员试玩版。");
+    if (!entry(name) || !Story.has(name)) throw new Error("章节入口不存在。");
+    if (!Object.prototype.hasOwnProperty.call(presets, preset)) throw new Error("测试预设不存在。");
+    const previous = Save.base64.save();
+    pending = { passage: name, preset: preset };
+    setup.audio.reset();
+    try { Engine.play(name); }
+    finally { pending = null; }
+    backup = previous;
+  }
+  async function undo() {
+    if (!enabled || !backup) return;
+    const saved = backup;
+    setup.audio.reset();
+    await Save.base64.load(saved);
+    Engine.show();
+    backup = null;
+  }
+  function open() {
+    if (!enabled) return;
+    Dialog.create("管理员模式 · 章节试玩", "admin-panel");
+    const form = jQuery('<form class="admin-form"></form>');
+    jQuery('<p class="admin-note"></p>').text("管理版使用独立存档和结局记录，不影响正式版。跳章不会补演前文；测试预设不代表真实通关状态，进入后仍按该话剧情更新变量。").appendTo(form);
+    const chapter = jQuery('<select id="admin-chapter" name="chapter"></select>');
+    const target = jQuery('<select id="admin-passage" name="passage"></select>');
+    const preset = jQuery('<select id="admin-preset" name="preset"></select>');
+    function field(label, id, control) {
+      jQuery('<div class="admin-field"></div>').append(jQuery('<label></label>').attr("for", id).text(label), control).appendTo(form);
+    }
+    setup.ADMIN_CHAPTERS.forEach(function (c, i) { chapter.append(jQuery('<option></option>').val(i).text(c.name)); });
+    Object.keys(presets).forEach(function (k) { preset.append(jQuery('<option></option>').val(k).text(presets[k].label)); });
+    preset.val("favorable");
+    function refresh() {
+      target.empty();
+      setup.ADMIN_CHAPTERS[Number(chapter.val())].entries.forEach(function (e) {
+        target.append(jQuery('<option></option>').val(e.passage).text("第" + e.hua + "话 · " + e.title));
+      });
+    }
+    chapter.on("change", refresh);
+    const currentChapter = setup.ADMIN_CHAPTERS.findIndex(function (c) { return Story.get(State.passage).tags.includes("c" + c.index); });
+    if (currentChapter >= 0) chapter.val(currentChapter);
+    refresh();
+    field("选择章节", "admin-chapter", chapter);
+    field("具体话（默认本章开头）", "admin-passage", target);
+    field("跳转时的剧情状态", "admin-preset", preset);
+    const status = jQuery('<p class="admin-error" role="alert"></p>');
+    const actions = jQuery('<div class="admin-actions"></div>');
+    jQuery('<button type="submit">进入所选话</button>').appendTo(actions);
+    jQuery('<button type="button">撤销上次跳转</button>').prop("disabled", !backup).on("click", async function () {
+      try { await undo(); Dialog.close(); }
+      catch (e) { status.text("恢复失败：" + e.message); }
+    }).appendTo(actions);
+    form.append(actions, status, jQuery('<a class="admin-exit" href="index.html">退出管理，返回正式版</a>'));
+    form.on("submit", function (ev) {
+      ev.preventDefault();
+      try { jump(target.val(), preset.val()); Dialog.close(); }
+      catch (e) { status.text("跳转失败：" + e.message); }
+    });
+    Dialog.append(form[0]).open();
+  }
+  return Object.freeze({ enabled: enabled, open: open, jump: jump, undo: undo });
+})();
+
+/* ---------- 音源署名（构建时嵌入，本地双击也可查看） ---------- */
+Macro.add("audioCredits", {
+  handler() {
+    const out = jQuery('<div class="audio-credits"></div>');
+    function link(parent, text, url) {
+      if (/^https?:\/\//i.test(url || "")) parent.append(" ", jQuery('<a target="_blank" rel="noopener noreferrer"></a>').attr("href", url).text(text));
+    }
+    Object.keys(setup.AUDIO_CREDITS).sort().forEach(function (file) {
+      const credit = setup.AUDIO_CREDITS[file];
+      const details = jQuery('<details class="credit-item"></details>');
+      const name = file.split("/").pop().replace(/\.mp3$/, "");
+      details.append(jQuery('<summary></summary>').text((file.includes("/bgm/") ? "配乐 · " : "音效 · ") + name));
+      const list = jQuery('<ul></ul>');
+      (credit.sources || []).forEach(function (source) {
+        const item = jQuery('<li></li>');
+        item.append(jQuery('<p></p>').text([source.title, source.author || source.publisher, source.performer].filter(Boolean).join(" · ") || "项目自制拟声"));
+        const license = jQuery('<p class="fine"></p>').text("许可：" + source.license);
+        link(license, "许可详情", source.license_url);
+        link(license, "原始来源", source.source_url);
+        if (source.source_id) license.append(" · 音源编号 " + source.source_id);
+        item.append(license).appendTo(list);
+      });
+      details.append(list).appendTo(out);
+    });
+    out.appendTo(this.output);
+  },
+});
 
 Macro.add("bgm", { handler() { setup.audio.bgm(this.args[0]); } });
 Macro.add("sfx", { handler() { if (!State.temporary.replaying) setup.audio.sfx(this.args[0]); } });
@@ -162,13 +297,13 @@ $(document).on(":passageend", function () { setup.audio.sync(); });
 
 /* ---------- 结局记录（跨存档，存在本浏览器） ---------- */
 setup.endsSeen = function () {
-  try { return JSON.parse(localStorage.getItem("qf-ends") || "{}"); } catch (e) { return {}; }
+  try { return JSON.parse(localStorage.getItem(setup.storageKey("ends")) || "{}"); } catch (e) { return {}; }
 };
 setup.markEnd = function (id) {
   const s = setup.endsSeen();
   if (s[id]) return;
   s[id] = Date.now();
-  try { localStorage.setItem("qf-ends", JSON.stringify(s)); } catch (e) {}
+  try { localStorage.setItem(setup.storageKey("ends"), JSON.stringify(s)); } catch (e) {}
 };
 setup.galleryHTML = function () {
   const seen = setup.endsSeen();
@@ -204,7 +339,7 @@ setup.continueGame = function () {
 
 /* ---------- 检查点（"回到那一刻"）---------- */
 setup.cpAll = function () {
-  try { return JSON.parse(localStorage.getItem("qf-cp") || "{}"); } catch (e) { return {}; }
+  try { return JSON.parse(localStorage.getItem(setup.storageKey("cp")) || "{}"); } catch (e) { return {}; }
 };
 Macro.add("checkpoint", {
   handler() {
@@ -212,7 +347,7 @@ Macro.add("checkpoint", {
     try {
       const all = setup.cpAll();
       all[id] = { s: Save.base64.save(), t: Date.now() };
-      localStorage.setItem("qf-cp", JSON.stringify(all));
+      localStorage.setItem(setup.storageKey("cp"), JSON.stringify(all));
     } catch (e) { /* 存储不可用或已满：静默跳过 */ }
   },
 });
@@ -248,12 +383,12 @@ Macro.add("varTable", {
   },
 });
 setup.dojoSeen = function () {
-  try { return JSON.parse(localStorage.getItem("qf-dojo") || "{}"); } catch (e) { return {}; }
+  try { return JSON.parse(localStorage.getItem(setup.storageKey("dojo")) || "{}"); } catch (e) { return {}; }
 };
 setup.markDojo = function (id) {
   const s = setup.dojoSeen();
   s[id] = 1;
-  try { localStorage.setItem("qf-dojo", JSON.stringify(s)); } catch (e) {}
+  try { localStorage.setItem(setup.storageKey("dojo"), JSON.stringify(s)); } catch (e) {}
 };
 Macro.add("dojoIntro", {
   handler() {
