@@ -737,6 +737,8 @@ def build_passages(huas):
 def describe(s):
     t = s["type"]
     st = M.STYLE[t]
+    if t == "cg" and s["name"] in M.CG_SCENES:
+        return f"{st['style']} {M.CG_SCENES[s['name']]}"
     if t in ("bg", "cg"):
         parts = s["name"].split("_")
         loc = M.LOC.get(parts[0], parts[0])
@@ -745,7 +747,9 @@ def describe(s):
         return f"{st['style']} 场景：{scene}。"
     if t == "char":
         who, expr = s["who"], s["expr"]
-        look = M.CHAR.get(who, who)
+        look = M.CHAR_VARIANTS.get((who, expr), M.CHAR.get(who, who))
+        if (who, expr) in M.CHAR_VARIANTS:
+            return f"{st['style']} 此为同一人物的跨年代版本，允许随所写年份自然衰老，但不得更换身份面貌。人物：{look}"
         return f"{st['style']} 人物：{look} 表情/状态：{M.EXPR.get(expr, expr)}。"
     if t == "bgm":
         return f"{st['style']} {M.BGM.get(s['name'], s['name'])}"
@@ -776,6 +780,10 @@ def finish_slots(huas):
     for s in slots.values():
         s["prompt"] = describe(s)
         s["spec"] = M.STYLE[s["type"]]["spec"]
+        if s["id"] in M.ART_REFERENCES:
+            s["references"] = M.ART_REFERENCES[s["id"]]
+            if s["type"] == "cg":
+                s["spec"] += " 单张不超过600KB；人物须与对应年龄的立绘一致。"
         s["present"] = os.path.exists(os.path.join(ROOT, s["file"]))
 
 def write_manifest():

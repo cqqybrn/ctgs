@@ -29,7 +29,9 @@ function storyPassages(text) {
 }
 function sameStory(a, b) {
   const left = storyPassages(a), right = storyPassages(b);
-  const changed = [...new Set([...Object.keys(left), ...Object.keys(right)])].filter(k => left[k] !== right[k]);
+  // 新增美术允许调整背景/立绘提示；仍严格比较台词、数值、选项与跳转。
+  const plot = body => body === undefined ? body : body.replace(/&lt;&lt;(?:bg|expr)\s+[\s\S]*?&gt;&gt;\s*/g, '');
+  const changed = [...new Set([...Object.keys(left), ...Object.keys(right)])].filter(k => plot(left[k]) !== plot(right[k]));
   assert.deepEqual(changed, [], '剧情正文发生差异的段落');
 }
 function checked(name) { report.checks.push(name); console.log('通过：' + name); }
@@ -42,7 +44,7 @@ function checked(name) { report.checks.push(name); console.log('通过：' + nam
     const adminText = fs.readFileSync(path.join(ROOT, 'admin.html'), 'utf8');
     sameStory(normalText, before);
     sameStory(adminText, normalText);
-    checked('两版全部剧情段落与 HEAD 一致');
+    checked('两版剧情正文、变量与分支逻辑与 HEAD 一致（允许美术提示调整）');
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
     const base = `http://127.0.0.1:${server.address().port}/`;
     browser = await chromium.launch();
@@ -190,14 +192,14 @@ function checked(name) { report.checks.push(name); console.log('通过：' + nam
     assert.equal(playing.length, 1); assert.ok(playing[0].endsWith('/军歌唱片.mp3')); assert.deepEqual(failed, []);
     checked('管理跳章后真实背景、头像和音乐加载；快速多次跳转不残留旧音乐或音效');
     const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'assets/manifest.json'), 'utf8'));
-    assert.equal(manifest.slots.length, 321); assert.ok(manifest.slots.every(s => s.present));
+    assert.ok(manifest.slots.length >= 321, '基础素材插槽不得减少'); assert.ok(manifest.slots.every(s => s.present));
     let bytes = 0;
     for (const s of manifest.slots) {
       const response = await fetch(base + encodeURI(s.file), { method: 'HEAD' });
       assert.equal(response.status, 200, s.file); bytes += fs.statSync(path.join(ROOT, s.file)).size;
     }
     report.assetBytes = bytes;
-    checked(`321 个中文素材路径 HTTP 200；素材合计 ${(bytes / 1048576).toFixed(1)} MiB`);
+    checked(`${manifest.slots.length} 个中文素材路径 HTTP 200；素材合计 ${(bytes / 1048576).toFixed(1)} MiB`);
     assert.deepEqual(report.errors, []);
     report.chapterCount = chapters.length; report.entryCount = entryCount;
     console.log('管理员模式回归：全部通过；页面异常 0');
