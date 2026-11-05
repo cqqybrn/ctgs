@@ -13,8 +13,11 @@ const URL = 'file://' + path.resolve(__dirname, '..', 'index.html');
     const tick = () => new Promise(r => setTimeout(r, 0));
     const V = () => SugarCube.State.variables;
     const huaNum = P => +(/^h(\d+)/.exec(P) || [0, 0])[1];
-    const score = () => { const v = V(); return v.v013 * 3 + v.v012 * 3 + v.v011 * 2 + v.v010 + v.v001 * 0.3 - v.v009 * 0.5 + v.v019 * 0.2; };
-    const sig = () => { const v = V(); const o = []; for (let i = 1; i <= 32; i++) o.push(v['v' + String(i).padStart(3, '0')]); return o.join(','); };
+    const BRANCH = /赠名|白鹭同志/.test(GOAL);
+    const score = () => { const v = V(); return BRANCH
+      ? (v.v010 || 0) * 2 + (v.v019 || 0) * 3 + (v.v022 || 0) * 5 - (v.v034 || 0) * 5 + (v.v001 || 0) * 0.3 - (v.v009 || 0) * 0.5 + (v.v046 || 0)
+      : v.v013 * 3 + v.v012 * 3 + v.v011 * 2 + v.v010 + v.v001 * 0.3 - v.v009 * 0.5 + v.v019 * 0.2; };
+    const sig = () => { const v = V(); const o = []; for (const k of Object.keys(v).filter(k => /^v\d{3}$/.test(k)).sort()) o.push(k + v[k]); return o.join(','); };
     const links = () => [...document.querySelectorAll('#passages a.link-internal')].filter(a => !a.closest('nav.after'));
     document.querySelector('#passages .title-menu a').click(); await tick();
     const seen = new Set();
