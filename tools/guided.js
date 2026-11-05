@@ -28,38 +28,37 @@ const URL = 'file://' + path.resolve(__dirname, '..', 'index.html');
     const sig = () => { const v = V(); return Object.keys(v).filter(k => /^v\d{3}$/.test(k)).sort().map(k => k + v[k]).join(','); };
     document.querySelector('#passages .title-menu a').click(); await tick();
     const seen = new Set(); const ends = {};
-    const stack = [{ save: SugarCube.Save.base64.save(), i: 0, path: [] }];
+    const order = (texts, i) => {
+      // 排序：必选 > 路线上的下一个（允许跳过最多 60 步重新对齐）> 继续 > 其他
+      const c = [];
+      for (const t of texts) if (FORCE.includes(t)) c.push({ t, i });
+      let j = -1;
+      for (let k = i; k < Math.min(route.length, i + 60); k++) if (texts.includes(route[k])) { j = k; break; }
+      if (j >= 0 && !c.some(x => x.t === route[j])) c.push({ t: route[j], i: j + 1 });
+      if (texts.includes('继续') && !c.some(x => x.t === '继续')) c.push({ t: '继续', i });
+      for (const t of texts) if (!c.some(x => x.t === t)) c.push({ t, i });
+      return c;
+    };
+    const frame = (path, i) => ({ save: SugarCube.Save.base64.save(), path, cands: order(links().map(a => a.textContent).filter(t => !AVOID.includes(t)), i), k: 0 });
+    const stack = [frame([], 0)];
     let n = 0;
-    while (stack.length && n < 30000) {
-      const cur = stack.pop(); n++;
-      await SugarCube.Save.base64.load(cur.save); SugarCube.Engine.show(); await tick();
-      const root = document.querySelector('#passages');
-      const end = root.querySelector('.ending .name');
+    while (stack.length && n < 60000) {
+      const top = stack[stack.length - 1];
+      if (top.k >= top.cands.length) { stack.pop(); continue; }
+      const c = top.cands[top.k++]; n++;
+      await SugarCube.Save.base64.load(top.save); SugarCube.Engine.show(); await tick();
+      const a = links().find(x => x.textContent === c.t); if (!a) continue;
+      a.click(); await tick();
+      const path = top.path.concat([c.t]);
+      const end = document.querySelector('#passages .ending .name');
       if (end) {
         ends[end.textContent] = (ends[end.textContent] || 0) + 1;
-        if (end.textContent === GOAL) return { ok: true, n, path: cur.path, ends };
+        if (end.textContent === GOAL) return { ok: true, n, path, ends };
         continue;
       }
       const key = SugarCube.State.passage + '#' + sig();
       if (seen.has(key)) continue; seen.add(key);
-      const texts = links().map(a => a.textContent).filter(t => !AVOID.includes(t));
-      // 排序：必选 > 路线上的下一个（允许跳过最多 60 步重新对齐）> 继续 > 其他
-      const cands = [];
-      for (const t of texts) if (FORCE.includes(t)) cands.push({ t, i: cur.i });
-      let j = -1;
-      for (let k = cur.i; k < Math.min(route.length, cur.i + 60); k++) if (texts.includes(route[k])) { j = k; break; }
-      if (j >= 0) cands.push({ t: route[j], i: j + 1 });
-      if (texts.includes('继续')) cands.push({ t: '继续', i: cur.i });
-      for (const t of texts) if (!cands.some(c => c.t === t)) cands.push({ t, i: cur.i });
-      // 逆序压栈，第一个候选最先展开
-      const kids = [];
-      for (const c of cands) {
-        await SugarCube.Save.base64.load(cur.save); SugarCube.Engine.show(); await tick();
-        const a = links().find(x => x.textContent === c.t); if (!a) continue;
-        a.click(); await tick();
-        kids.push({ save: SugarCube.Save.base64.save(), i: c.i, path: cur.path.concat([c.t]) });
-      }
-      for (let k = kids.length - 1; k >= 0; k--) stack.push(kids[k]);
+      stack.push(frame(path, c.i));
     }
     return { ok: false, n, ends };
   }, { route, GOAL, FORCE, AVOID });
