@@ -14,8 +14,8 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import asset_meta as M  # noqa: E402
 
 CHAPTER_NAMES = ["序章", "第一章·创氏改名", "第二章·京城站", "第三章·辞典", "第四章·黑岩",
-                 "第五章·府民馆", "第六章·解放", "终章·反民特委",
-                 "支线·赠名", "支线·白鹭同志"]
+                 "第五章·府民馆", "第六章·解放", "第七章·反民特委",
+                 "救援分流", "北行后续"]
 SKIP_HUA = {8}           # 演出模板，不生成
 GALLERY_HUA = 89         # 结局一览，由程序生成
 EPILOGUE_RANGE = range(83, 87)
@@ -39,8 +39,8 @@ def load_huas():
             if m:
                 n = int(m.group(1))
                 cur = {"n": n, "title": m.group(2).strip(), "chap": ci, "lines": []}
-                # 第80–89话归入"尾声"（90 以后是 v2 支线，按所在文件归章）；
-                # 第82话 v2 起是北行线过场（原 HE·人民的法庭），留在终章
+                # 第80–89话归入补充区，HE另在同级路线卡片中展示；
+                # 第82话是北行过场，仍按所在文件归章。
                 if 80 <= n <= 89 and n != 82:
                     cur["chap"] = len(CHAPTER_NAMES)
                 huas.append(cur)
@@ -856,7 +856,7 @@ def build_html(huas, admin_mode=False):
     for v in initial_vars:
         init.append(f"<<set ${v} to 0>>")
     passages["StoryInit"] = "\n".join(init)
-    chap_names = CHAPTER_NAMES + ["尾声"]
+    chap_names = CHAPTER_NAMES + ["回想与补充"]
     navigation = []
     for ci, label in enumerate(chap_names):
         entries, seen = [], set()
@@ -877,11 +877,24 @@ def build_html(huas, admin_mode=False):
     varnames = {}
     for m in re.finditer(r"^\| (\d{3}) \| ([^|]+?) \|", open(os.path.join(ROOT, "script", "00-设定集与大纲.md"), encoding="utf-8").read(), re.M):
         varnames[m.group(1)] = m.group(2).strip()
+    route_portals = [
+        {"id": "heron", "name": "白鹭", "entry": "h70", "ending": "h80", "entryLabel": "第70话·审判前", "values": {"v024": 0, "v039": 0, "v011": 8, "v012": 6, "v013": 9, "v030": 0, "v031": 1, "v032": 1, "v036": 1, "v037": 1, "v038": 1}},
+        {"id": "sakura", "name": "樱花", "entry": "h60", "ending": "h81", "entryLabel": "第60话·告别与护送前", "values": {"v018": 1, "v050": 0, "v051": 1, "v034": 0, "v016": 0}},
+        {"id": "miyamoto", "name": "宫本仁", "entry": "h60", "ending": "h87", "entryLabel": "第60话·收养选择前", "values": {"v018": 2, "v050": 0, "v051": 1, "v034": 0, "v001": 12}},
+        {"id": "comrade", "name": "白鹭同志", "entry": "h91", "ending": "h119", "entryLabel": "第91话·海蛇分叉前", "values": {"v010": 10, "v019": 6, "v022": 1, "v039": 0, "v032": 1, "v046": 6}},
+    ]
+    for route in route_portals:
+        if route["entry"] not in passages or route["ending"] not in passages:
+            raise ValueError("路线入口不存在：" + route["name"])
+    ending_huas = {e["hua"] for e in endings if e["he"]}
+    chapter_navigation = [dict(c, entries=[e for e in c["entries"] if e["hua"] not in ending_huas]) for c in navigation]
+    chapter_navigation = [c for c in chapter_navigation if c["entries"]]
     data_js = ("setup.VARNAMES = " + json.dumps(varnames, ensure_ascii=False) + ";\n"
                "setup.ADMIN_MODE = " + json.dumps(admin_mode) + ";\n"
                "setup.INITIAL_VARIABLES = " + json.dumps(initial_vars, ensure_ascii=False) + ";\n"
-               "setup.CHAPTER_NAV = " + json.dumps(navigation, ensure_ascii=False) + ";\n"
-               "setup.ADMIN_CHAPTERS = " + json.dumps(navigation if admin_mode else [], ensure_ascii=False) + ";\n"
+               "setup.CHAPTER_NAV = " + json.dumps(chapter_navigation, ensure_ascii=False) + ";\n"
+               "setup.ROUTES = " + json.dumps(route_portals, ensure_ascii=False) + ";\n"
+               "setup.ADMIN_CHAPTERS = " + json.dumps(chapter_navigation if admin_mode else [], ensure_ascii=False) + ";\n"
                "setup.AUDIO_CREDITS = " + json.dumps(audio_credits, ensure_ascii=False) + ";\n"
                "setup.CHAPTERS = " + json.dumps(chap_names, ensure_ascii=False) + ";\n"
                "setup.ENDINGS = " + json.dumps(endings, ensure_ascii=False) + ";\n"

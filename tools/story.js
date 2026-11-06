@@ -90,7 +90,7 @@ setup.chapLabel = function () {
 
 /* 正式版章节回访：保存渲染前的真实状态，不能在跳章时重复执行本话增减值。 */
 setup.chapterSelect = (function () {
-  const enabled = !setup.ADMIN_MODE;
+  const enabled = true; // 正式版与管理版均可使用同级路线传送门；记录键仍按模式隔离。
   const key = setup.storageKey("chapter-visits-v2");
   const copy = value => JSON.parse(JSON.stringify(value));
   let memory = {}, pending = null, backup = null, lastChapter = null, storageError = false;
@@ -111,6 +111,11 @@ setup.chapterSelect = (function () {
     try { data = JSON.parse(localStorage.getItem(key) || "{}"); }
     catch (e) { storageError = true; }
     const result = Object.assign({}, data && typeof data === "object" ? data : {}, memory);
+    Object.keys(result).forEach(index => {
+      const record = result[index];
+      // 只迁移新增标记，不把残缺/损坏的旧记录补成一份伪造的完整状态。
+      if (record && record.variables && typeof record.variables === "object" && !Array.isArray(record.variables)) record.variables = Object.assign({ v058: 0 }, record.variables);
+    });
     Object.keys(result).forEach(index => { if (!valid(result[index], index)) delete result[index]; });
     return result;
   }
@@ -152,12 +157,13 @@ setup.chapterSelect = (function () {
     try { Engine.play(saved.passage); backup = previous; }
     finally { pending = null; }
   }
-  function testJump(passage, preset) {
+  function testJump(passage, preset, overrides) {
     if (!enabled) throw new Error("管理员版请使用章节试玩菜单。");
-    if (!setup.CHAPTER_NAV.some(c => c.entries.some(e => e.passage === passage)) || !Story.has(passage)) throw new Error("话入口不存在。");
+    if (!(setup.CHAPTER_NAV.some(c => c.entries.some(e => e.passage === passage)) || setup.ROUTES.some(r => r.ending === passage)) || !Story.has(passage)) throw new Error("话入口不存在。");
     const selected = setup.admin.presets[preset];
     if (!selected) throw new Error("测试预设不存在。");
     const variables = preset === "current" ? copy(State.variables) : Object.assign({}, setup.INITIAL_VARIABLES, copy(selected.values));
+    Object.assign(variables, copy(overrides || {}));
     variables.used = {}; variables.expr = {}; variables.bgm = null;
     variables.stage = setup.freshStage(); variables.qfTestJump = true;
     delete variables.qfStep; delete variables.qfSeen;
@@ -176,13 +182,31 @@ setup.chapterSelect = (function () {
     Engine.show();
     backup = null;
   }
+  function appendRoutes(parent, status, onJump) {
+    jQuery('<h3>结局路线（同级）</h3>').appendTo(parent);
+    jQuery('<p class="admin-note"></p>').text("以下四条路线没有主次之分。入口测试使用各路线明确的测试状态，不代表已自然通关；直接看结局会跳过前置剧情。仍须选择相应选项，错误选择仍会失败。").appendTo(parent);
+    setup.ROUTES.forEach(function (route) {
+      const card = jQuery('<section class="route-card"></section>').attr("data-route", route.id);
+      jQuery('<h4></h4>').text(route.name).appendTo(card);
+      jQuery('<p></p>').text(route.entryLabel).appendTo(card);
+      [["从路线入口测试", route.entry, "entry"], ["直接看结局", route.ending, "ending"]].forEach(function (item) {
+        jQuery('<button type="button"></button>').attr("data-route-action", item[2]).text(item[0]).on("click", function () {
+          try { (onJump || testJump)(item[1], "favorable", route.values); Dialog.close(); }
+          catch (e) { status.text("跳转失败：" + e.message); }
+        }).appendTo(card);
+      });
+      card.appendTo(parent);
+    });
+  }
   function open() {
     if (!enabled) return;
-    Dialog.create("章节选择", "chapter-panel");
+    Dialog.create("剧情与路线传送", "chapter-panel");
     const box = jQuery('<div class="chapter-select"></div>');
     jQuery('<p class="admin-note"></p>').text("全部章节及具体话已解锁，可直接测试。自动模式优先恢复真实回访记录；没有记录时使用顺境测试预设。测试预设不是前文真实通关数值，不保证满足所有分支；不会覆盖真实回访记录或手动存档。").appendTo(box);
     const all = records();
     const status = jQuery('<p class="admin-error" role="alert"></p>');
+    appendRoutes(box, status);
+    jQuery('<h3>章节与具体话</h3>').appendTo(box);
     const form = jQuery('<form class="admin-form"></form>');
     const chapterInput = jQuery('<select id="jump-chapter" aria-label="测试章节"></select>');
     const passageInput = jQuery('<select id="jump-passage" aria-label="具体话"></select>');
@@ -232,7 +256,7 @@ setup.chapterSelect = (function () {
     box.append(status);
     Dialog.append(box[0]).open();
   }
-  return Object.freeze({ open: open, jump: jump, testJump: testJump, undo: undo, records: records });
+  return Object.freeze({ open: open, jump: jump, testJump: testJump, undo: undo, records: records, appendRoutes: appendRoutes });
 })();
 
 /* ---------- 素材 ---------- */
@@ -456,6 +480,11 @@ setup.admin = (function () {
     field("具体话（默认本章开头）", "admin-passage", target);
     field("跳转时的剧情状态", "admin-preset", preset);
     const status = jQuery('<p class="admin-error" role="alert"></p>');
+    setup.chapterSelect.appendRoutes(form, status, function (name, preset, values) {
+      const previous = Save.base64.save();
+      setup.chapterSelect.testJump(name, preset, values);
+      backup = previous;
+    });
     const actions = jQuery('<div class="admin-actions"></div>');
     jQuery('<button type="submit">进入所选话</button>').appendTo(actions);
     jQuery('<button type="button">撤销上次跳转</button>').prop("disabled", !backup).on("click", async function () {
@@ -530,8 +559,10 @@ setup.galleryHTML = function () {
   const total = setup.ENDINGS.length;
   const got = setup.ENDINGS.filter(function (e) { return seen[e.id]; }).length;
   let h = '<p class="gal-count">已达成 <b>' + got + "</b> / " + total + "</p>";
-  setup.CHAPTERS.forEach(function (name, ci) {
-    const list = setup.ENDINGS.filter(function (e) { return e.chap === ci; });
+  const endingGroups = [{ name: "结局路线（同级）", list: setup.ENDINGS.filter(e => e.he) }]
+    .concat(setup.CHAPTERS.map((name, ci) => ({ name: name, list: setup.ENDINGS.filter(e => !e.he && e.chap === ci) })));
+  endingGroups.forEach(function (group) {
+    const name = group.name, list = group.list;
     if (!list.length) return;
     h += '<section class="gal"><h3>' + name + "</h3><ol>";
     list.forEach(function (e) {

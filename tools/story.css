@@ -438,4 +438,7 @@ nav.cps a.cp-on { border-color: var(--accent); color: var(--accent); }
 .chapter-select { width: 30rem; max-width: 100%; box-sizing: border-box; }
 .chapter-choice, .chapter-undo { display: block; width: 100%; min-height: 44px; margin: 8px 0; padding: 10px 12px; text-align: left; white-space: normal; overflow-wrap: anywhere; }
 .chapter-choice:disabled { opacity: .5; cursor: not-allowed; }
+.route-card { border: 1px solid var(--line); border-radius: 4px; padding: 10px; margin: 12px 0; }
+.route-card h4, .route-card p { margin: 0 0 8px; }
+.route-card button { min-height: 44px; margin: 3px; padding: 8px; max-width: 100%; white-space: normal; }
 .chapter-choice:focus-visible, .chapter-undo:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
