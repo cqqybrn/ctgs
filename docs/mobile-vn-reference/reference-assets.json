@@ -1,0 +1,47 @@
+{
+  "purpose": "手机竖屏视觉小说的布局参考，不是游戏实现或用户已确认的设计",
+  "decision_status": "A/B/C尚未最终选定；A只是建议原型",
+  "preview": "preview.html",
+  "comparison": "01-layout-comparison.jpg",
+  "options": {
+    "A": {
+      "image": "a-classic-portrait.jpg",
+      "label": "经典大立绘、深色固定对白框"
+    },
+    "B": {
+      "image": "b-split-stage.jpg",
+      "label": "上部舞台、下部浅色对白"
+    },
+    "C": {
+      "image": "c-immersive-choice.jpg",
+      "label": "沉浸背景、轻量对白和选择状态"
+    }
+  },
+  "source_assets": {
+    "background": {
+      "repo_path": "assets/bg/北村_徐家书房.jpg",
+      "zip_path": "source-assets/北村_徐家书房.jpg",
+      "sha256": "3d499b98a82a84c51fbb2774e1987c142c7c1bfc666468cd3a1065cf32f4eb85"
+    },
+    "portrait": {
+      "repo_path": "assets/char/徐恩淑_常态.png",
+      "zip_path": "source-assets/徐恩淑_常态.png",
+      "sha256": "7a80c888ad6566eb5a90c49654c2516bd6c6e87f356560bfb4ac0605e2f2b7ec"
+    }
+  },
+  "h87_art_in_repo": [
+    "assets/char/宫本仁_战后.png",
+    "assets/char/宫本仁_中年.png",
+    "assets/char/宫本仁_老年.png",
+    "assets/char/金正浩_中年.png",
+    "assets/cg/东京会谈_隔桌相认.jpg",
+    "assets/cg/东京走廊_递烟重逢.jpg",
+    "assets/cg/京都书房_共著书稿.jpg"
+  ],
+  "constraints": [
+    "不改剧情、数值、选择条件和69个结局",
+    "先看实际图片，再读HTML/CSS",
+    "HTML中的示意选项不是真实剧情，不可复制到剧本",
+    "手机外框是示意，不要在实际手机中再套一个手机壳"
+  ]
+}

@@ -2,26 +2,36 @@
 <div id="app"><header id="bar" data-passage="Bar"></header><main id="passages"></main></div>
 
 :: Bar
-<div class="bar-in"><span class="chap"><<print setup.chapLabel()>></span><nav class="tools"><<link "后退">><<run Engine.backward()>><</link>><<link "存档">><<run UI.saves()>><</link>><<link "结局">><<goto "结局一览">><</link>><<link "音乐">><<run setup.audio.toggle()>><</link>></nav></div>
+<div class="bar-in"><span class="chap"><<if setup.admin.enabled>>管理 · <</if>><<print setup.chapLabel()>></span><nav class="tools"><<link "后退">><<run Engine.backward()>><</link>><<link "存档">><<run UI.saves()>><</link>><<link "结局">><<goto "结局一览">><</link>><<if setup.admin.enabled>><<link "管理">><<run setup.admin.open()>><</link>><</if>><<link "音乐">><<run setup.audio.toggle()>><</link>></nav></div>
 
 :: Start [title]
 <<bgm "bgm/主题">>
 <div class="title-screen">
+<<if setup.admin.enabled>><p class="admin-badge">管理员试玩 · 独立存档</p><</if>>
 <div class="heron" aria-hidden="true"></div>
 <p class="kicker">1939 — 1949 · 京城</p>
 <h1 class="title">潜伏之京城</h1>
 <p class="title-ko" lang="ko">잠복의 경성</p>
 <p class="lede">他回到京城，在所有人面前变成了一个亲日派。只有两个人知道，他是地下组织埋得最深的一颗钉子，代号「白鹭」。</p>
 <nav class="title-menu">
+<<if setup.admin.enabled>><<link "选择章节">><<run setup.admin.open()>><</link>><</if>>
 <<link "开始游戏" "h1">><</link>>
 <<if setup.hasSave()>><<link "继续上次">><<run setup.continueGame()>><</link>><</if>>
 <<link "读取存档">><<run UI.saves()>><</link>>
 <<link "结局一览" "结局一览">><</link>>
+<<link "音源署名" "音源署名">><</link>>
 </nav>
-<p class="fine">存档保存在当前浏览器里，可在「存档」中导出为文件。共 68 个结局。</p>
+<p class="fine">存档保存在当前浏览器里，可在「存档」中导出为文件。共 <<print setup.ENDINGS.length>> 个结局。</p>
+<<if setup.admin.enabled>><p class="fine"><a href="index.html">退出管理，返回正式版</a>。本入口是公开的试玩调试工具，不是账号权限后台。</p><</if>>
 </div>
 
 :: 结局一览 [gallery]
 <header class="hua-head"><span class="no">结局一览</span><span class="tt">走过的路，会在这里留下名字</span></header>
 <<print setup.galleryHTML()>>
+<nav class="after"><<link "返回">><<run Engine.backward()>><</link>><<link "回到标题">><<run setup.toTitle()>><</link>></nav>
+
+:: 音源署名 [credits]
+<header class="hua-head"><span class="no">音源署名</span><span class="tt">声音的来处</span></header>
+<p class="fine">配乐包含原创采样编排与授权录音剪辑；部分音效为拟声或物理建模，并非年代档案实录。以下列出各文件的音源、作者与许可；完整处理说明见 <a href="assets/AUDIO_LICENSES.json" target="_blank" rel="noopener">音源许可清单</a>。</p>
+<<audioCredits>>
 <nav class="after"><<link "返回">><<run Engine.backward()>><</link>><<link "回到标题">><<run setup.toTitle()>><</link>></nav>

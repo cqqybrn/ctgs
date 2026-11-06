@@ -1,0 +1,1370 @@
+{
+  "notice": "Audio source credits and licenses. Game scripts and runtime were not modified.",
+  "assets": {
+    "assets/bgm/主题.mp3": {
+      "sources": [
+        {
+          "title": "I Want to go Home",
+          "author": "Eldritch Grim, based on Nostalgic Piano by Rafael Krux",
+          "license": "CC0 1.0",
+          "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "source_url": "https://opengameart.org/content/i-want-to-go-home"
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 120.0
+    },
+    "assets/bgm/奚琴·阿里郎.mp3": {
+      "sources": [
+        {
+          "title": "Arirang-01",
+          "instrument": "해금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "s3-914-001"
+        },
+        {
+          "title": "Arirang-02",
+          "instrument": "해금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "s3-914-002"
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 90.23927437641723
+    },
+    "assets/bgm/伽倻琴.mp3": {
+      "sources": [
+        {
+          "title": "Jinyangjo-01",
+          "instrument": "가야금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "s1-001-001"
+        },
+        {
+          "title": "Jinyangjo-02",
+          "instrument": "가야금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "s1-001-002"
+        },
+        {
+          "title": "Jinyangjo-03",
+          "instrument": "가야금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "s1-001-003"
+        },
+        {
+          "title": "Jinyangjo-04",
+          "instrument": "가야금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "s1-001-004"
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 89.97142857142858
+    },
+    "assets/bgm/奚琴.mp3": {
+      "sources": [
+        {
+          "title": "Jinyangjo-01",
+          "instrument": "해금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "S3-001-001"
+        },
+        {
+          "title": "Jinyangjo-02",
+          "instrument": "해금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "S3-001-002"
+        },
+        {
+          "title": "Jinyangjo-03",
+          "instrument": "해금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "S3-001-003"
+        },
+        {
+          "title": "Jinyangjo-04",
+          "instrument": "해금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "S3-001-004"
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 73.63419501133787
+    },
+    "assets/bgm/民谣哼唱.mp3": {
+      "sources": [
+        {
+          "title": "Gueum_09",
+          "instrument": "여창",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "V4-005-009",
+          "performer": "Jeong Sunim (정순임)",
+          "vocal_style": "Traditional female wordless gueum, not closed-mouth studio humming."
+        },
+        {
+          "title": "Gueum_10",
+          "instrument": "여창",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "V4-005-010",
+          "performer": "Jeong Sunim (정순임)",
+          "vocal_style": "Traditional female wordless gueum, not closed-mouth studio humming."
+        },
+        {
+          "title": "Gueum_11",
+          "instrument": "여창",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "V4-005-011",
+          "performer": "Jeong Sunim (정순임)",
+          "vocal_style": "Traditional female wordless gueum, not closed-mouth studio humming."
+        },
+        {
+          "title": "Gueum_12",
+          "instrument": "여창",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "V4-005-012",
+          "performer": "Jeong Sunim (정순임)",
+          "vocal_style": "Traditional female wordless gueum, not closed-mouth studio humming."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 108.96972789115647
+    },
+    "assets/bgm/恩淑.mp3": {
+      "sources": [
+        {
+          "author": "Karoryfer x Bigcat, performed by Kamila Borowiak",
+          "source_url": "https://github.com/sfzinstruments/karoryfer-bigcat.cello",
+          "source_revision": "6fd75fbfc1dbb3109bf26220ba1adea46188a18b",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 87.27272108843538
+    },
+    "assets/bgm/夜·钢琴.mp3": {
+      "sources": [
+        {
+          "author": "AKAI Splendid Grand Piano, mapping by kinwie",
+          "source_url": "https://github.com/sfzinstruments/SplendidGrandPiano",
+          "source_revision": "1c595d827b7fd7f0be3134aaed0f90b3662a09cf",
+          "license": "Public domain (AKAI)",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 94.4262358276644
+    },
+    "assets/bgm/法庭.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 90.56603174603174
+    },
+    "assets/bgm/阴郁的宅邸.mp3": {
+      "sources": [
+        {
+          "author": "AKAI Splendid Grand Piano, mapping by kinwie",
+          "source_url": "https://github.com/sfzinstruments/SplendidGrandPiano",
+          "source_revision": "1c595d827b7fd7f0be3134aaed0f90b3662a09cf",
+          "license": "Public domain (AKAI)",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 88.88888888888889
+    },
+    "assets/bgm/不协和音.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 77.41936507936508
+    },
+    "assets/bgm/推理.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 73.84614512471656
+    },
+    "assets/bgm/紧张.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 85.71428571428571
+    },
+    "assets/bgm/追逐.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner, VCSL",
+          "source_url": "https://github.com/sgossner/VCSL",
+          "source_revision": "c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 69.06473922902494
+    },
+    "assets/bgm/手风琴.mp3": {
+      "sources": [
+        {
+          "author": "Jeff Stauffer, processed by michael02022 / FreePats",
+          "source_url": "https://github.com/freepats/button-accordion-HN",
+          "source_revision": "d70d16456fd99305d1c24c612b205ab38846eb0f",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 85.71428571428571
+    },
+    "assets/bgm/舞会.mp3": {
+      "sources": [
+        {
+          "author": "AKAI Splendid Grand Piano, mapping by kinwie",
+          "source_url": "https://github.com/sfzinstruments/SplendidGrandPiano",
+          "source_revision": "1c595d827b7fd7f0be3134aaed0f90b3662a09cf",
+          "license": "Public domain (AKAI)",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 81.3559410430839
+    },
+    "assets/bgm/阴湿的爵士.mp3": {
+      "sources": [
+        {
+          "author": "AKAI Splendid Grand Piano, mapping by kinwie",
+          "source_url": "https://github.com/sfzinstruments/SplendidGrandPiano",
+          "source_revision": "1c595d827b7fd7f0be3134aaed0f90b3662a09cf",
+          "license": "Public domain (AKAI)",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 85.97015873015873
+    },
+    "assets/bgm/军歌唱片.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner, VCSL",
+          "source_url": "https://github.com/sgossner/VCSL",
+          "source_revision": "c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "author": "Karoryfer Samples, Hadzi-Fia vowel",
+          "source_url": "https://github.com/sfzinstruments/legato_vocal_tutorial",
+          "source_revision": "fac6461ee4c7f498b23246eced644616fa58d2ec",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 86.48648526077098
+    },
+    "assets/bgm/军乐进行曲.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner, VCSL",
+          "source_url": "https://github.com/sgossner/VCSL",
+          "source_revision": "c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 86.48648526077098
+    },
+    "assets/bgm/大事记.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner, VCSL",
+          "source_url": "https://github.com/sgossner/VCSL",
+          "source_revision": "c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 94.11764172335602
+    },
+    "assets/bgm/喧嚣的秋天.mp3": {
+      "sources": [
+        {
+          "author": "Versilian Studios / Sam Gossner, VCSL",
+          "source_url": "https://github.com/sgossner/VCSL",
+          "source_revision": "c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "title": "Crowd of 50-60 People #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/crowd-of-50-60-people-1-s3515.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/3515.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "fe32b490d9e07b55a7d1f9f1d31682b1b2bd6e9349339791a95c29be37a280fb"
+        },
+        {
+          "title": "Shouts and Applauses of Teens #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/shouts-and-applauses-of-teens-1-s0236.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0236.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "fb6b711aaaf738e9646cb9b210c40a152cba8a53b38e24b2a15f4b0201ffda20"
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 86.48648526077098
+    },
+    "assets/bgm/国歌齐唱.mp3": {
+      "sources": [
+        {
+          "author": "Karoryfer Samples, Hadzi-Fia vowel",
+          "source_url": "https://github.com/sfzinstruments/legato_vocal_tutorial",
+          "source_revision": "fac6461ee4c7f498b23246eced644616fa58d2ec",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 96.0
+    },
+    "assets/bgm/万岁合唱.mp3": {
+      "sources": [
+        {
+          "author": "Karoryfer Samples, Hadzi-Fia vowel",
+          "source_url": "https://github.com/sfzinstruments/legato_vocal_tutorial",
+          "source_revision": "fac6461ee4c7f498b23246eced644616fa58d2ec",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        },
+        {
+          "title": "Shouts and Applauses of Teens #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/shouts-and-applauses-of-teens-1-s0236.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0236.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "fb6b711aaaf738e9646cb9b210c40a152cba8a53b38e24b2a15f4b0201ffda20"
+        },
+        {
+          "title": "Applause: 150 People",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/applause-150-people-s0019.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0019.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "0ba788a947d4869b29b38f0c6b341c4df7fb900fe07de056d1f0701e1435d7a4"
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 88.42104308390023
+    },
+    "assets/bgm/人潮.mp3": {
+      "sources": [
+        {
+          "title": "Crowd of 50-60 People #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/crowd-of-50-60-people-1-s3515.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/3515.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "fe32b490d9e07b55a7d1f9f1d31682b1b2bd6e9349339791a95c29be37a280fb"
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 92.0
+    },
+    "assets/bgm/风雪.mp3": {
+      "sources": [
+        {
+          "title": "Wind",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/wind-s0595.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0595.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "973d17d891126979f81a41df6f5b25f815400d0a3544e6d7d0326026da1b0390"
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner, VCSL",
+          "source_url": "https://github.com/sgossner/VCSL",
+          "source_revision": "c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 92.0
+    },
+    "assets/bgm/海风.mp3": {
+      "sources": [
+        {
+          "title": "Sea, Waves and Seagulls",
+          "source_url": "https://bigsoundbank.com/sea-waves-and-seagulls-s0267.html",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html"
+        },
+        {
+          "title": "Wind",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/wind-s0595.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0595.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "973d17d891126979f81a41df6f5b25f815400d0a3544e6d7d0326026da1b0390"
+        },
+        {
+          "title": "Hiss of steam train #3",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/hiss-of-steam-train-3-s3011.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/3011.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "391d44f9da787aba70248fa2a211407ccd03aa2b554a9474d69f7cc89fbbb4c2"
+        },
+        {
+          "author": "Versilian Studios / Sam Gossner and Simon Dalzell",
+          "source_url": "https://github.com/sgossner/VSCO-2-CE",
+          "source_revision": "6dd651d55dde97fd4028699be9d4481f26917891",
+          "license": "CC0 1.0",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 92.0
+    },
+    "assets/bgm/打字机.mp3": {
+      "sources": [
+        {
+          "title": "Typewriter #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/typewriter-s1065.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1065.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "f480b737bb19c9ee59c4390ee38ca0cd6e730e812973712147c1598eb933302c"
+        },
+        {
+          "author": "AKAI Splendid Grand Piano, mapping by kinwie",
+          "source_url": "https://github.com/sfzinstruments/SplendidGrandPiano",
+          "source_revision": "1c595d827b7fd7f0be3134aaed0f90b3662a09cf",
+          "license": "Public domain (AKAI)",
+          "arrangement": "New original generative score for 潜伏之京城; no existing melody copied."
+        }
+      ],
+      "processing": "Edited and cyclically crossfaded; normalized; stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 92.0
+    },
+    "assets/sfx/人群怒吼.mp3": {
+      "sources": [
+        {
+          "title": "Shouts and Applauses of Teens #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/shouts-and-applauses-of-teens-1-s0236.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0236.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "fb6b711aaaf738e9646cb9b210c40a152cba8a53b38e24b2a15f4b0201ffda20"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.7
+    },
+    "assets/sfx/划火柴.mp3": {
+      "sources": [
+        {
+          "title": "Match #2",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/match-2-s1271.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1271.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "b76cdb5e9fde6c7bd6e607524d7b9dee1d2785be9af5569661776edd60b29faa"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 1.510702947845805
+    },
+    "assets/sfx/卡车急刹.mp3": {
+      "sources": [
+        {
+          "title": "Screeching Tires #4",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/screeching-tires-4-s2371.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/2371.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "8fd6c7ccb01a22a7991328dc9c334c96521e26186d81224ad681eff2a99942dd"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Tire friction pitched down for heavier vehicle; no modern reversing beeps.",
+      "duration_seconds": 3.15140589569161
+    },
+    "assets/sfx/哨子、皮靴.mp3": {
+      "sources": [
+        {
+          "title": "Whistle, plastic #4",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/whistle-plastic-4-s1142.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1142.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "ec83935f3640fde236cd85af822ed941c424eccc3295c30071cf2dd295102c25"
+        },
+        {
+          "title": "Footsteps, Shoe on Parquet",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/footsteps-shoe-on-parquet-s0376.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0376.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "09f029957b910b4bfe2dd293b0d1164405ebbe15b9d2b128a86c224c67263232"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Pea whistle and hard-soled footsteps layered; contemporary foley, period-compatible timbre.",
+      "duration_seconds": 3.8
+    },
+    "assets/sfx/唱片底噪.mp3": {
+      "sources": [
+        {
+          "title": "Vinyl Disc",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/vinyl-disc-s2547.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/2547.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "ba8f47e68e217fb857aece87318c8ddbc0bcb02e2cd5b9d954088a961414fa40"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.6
+    },
+    "assets/sfx/唱针卡住.mp3": {
+      "sources": [
+        {
+          "title": "Vinyl Disc",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/vinyl-disc-s2547.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/2547.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "ba8f47e68e217fb857aece87318c8ddbc0bcb02e2cd5b9d954088a961414fa40"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Repeated 78rpm-sized groove cycle (~0.77 sec); no copyrighted music.",
+      "duration_seconds": 3.76
+    },
+    "assets/sfx/唱针落下.mp3": {
+      "sources": [
+        {
+          "title": "Vinyl disc: Start #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/vinyl-disc-start-s0587.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0587.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "ff8446b14bd7e74a304f4408bf0f3031eb648dc50be2725c945c6bd31252dccc"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 2.4421541950113377
+    },
+    "assets/sfx/嘈杂人声.mp3": {
+      "sources": [
+        {
+          "title": "Crowd of 50-60 People #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/crowd-of-50-60-people-1-s3515.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/3515.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "fe32b490d9e07b55a7d1f9f1d31682b1b2bd6e9349339791a95c29be37a280fb"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Distant indistinct walla; source language obscured, no period claims about recording date.",
+      "duration_seconds": 3.8
+    },
+    "assets/sfx/奚琴长音.mp3": {
+      "sources": [
+        {
+          "title": "Jinyangjo-01",
+          "instrument": "해금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "S3-001-001"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.6000226757369616
+    },
+    "assets/sfx/布帘掀开.mp3": {
+      "sources": [
+        {
+          "title": "Flag in the Wind #2",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/flag-in-the-wind-2-s1633.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1633.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "572881beedb8703b4ca79abe93ca9466073a0400e03664d9726c9a9b06623d0f"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Fabric movement foley from a cloth flag, not a plastic shower curtain.",
+      "duration_seconds": 1.3
+    },
+    "assets/sfx/座钟.mp3": {
+      "sources": [
+        {
+          "title": "Clock",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/clock-s0007.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0007.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "86d8c2af45b11f2abc7ba09acd060d02665e52cebeca162dfde478fcf1c86458"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.445215419501134
+    },
+    "assets/sfx/心跳.mp3": {
+      "sources": [
+        {
+          "title": "Heart Beat",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/heart-beat-s0218.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0218.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "2ab81469b290b78bad0c6945ca97192efc4c88d5e541120b6651cb6ef3d09bc8"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.5579138321995463
+    },
+    "assets/sfx/急促的敲门声.mp3": {
+      "sources": [
+        {
+          "title": "Door",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/door-s0015.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0015.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "b21d501f313d46a3c2f3ba4c82405dc1a4c64a793f01c7042a52fc31fff7c88f"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 2.65
+    },
+    "assets/sfx/打字机.mp3": {
+      "sources": [
+        {
+          "title": "Typewriter #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/typewriter-s1065.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1065.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "f480b737bb19c9ee59c4390ee38ca0cd6e730e812973712147c1598eb933302c"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.664943310657596
+    },
+    "assets/sfx/拉门声.mp3": {
+      "sources": [
+        {
+          "title": "Opening/Closing an sliding door",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/opening-closing-an-sliding-door-s0336.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0336.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "db9630dfe09c336c59f54392023468126e0bffa03fbbab1ae62f3d47c62730e2"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 2.1
+    },
+    "assets/sfx/拍桌子.mp3": {
+      "sources": [
+        {
+          "title": "Slaps",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/slaps-s0597.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0597.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "7bb0d33f5f058ceaf4cc1c9464cc95941897682e87b7ea97edbd81f6861021c4"
+        },
+        {
+          "title": "Clapperboard",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/clapperboard-s1011.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1011.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "0d769aabe093e7a43b12991bd8a98c70333f0f3f6665b2afab3e920a7847619e"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Palm slap layered with low wooden impact.",
+      "duration_seconds": 1.1
+    },
+    "assets/sfx/拨号盘.mp3": {
+      "sources": [
+        {
+          "title": "Dial phone #2",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/dial-phone-s0002.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0002.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "c07b76ade196f5120c14f470c0d0afc8f528b341e9df43f56be63f7e8fe4b2fc"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 1.8996598639455782
+    },
+    "assets/sfx/掌声.mp3": {
+      "sources": [
+        {
+          "title": "Applause: 150 People",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/applause-150-people-s0019.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0019.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "0ba788a947d4869b29b38f0c6b341c4df7fb900fe07de056d1f0701e1435d7a4"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.7
+    },
+    "assets/sfx/撞门声.mp3": {
+      "sources": [
+        {
+          "title": "Door Slamming #4",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/door-slamming-4-s1501.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1501.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "268911edf64d78fd21d2d9e1f57f58c42eb7bd4b417b7832a5b02863d14036a5"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Wooden door slam with short body resonance.",
+      "duration_seconds": 1.0468934240362813
+    },
+    "assets/sfx/收音机杂音.mp3": {
+      "sources": [
+        {
+          "title": "Crackling Radio #2",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/crackling-radio-2-s0313.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0313.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "5d277558081003f35fdadde9ecc78014dfa024ca71e98f6840d6daf2f386e2cb"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.6
+    },
+    "assets/sfx/敲门.mp3": {
+      "sources": [
+        {
+          "title": "Door",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/door-s0015.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0015.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "b21d501f313d46a3c2f3ba4c82405dc1a4c64a793f01c7042a52fc31fff7c88f"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 2.2
+    },
+    "assets/sfx/日语号子.mp3": {
+      "sources": [
+        {
+          "title": "Tokyo - Chanting Crowd",
+          "author": "manuke",
+          "source_url": "https://freesound.org/people/manuke/sounds/315903/",
+          "download_url": "https://cdn.freesound.org/previews/315/315903_5356267-hq.mp3",
+          "license": "CC0 1.0",
+          "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "recording_context": "People carrying a Mikoshi, Asakusa Sanja Matsuri, May 2008. Recontextualized as muffled group exertion chanting, not an archival 1940s recording.",
+          "sha256": "a84115f5e8a597dec83b142ebe069b39a6b8cb4a884c5af16629e0baba6e8d61"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Real Japanese group exertion chant from mikoshi carriers, muffled to suggest upstairs distance. Not specifically a group of schoolboys or a wartime archival recording.",
+      "duration_seconds": 3.6
+    },
+    "assets/sfx/杯盘.mp3": {
+      "sources": [
+        {
+          "title": "Cutlery, Manipulations on Plate",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/cutlery-manipulations-on-plate-s1193.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1193.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "83d63e6d701f7557fa792893cbd46f67c76e0ba5fbb1fa4b6e676e45905e9532"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 2.1382539682539683
+    },
+    "assets/sfx/枪声.mp3": {
+      "sources": [
+        {
+          "title": "Shot in .357 Magnum 9mm",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/shot-in-357-magnum-9-mm-s0438.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0438.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "9189342d8e59a51e2503250a46104514d982e86d69be95f993895d0e1b51241a"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 1.2908616780045352
+    },
+    "assets/sfx/水声.mp3": {
+      "sources": [
+        {
+          "title": "Small Stream #4",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/small-stream-4-s1354.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1354.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "29c6c0498b18e24d00776d99f7be35d6e35f64c2f203dee6a1d0434f9f45a927"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.7
+    },
+    "assets/sfx/江水.mp3": {
+      "sources": [
+        {
+          "title": "Small Stream #4",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/small-stream-4-s1354.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1354.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "29c6c0498b18e24d00776d99f7be35d6e35f64c2f203dee6a1d0434f9f45a927"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.8
+    },
+    "assets/sfx/汽笛.mp3": {
+      "sources": [
+        {
+          "title": "Hiss of steam train #3",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/hiss-of-steam-train-3-s3011.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/3011.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "391d44f9da787aba70248fa2a211407ccd03aa2b554a9474d69f7cc89fbbb4c2"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 2.5
+    },
+    "assets/sfx/汽车刹车.mp3": {
+      "sources": [
+        {
+          "title": "Screeching Tires #4",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/screeching-tires-4-s2371.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/2371.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "8fd6c7ccb01a22a7991328dc9c334c96521e26186d81224ad681eff2a99942dd"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.2
+    },
+    "assets/sfx/火.mp3": {
+      "sources": [
+        {
+          "title": "Big Branching Fire #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/big-branching-fire-1-s0987.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0987.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "a3986554ba6c6532a67680e30f0dc08b568bee770bc9a5c7119bd97dd127fdaf"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.7
+    },
+    "assets/sfx/火车行进.mp3": {
+      "sources": [
+        {
+          "title": "Steam Locomotive #2",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/steam-locomotive-2-s3018.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/3018.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "9d0adbc64a18bf3c993713ea6b208ed115ada24b19fc36de8cc14c4047b6f779"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.8
+    },
+    "assets/sfx/火车驶过.mp3": {
+      "sources": [
+        {
+          "title": "Steam Locomotive, Passage",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/steam-locomotive-passage-s3009.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/3009.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "6f581f4c1ae66793d2de6b0b13e76c572d9256fff1ada52b4ed0d9bb74efac6e"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.8
+    },
+    "assets/sfx/爆炸.mp3": {
+      "sources": [
+        {
+          "title": "Explosion far Away #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/explosion-far-away-s1023.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1023.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "bb688dcc913c630ac7f0c22f3065954a9627af32fba902a957c3a251e6ad3c94"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Real agricultural gas-cannon blast, enhanced low-frequency body; no synthetic game explosion.",
+      "duration_seconds": 2.7831292517006805
+    },
+    "assets/sfx/玻璃碎裂.mp3": {
+      "sources": [
+        {
+          "title": "Glass Burst",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/glass-burst-s0148.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0148.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "66bcf644db2da6a2768db62b0698d7d03cca405b3438ead74bbf8016007030aa"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 1.8258049886621315
+    },
+    "assets/sfx/琴弦余音.mp3": {
+      "sources": [
+        {
+          "title": "Jinyangjo-01",
+          "instrument": "가야금",
+          "publisher": "National Gugak Center (국립국악원), Korean Digital Instrument Sound Archive",
+          "license": "Korea Open Government License Type 1 (attribution required; commercial use and adaptation permitted)",
+          "license_url": "http://www.kogl.or.kr/open/info/license_info/by.do",
+          "source_url": "https://www.gugak.go.kr/digitaleum/front/phrase/list.do",
+          "source_id": "s1-001-001"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.4
+    },
+    "assets/sfx/瓦片碎裂.mp3": {
+      "sources": [
+        {
+          "title": "Broken Plate #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/broken-plate-1-s1643.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1643.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "8260644dd13976af28094d2b3d2464eb9825dbd2f451db7c07066371b6879750"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Dry brittle ceramic break foley, transposed for clay roofing tile weight.",
+      "duration_seconds": 2.2043083900226756
+    },
+    "assets/sfx/瓷碗碎裂.mp3": {
+      "sources": [
+        {
+          "title": "Broken Plate #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/broken-plate-1-s1643.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1643.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "8260644dd13976af28094d2b3d2464eb9825dbd2f451db7c07066371b6879750"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 1.6651700680272108
+    },
+    "assets/sfx/电话铃.mp3": {
+      "sources": [
+        {
+          "title": "Dial Phone #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/dial-phone-s0001.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0001.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "8bd44ae71a5a9f51378d0805e384cb8eaf1c30850a16a19be8658081ffcd237f"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.24421768707483
+    },
+    "assets/sfx/碰撞.mp3": {
+      "sources": [
+        {
+          "title": "Clapperboard",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/clapperboard-s1011.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1011.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "0d769aabe093e7a43b12991bd8a98c70333f0f3f6665b2afab3e920a7847619e"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Low wooden collision foley.",
+      "duration_seconds": 1.1031746031746033
+    },
+    "assets/sfx/窗棂轻响.mp3": {
+      "sources": [
+        {
+          "title": "Door",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/door-s0015.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0015.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "b21d501f313d46a3c2f3ba4c82405dc1a4c64a793f01c7042a52fc31fff7c88f"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Two light wooden frame taps.",
+      "duration_seconds": 0.85
+    },
+    "assets/sfx/粉笔折断.mp3": {
+      "sources": [
+        {
+          "title": "Bones cracking #3",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/bones-cracking-3-s1409.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1409.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "a370578b5048902b00655e38f471db2955ddb855dffc4acf44945d24f49d0664"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Dry close-mic celery snap used as chalk-breaking foley, not a literal chalk field recording.",
+      "duration_seconds": 0.55
+    },
+    "assets/sfx/纸张摩擦.mp3": {
+      "sources": [
+        {
+          "title": "Turned Page",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/turned-page-s0164.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0164.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "bbfe308e17db4bcd402d07c69447c31ec351dc9d4143f8d93c4e567d4c1ac8d5"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 0.55
+    },
+    "assets/sfx/纸张燃烧.mp3": {
+      "sources": [
+        {
+          "title": "Big Branching Fire #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/big-branching-fire-1-s0987.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0987.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "a3986554ba6c6532a67680e30f0dc08b568bee770bc9a5c7119bd97dd127fdaf"
+        },
+        {
+          "title": "Turned Page",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/turned-page-s0164.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0164.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "bbfe308e17db4bcd402d07c69447c31ec351dc9d4143f8d93c4e567d4c1ac8d5"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Small crackling fire and paper handling foley.",
+      "duration_seconds": 3.39297052154195
+    },
+    "assets/sfx/绳索绷紧、木梁断裂.mp3": {
+      "sources": [
+        {
+          "title": "Sliding rope #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/sliding-rope-1-s1818.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1818.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "2179c2de5fa7260ba94d084f4a69ef36e2e7b1b61df7e58b00f2d5b5586f5048"
+        },
+        {
+          "title": "Broken twigs #2",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/broken-twigs-2-s1300.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1300.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "ce62655048dec39c4e574d47358b189ce88e539294430380f4163fd79bf9fe19"
+        },
+        {
+          "title": "Clapperboard",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/clapperboard-s1011.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1011.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "0d769aabe093e7a43b12991bd8a98c70333f0f3f6665b2afab3e920a7847619e"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Rope friction, layered wood fractures and beam-weight impact.",
+      "duration_seconds": 3.2
+    },
+    "assets/sfx/警笛.mp3": {
+      "sources": [
+        {
+          "author": "cqqybrn/ctgs asset production",
+          "license": "CC0 1.0",
+          "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "method": "Physical rotor/stator air-pulse siren model with continuous motor inertia and harmonic radiation; no modern two-tone electronic alarm."
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Reconstructed mechanical siren, not an archival field recording.",
+      "duration_seconds": 3.8
+    },
+    "assets/sfx/远处的人声，像涨潮.mp3": {
+      "sources": [
+        {
+          "title": "Crowd of 50-60 People #1",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/crowd-of-50-60-people-1-s3515.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/3515.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "fe32b490d9e07b55a7d1f9f1d31682b1b2bd6e9349339791a95c29be37a280fb"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Distant indistinct walla; source language obscured, no period claims about recording date.",
+      "duration_seconds": 3.8
+    },
+    "assets/sfx/连响四枪.mp3": {
+      "sources": [
+        {
+          "title": "Shot in .357 Magnum 9mm",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/shot-in-357-magnum-9-mm-s0438.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0438.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "9189342d8e59a51e2503250a46104514d982e86d69be95f993895d0e1b51241a"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. Exactly four handgun transients at 0.00, 0.40, 0.80 and 1.20 seconds.",
+      "duration_seconds": 2.45
+    },
+    "assets/sfx/雨声.mp3": {
+      "sources": [
+        {
+          "title": "Summer Rain on Terrace",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/summer-rain-on-terrace-s1019.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/1019.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "b3050713d6303cde08379b0e45db568a216ca9d8068d2b93eb37c38a3edbe979"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.8
+    },
+    "assets/sfx/风声.mp3": {
+      "sources": [
+        {
+          "title": "Wind",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/wind-s0595.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/0595.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "973d17d891126979f81a41df6f5b25f815400d0a3544e6d7d0326026da1b0390"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.8
+    },
+    "assets/sfx/飞机轰鸣.mp3": {
+      "sources": [
+        {
+          "title": "Passage of Small Propeller Plane",
+          "publisher": "BigSoundBank / Joseph SARDIN",
+          "source_url": "https://bigsoundbank.com/passage-of-small-propeller-plane-s2478.html",
+          "download_url": "https://bigsoundbank.com/UPLOAD/mp3/2478.mp3?v=d",
+          "license": "CC0 1.0",
+          "license_url": "https://bigsoundbank.com/licenses.html",
+          "sha256": "b6dbb35ad90c8c5f3662f67ad3b175552ab3f9effdefae8c1be5f8721af16967"
+        }
+      ],
+      "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
+      "duration_seconds": 3.8
+    }
+  }
+}

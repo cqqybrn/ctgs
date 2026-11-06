@@ -741,6 +741,8 @@ def build_passages(huas):
 def describe(s):
     t = s["type"]
     st = M.STYLE[t]
+    if t == "cg" and s["name"] in M.CG_SCENES:
+        return f"{st['style']} {M.CG_SCENES[s['name']]}"
     if t in ("bg", "cg"):
         parts = s["name"].split("_")
         loc = M.LOC.get(parts[0], parts[0])
@@ -749,7 +751,9 @@ def describe(s):
         return f"{st['style']} 场景：{scene}。"
     if t == "char":
         who, expr = s["who"], s["expr"]
-        look = M.CHAR.get(who, who)
+        look = M.CHAR_VARIANTS.get((who, expr), M.CHAR.get(who, who))
+        if (who, expr) in M.CHAR_VARIANTS:
+            return f"{st['style']} 此为同一人物的跨年代版本，允许随所写年份自然衰老，但不得更换身份面貌。人物：{look}"
         return f"{st['style']} 人物：{look} 表情/状态：{M.EXPR.get(expr, expr)}。"
     if t == "bgm":
         return f"{st['style']} {M.BGM.get(s['name'], s['name'])}"
@@ -780,6 +784,10 @@ def finish_slots(huas):
     for s in slots.values():
         s["prompt"] = describe(s)
         s["spec"] = M.STYLE[s["type"]]["spec"]
+        if s["id"] in M.ART_REFERENCES:
+            s["references"] = M.ART_REFERENCES[s["id"]]
+            if s["type"] == "cg":
+                s["spec"] += " 单张不超过600KB；人物须与对应年龄的立绘一致。"
         s["present"] = os.path.exists(os.path.join(ROOT, s["file"]))
 
 def write_manifest():
@@ -829,7 +837,7 @@ def write_assets_readme(items):
         f.write("\n".join(L))
 
 # ---------------------------------------------------------------- 输出 HTML
-def build_html(huas):
+def build_html(huas, admin_mode=False):
     with open(os.path.join(ROOT, "tools", "story.css"), encoding="utf-8") as f:
         css = f.read()
     with open(os.path.join(ROOT, "tools", "story.js"), encoding="utf-8") as f:
@@ -841,14 +849,36 @@ def build_html(huas):
         passages[m.group(1)] = m.group(3).strip()
         ptags[m.group(1)] = (m.group(2) or "").split()
     init = ["<<set $used to {}>>", "<<set $expr to {}>>", "<<set $bgm to null>>"]
-    for v in sorted(used_vars | {f"{x:03d}" for x in range(1, 33)}):
-        init.append(f"<<set $v{v} to 0>>")
+    initial_vars = {f"v{v}": 0 for v in sorted(used_vars | {f"{x:03d}" for x in range(1, 33)})}
+    for v in initial_vars:
+        init.append(f"<<set ${v} to 0>>")
     passages["StoryInit"] = "\n".join(init)
     chap_names = CHAPTER_NAMES + ["尾声"]
+    navigation = []
+    for ci, label in enumerate(chap_names):
+        entries, seen = [], set()
+        for h in huas:
+            name = f"h{h['n']}~{h['sub']}" if h.get("sub") else f"h{h['n']}"
+            if h["chap"] != ci or name in seen or "hua" not in ptags.get(name, []):
+                continue
+            seen.add(name)
+            title = h["sub"] if h.get("sub") else re.sub(r"（对应.*?）", "", h["title"])
+            entries.append({"passage": name, "hua": h["n"], "title": title})
+        if entries:
+            navigation.append({"index": ci, "name": label, "entries": entries})
+    credits_path = os.path.join(ROOT, "assets", "AUDIO_LICENSES.json")
+    audio_credits = {}
+    if os.path.isfile(credits_path):
+        with open(credits_path, encoding="utf-8") as f:
+            audio_credits = json.load(f).get("assets", {})
     varnames = {}
     for m in re.finditer(r"^\| (\d{3}) \| ([^|]+?) \|", open(os.path.join(ROOT, "script", "00-设定集与大纲.md"), encoding="utf-8").read(), re.M):
         varnames[m.group(1)] = m.group(2).strip()
     data_js = ("setup.VARNAMES = " + json.dumps(varnames, ensure_ascii=False) + ";\n"
+               "setup.ADMIN_MODE = " + json.dumps(admin_mode) + ";\n"
+               "setup.INITIAL_VARIABLES = " + json.dumps(initial_vars, ensure_ascii=False) + ";\n"
+               "setup.ADMIN_CHAPTERS = " + json.dumps(navigation if admin_mode else [], ensure_ascii=False) + ";\n"
+               "setup.AUDIO_CREDITS = " + json.dumps(audio_credits, ensure_ascii=False) + ";\n"
                "setup.CHAPTERS = " + json.dumps(chap_names, ensure_ascii=False) + ";\n"
                "setup.ENDINGS = " + json.dumps(endings, ensure_ascii=False) + ";\n"
                "setup.EPILOGUE = " + json.dumps(epi_map, ensure_ascii=False) + ";\n"
@@ -865,13 +895,14 @@ def build_html(huas):
         tags = " ".join(ptags.get(name, []))
         pd.append(f'<tw-passagedata pid="{k}" name="{html.escape(name, quote=True)}" tags="{html.escape(tags, quote=True)}" '
                   f'position="{100 * (k % 50)},{100 * (k // 50)}" size="100,100">{html.escape(body, quote=True)}</tw-passagedata>')
-    ifid = "B7D3C1E2-6A4F-4C1B-9E0D-5A1F2C3B4D5E"
-    sd = (f'<tw-storydata name="潜伏之京城" startnode="{start_pid}" creator="tools/build.py" creator-version="1.0" '
+    ifid = "EAD95480-3D36-4BAE-940D-B92113004764" if admin_mode else "B7D3C1E2-6A4F-4C1B-9E0D-5A1F2C3B4D5E"
+    story_name = "潜伏之京城·管理员试玩" if admin_mode else "潜伏之京城"
+    sd = (f'<tw-storydata name="{story_name}" startnode="{start_pid}" creator="tools/build.py" creator-version="1.0" '
           f'ifid="{ifid}" zoom="1" format="SugarCube" format-version="{fmt["version"]}" options="" hidden>'
           f'<style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css">{css}</style>'
           f'<script role="script" id="twine-user-script" type="text/twine-javascript">{data_js}{js}</script>'
           + "".join(pd) + "</tw-storydata>")
-    out = fmt["source"].replace("{{STORY_NAME}}", "潜伏之京城").replace("{{STORY_DATA}}", sd)
+    out = fmt["source"].replace("{{STORY_NAME}}", story_name).replace("{{STORY_DATA}}", sd)
     head_extra = ('<meta name="claude:viewport-fit-sides" content="cover">\n'
                   '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
                   '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;900&family=Noto+Serif+KR:wght@400;600&display=swap">\n')
@@ -909,10 +940,14 @@ def main():
     if not check_only:
         items = write_manifest()
         write_assets_readme(items)
-        html_out, n = build_html(huas)
-        with open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8") as f:
-            f.write(html_out)
-        print(f"index.html：{n} 个段落，{len(html_out)//1024} KB")
+        for filename, admin_mode in (("index.html", False), ("admin.html", True)):
+            html_out, n = build_html(huas, admin_mode=admin_mode)
+            dest = os.path.join(ROOT, filename)
+            temp = dest + ".tmp"
+            with open(temp, "w", encoding="utf-8") as f:
+                f.write(html_out)
+            os.replace(temp, dest)
+            print(f"{filename}：{n} 个段落，{len(html_out)//1024} KB")
     cnt = collections.Counter(s["type"] for s in slots.values())
     print(f"结局 {len(endings)} 个；素材插槽 {dict(cnt)}；变量 {len(used_vars)} 个")
     for w in warnings:
