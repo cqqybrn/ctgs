@@ -50,6 +50,102 @@ setup.chapLabel = function () {
   return "";
 };
 
+/* 正式版章节回访：保存渲染前的真实状态，不能在跳章时重复执行本话增减值。 */
+setup.chapterSelect = (function () {
+  const enabled = !setup.ADMIN_MODE;
+  const key = setup.storageKey("chapter-visits-v2");
+  const copy = value => JSON.parse(JSON.stringify(value));
+  let memory = {}, pending = null, backup = null, lastChapter = null, storageError = false;
+  function chapterOf(name) {
+    if (!Story.has(name) || !/^h\d+(?:~.*)?$/.test(name)) return null;
+    const tag = Story.get(name).tags.find(t => /^c\d+$/.test(t));
+    return tag ? Number(tag.slice(1)) : null;
+  }
+  function valid(record, index) {
+    return record && record.schema === 1 && chapterOf(record.passage) === Number(index)
+      && record.variables && typeof record.variables === "object" && !Array.isArray(record.variables)
+      && Object.keys(setup.INITIAL_VARIABLES).every(k =>
+        Object.prototype.hasOwnProperty.call(record.variables, k)
+        && (typeof setup.INITIAL_VARIABLES[k] !== "number" || Number.isFinite(record.variables[k])));
+  }
+  function records() {
+    let data = {};
+    try { data = JSON.parse(localStorage.getItem(key) || "{}"); }
+    catch (e) { storageError = true; }
+    const result = Object.assign({}, data && typeof data === "object" ? data : {}, memory);
+    Object.keys(result).forEach(index => { if (!valid(result[index], index)) delete result[index]; });
+    return result;
+  }
+  function save(index, passage) {
+    const all = records();
+    if (all[index]) return;
+    all[index] = { schema: 1, passage: passage, variables: copy(State.variables), at: Date.now() };
+    memory = all;
+    try { localStorage.setItem(key, JSON.stringify(all)); }
+    catch (e) { storageError = true; }
+  }
+  $(document).on(":passageinit.qfChapterSelect", function (ev) {
+    if (!enabled || !pending || pending.passage !== ev.detail.passage.name) return;
+    const variables = State.variables;
+    Object.keys(variables).forEach(k => { delete variables[k]; });
+    Object.assign(variables, copy(pending.variables));
+    pending = null;
+  });
+  $(document).on(":passagestart.qfChapterSelect", function (ev) {
+    if (!enabled) return;
+    const passage = ev.detail.passage.name;
+    const index = chapterOf(passage);
+    // 事件在历史节点建立后、剧情宏渲染前触发；留存原始输入，刷新也不会累加数值。
+    if (index !== null && index !== lastChapter) save(index, passage);
+    lastChapter = index;
+  });
+  function jump(index) {
+    if (!enabled) throw new Error("管理员版请使用章节试玩菜单。");
+    const saved = records()[index];
+    if (!valid(saved, index)) throw new Error("该章节尚未到达，请先正常游玩解锁。");
+    const previous = Save.base64.save();
+    pending = copy(saved);
+    setup.audio.reset();
+    try { Engine.play(saved.passage); backup = previous; }
+    finally { pending = null; }
+  }
+  async function undo() {
+    if (!backup) return;
+    const saved = backup;
+    setup.audio.reset();
+    await Save.base64.load(saved);
+    Engine.show();
+    backup = null;
+  }
+  function open() {
+    if (!enabled) return;
+    Dialog.create("章节选择", "chapter-panel");
+    const box = jQuery('<div class="chapter-select"></div>');
+    jQuery('<p class="admin-note"></p>').text("回到首次到达该章的位置，并恢复当时的全部剧情数值、选项记录和分支。未到达章节需先正常游玩解锁；手动存档不受影响。").appendTo(box);
+    const all = records();
+    const status = jQuery('<p class="admin-error" role="alert"></p>');
+    setup.CHAPTER_NAV.forEach(chapter => {
+      const saved = all[chapter.index];
+      const button = jQuery('<button type="button" class="chapter-choice"></button>');
+      button.attr("data-chapter", chapter.index).prop("disabled", !saved)
+        .text(chapter.name + (saved ? " · 第" + (/^h(\d+)/.exec(saved.passage) || [0, ""])[1] + "话" : " · 尚未到达"));
+      button.on("click", function () {
+        try { jump(chapter.index); Dialog.close(); }
+        catch (e) { status.text("跳转失败：" + e.message); }
+      }).appendTo(box);
+    });
+    if (backup) jQuery('<button type="button" class="chapter-undo">撤销上次跳章</button>')
+      .on("click", async function () {
+        try { await undo(); Dialog.close(); }
+        catch (e) { status.text("恢复失败：" + e.message); }
+      }).appendTo(box);
+    if (storageError) jQuery('<p class="admin-note"></p>').text("浏览器存储不可用或记录损坏；本次新解锁章节仅在当前页面保留，请及时手动存档。").appendTo(box);
+    box.append(status);
+    Dialog.append(box[0]).open();
+  }
+  return Object.freeze({ open: open, jump: jump, undo: undo, records: records });
+})();
+
 /* ---------- 素材 ---------- */
 setup.assetPath = function (id) {
   if (setup.ASSETS[id]) return setup.ASSETS[id];

@@ -878,6 +878,7 @@ def build_html(huas, admin_mode=False):
     data_js = ("setup.VARNAMES = " + json.dumps(varnames, ensure_ascii=False) + ";\n"
                "setup.ADMIN_MODE = " + json.dumps(admin_mode) + ";\n"
                "setup.INITIAL_VARIABLES = " + json.dumps(initial_vars, ensure_ascii=False) + ";\n"
+               "setup.CHAPTER_NAV = " + json.dumps(navigation, ensure_ascii=False) + ";\n"
                "setup.ADMIN_CHAPTERS = " + json.dumps(navigation if admin_mode else [], ensure_ascii=False) + ";\n"
                "setup.AUDIO_CREDITS = " + json.dumps(audio_credits, ensure_ascii=False) + ";\n"
                "setup.CHAPTERS = " + json.dumps(chap_names, ensure_ascii=False) + ";\n"

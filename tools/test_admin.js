@@ -56,7 +56,7 @@ function checked(name) { report.checks.push(name); console.log('通过：' + nam
     await p.goto(base); await p.waitForSelector('.title-screen');
     const endingCount = await p.evaluate(() => SugarCube.setup.ENDINGS.length);
     assert.equal(await p.locator('.title-screen').innerText().then(t => t.includes(`共 ${endingCount} 个结局`)), true);
-    assert.equal(await p.getByRole('button', { name: '选择章节', exact: true }).count(), 0);
+    assert.equal(await p.getByRole('button', { name: '选择章节', exact: true }).count(), 1);
     const ids = await p.evaluate(() => ({ normal: SugarCube.Story.id, ifid: SugarCube.Story.ifId }));
     await p.getByRole('link', { name: '开始游戏', exact: true }).click();
     const preserved = await p.evaluate(async () => {
