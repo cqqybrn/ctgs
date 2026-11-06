@@ -19,7 +19,9 @@ const URL = pathToFileURL(path.resolve(__dirname, '../index.html')).href;
     await p.getByRole('button', { name: '选择章节', exact: true }).click();
     const count = await p.evaluate(() => SugarCube.setup.CHAPTER_NAV.length);
     assert(count > 0);
-    assert.equal(await p.locator('.chapter-choice:disabled').count(), count);
+    assert.equal(await p.locator('.chapter-choice').count(), count);
+    assert.equal(await p.locator('.chapter-choice:disabled').count(), 0);
+    assert.equal(await p.locator('#jump-chapter option').count(), count);
     await p.locator('#ui-dialog-close').click();
     await p.locator('.title-menu a[data-passage="h1"]').click();
     await p.waitForFunction(() => SugarCube.State.passage === 'h1');
@@ -30,7 +32,7 @@ const URL = pathToFileURL(path.resolve(__dirname, '../index.html')).href;
     }));
     assert.equal(first.records[first.chapter].passage, 'h1');
     assert(Object.keys(first.records[first.chapter].variables).length > 0);
-    console.log('通过：标题入口、未到达锁定、正常开局自动记录真实状态');
+    console.log('通过：标题入口、全部章节解锁、正常开局自动记录真实状态');
     // 先实际点击推进，验证读者交互正常，再建立可重复的跨章夹具。
     assert.equal(await p.locator('html').getAttribute('data-mode'), 'stage');
     for (let i = 0; i < 160 && await p.evaluate(() => SugarCube.State.passage === 'h1'); i++) {
@@ -74,11 +76,11 @@ const URL = pathToFileURL(path.resolve(__dirname, '../index.html')).href;
     await p.evaluate(() => SugarCube.setup.chapterSelect.undo());
     assert.deepEqual(await p.evaluate(() => JSON.parse(JSON.stringify(SugarCube.State.variables))), beforeUndo);
     const locked = await p.evaluate(() => {
-      const s = SugarCube; const c = s.setup.CHAPTER_NAV.find(c => !s.setup.chapterSelect.records()[c.index]);
-      try { s.setup.chapterSelect.jump(c.index); return false; } catch (e) { return true; }
+      const s = SugarCube;
+      try { s.setup.chapterSelect.jump(-999); return false; } catch (e) { return true; }
     });
     assert(locked);
-    console.log('通过：撤销恢复原进度，未解锁目标被拦截');
+    console.log('通过：撤销恢复原进度，非法章节目标被拦截');
     for (const width of [320, 390, 768, 1280]) {
       await p.setViewportSize({ width, height: 844 });
       await p.getByRole('button', { name: '章节', exact: true }).click();
@@ -102,5 +104,44 @@ const URL = pathToFileURL(path.resolve(__dirname, '../index.html')).href;
     await admin.goto(URL.replace(/index\.html$/, 'admin.html')); await admin.waitForSelector('.title-screen');
     assert.deepEqual(await admin.evaluate(() => SugarCube.setup.chapterSelect.records()), {});
     console.log('通过：正式版章节记录与管理员版隔离');
+    const test = await context.newPage();
+    await test.route('**/assets/**', r => r.abort());
+    test.on('pageerror', e => errors.push(e.message));
+    await test.goto(URL); await test.waitForSelector('.title-screen');
+    const bulk = await test.evaluate(() => {
+      const S = SugarCube, problems = [];
+      S.setup.vnAutoFollow = false;
+      const beforeRecords = JSON.stringify(S.setup.chapterSelect.records());
+      let captured = null, checked = 0;
+      jQuery(document).on(':passagestart.chapterUnlockTest', ev => { captured = { passage: ev.detail.passage.name, values: JSON.parse(JSON.stringify(S.State.variables)) }; });
+      for (const c of S.setup.CHAPTER_NAV) for (const e of c.entries) for (const preset of ['fresh', 'favorable', 'adverse', 'current']) {
+        const previous = JSON.parse(JSON.stringify(S.State.variables));
+        captured = null;
+        S.setup.chapterSelect.testJump(e.passage, preset);
+        checked++;
+        const input = preset === 'current' ? previous : Object.assign({}, S.setup.INITIAL_VARIABLES, S.setup.admin.presets[preset].values);
+        if (!captured || captured.passage !== e.passage) problems.push(e.passage + ': incorrect destination');
+        else {
+          for (const key of Object.keys(S.setup.INITIAL_VARIABLES)) if (captured.values[key] !== input[key]) problems.push(e.passage + ':' + preset + ':' + key);
+          if (!captured.values.qfTestJump || captured.values.stage.bg !== null || captured.values.bgm !== null || Object.keys(captured.values.used).length) problems.push(e.passage + ': dirty stage');
+        }
+        if (document.querySelector('#passages .error, #passages .error-view')) problems.push(e.passage + ': macro error');
+      }
+      jQuery(document).off('.chapterUnlockTest');
+      if (JSON.stringify(S.setup.chapterSelect.records()) !== beforeRecords) problems.push('test fixtures polluted authentic records');
+      return { checked, problems };
+    });
+    assert.deepEqual(bulk.problems, []);
+    console.log('通过：' + bulk.checked + ' 次具体话×预设跳转，入口数值精确匹配、演出重置、真实回访记录不被覆盖');
+    await test.getByRole('button', { name: '章节', exact: true }).click();
+    const target = await test.evaluate(() => SugarCube.setup.CHAPTER_NAV.find(c => c.entries.some(e => e.passage === 'h120')));
+    await test.locator('#jump-chapter').selectOption(String(target.index));
+    await test.locator('#jump-passage').selectOption('h120');
+    await test.locator('#jump-preset').selectOption('favorable');
+    await test.getByRole('button', { name: '跳到所选话', exact: true }).click();
+    await test.waitForFunction(() => SugarCube.State.passage === 'h120');
+    assert.equal(await test.locator('html').getAttribute('data-mode'), 'stage');
+    assert.deepEqual(errors, []);
+    console.log('通过：正式版通过下拉框真实点击直达第120话，仍是竖屏游戏舞台；页面异常 0');
   } finally { await browser.close(); }
 })().catch(e => { console.error(e); process.exitCode = 1; });

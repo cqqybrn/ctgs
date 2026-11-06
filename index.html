@@ -659,18 +659,37 @@ setup.chapterSelect = (function () {
     const passage = ev.detail.passage.name;
     const index = chapterOf(passage);
     // 事件在历史节点建立后、剧情宏渲染前触发；留存原始输入，刷新也不会累加数值。
-    if (index !== null && index !== lastChapter) save(index, passage);
+    if (index !== null && index !== lastChapter && !State.variables.qfTestJump) save(index, passage);
     lastChapter = index;
   });
   function jump(index) {
     if (!enabled) throw new Error("管理员版请使用章节试玩菜单。");
     const saved = records()[index];
-    if (!valid(saved, index)) throw new Error("该章节尚未到达，请先正常游玩解锁。");
+    if (!valid(saved, index)) {
+      const chapter = setup.CHAPTER_NAV.find(c => c.index === Number(index));
+      if (!chapter) throw new Error("章节不存在。");
+      return testJump(chapter.entries[0].passage, "favorable");
+    }
     const previous = Save.base64.save();
     pending = copy(saved);
     setup.audio.reset();
     if (setup.vn) setup.vn.reset();
     try { Engine.play(saved.passage); backup = previous; }
+    finally { pending = null; }
+  }
+  function testJump(passage, preset) {
+    if (!enabled) throw new Error("管理员版请使用章节试玩菜单。");
+    if (!setup.CHAPTER_NAV.some(c => c.entries.some(e => e.passage === passage)) || !Story.has(passage)) throw new Error("话入口不存在。");
+    const selected = setup.admin.presets[preset];
+    if (!selected) throw new Error("测试预设不存在。");
+    const variables = preset === "current" ? copy(State.variables) : Object.assign({}, setup.INITIAL_VARIABLES, copy(selected.values));
+    variables.used = {}; variables.expr = {}; variables.bgm = null;
+    variables.stage = setup.freshStage(); variables.qfTestJump = true;
+    delete variables.qfStep; delete variables.qfSeen;
+    const previous = Save.base64.save();
+    pending = { passage: passage, variables: variables };
+    setup.audio.reset(); setup.vn.reset();
+    try { Engine.play(passage); backup = previous; }
     finally { pending = null; }
   }
   async function undo() {
@@ -686,16 +705,46 @@ setup.chapterSelect = (function () {
     if (!enabled) return;
     Dialog.create("章节选择", "chapter-panel");
     const box = jQuery('<div class="chapter-select"></div>');
-    jQuery('<p class="admin-note"></p>').text("回到首次到达该章的位置，并恢复当时的全部剧情数值、选项记录和分支。未到达章节需先正常游玩解锁；手动存档不受影响。").appendTo(box);
+    jQuery('<p class="admin-note"></p>').text("全部章节及具体话已解锁，可直接测试。自动模式优先恢复真实回访记录；没有记录时使用顺境测试预设。测试预设不是前文真实通关数值，不保证满足所有分支；不会覆盖真实回访记录或手动存档。").appendTo(box);
     const all = records();
     const status = jQuery('<p class="admin-error" role="alert"></p>');
+    const form = jQuery('<form class="admin-form"></form>');
+    const chapterInput = jQuery('<select id="jump-chapter" aria-label="测试章节"></select>');
+    const passageInput = jQuery('<select id="jump-passage" aria-label="具体话"></select>');
+    const presetInput = jQuery('<select id="jump-preset" aria-label="跳转数值"></select>');
+    presetInput.append(jQuery('<option value="auto">自动：真实记录优先，否则顺境测试</option>'));
+    Object.keys(setup.admin.presets).forEach(k => presetInput.append(jQuery('<option></option>').val(k).text(setup.admin.presets[k].label)));
+    setup.CHAPTER_NAV.forEach(c => chapterInput.append(jQuery('<option></option>').val(c.index).text(c.name)));
+    function refresh() {
+      passageInput.empty();
+      setup.CHAPTER_NAV.find(c => c.index === Number(chapterInput.val())).entries.forEach(e => passageInput.append(jQuery('<option></option>').val(e.passage).text("第" + e.hua + "话 · " + e.title)));
+    }
+    chapterInput.on("change", refresh); refresh();
+    [["测试章节", chapterInput], ["具体话", passageInput], ["跳转数值", presetInput]].forEach(([label, control]) => {
+      jQuery('<div class="admin-field"></div>').append(jQuery('<label></label>').attr("for", control.attr("id")).text(label), control).appendTo(form);
+    });
+    jQuery('<button type="submit">跳到所选话</button>').appendTo(form);
+    form.on("submit", function (ev) {
+      ev.preventDefault();
+      try {
+        const index = Number(chapterInput.val()), saved = all[index], passage = passageInput.val();
+        if (presetInput.val() === "auto" && saved && saved.passage === passage) jump(index);
+        else testJump(passage, presetInput.val() === "auto" ? "favorable" : presetInput.val());
+        Dialog.close();
+      } catch (e) { status.text("跳转失败：" + e.message); }
+    });
+    box.append(form);
     setup.CHAPTER_NAV.forEach(chapter => {
       const saved = all[chapter.index];
       const button = jQuery('<button type="button" class="chapter-choice"></button>');
-      button.attr("data-chapter", chapter.index).prop("disabled", !saved)
-        .text(chapter.name + (saved ? " · 第" + (/^h(\d+)/.exec(saved.passage) || [0, ""])[1] + "话" : " · 尚未到达"));
+      button.attr("data-chapter", chapter.index)
+        .text(chapter.name + (saved ? " · 真实记录：第" + (/^h(\d+)/.exec(saved.passage) || [0, ""])[1] + "话" : " · 已解锁测试"));
       button.on("click", function () {
-        try { jump(chapter.index); Dialog.close(); }
+        try {
+          if (presetInput.val() === "auto") jump(chapter.index);
+          else testJump(chapter.entries[0].passage, presetInput.val());
+          Dialog.close();
+        }
         catch (e) { status.text("跳转失败：" + e.message); }
       }).appendTo(box);
     });
@@ -708,7 +757,7 @@ setup.chapterSelect = (function () {
     box.append(status);
     Dialog.append(box[0]).open();
   }
-  return Object.freeze({ open: open, jump: jump, undo: undo, records: records });
+  return Object.freeze({ open: open, jump: jump, testJump: testJump, undo: undo, records: records });
 })();
 
 /* ---------- 素材 ---------- */
@@ -946,7 +995,7 @@ setup.admin = (function () {
     });
     Dialog.append(form[0]).open();
   }
-  return Object.freeze({ enabled: enabled, open: open, jump: jump, undo: undo });
+  return Object.freeze({ enabled: enabled, open: open, jump: jump, undo: undo, presets: presets });
 })();
 
 /* ---------- 音源署名（构建时嵌入，本地双击也可查看） ---------- */
