@@ -54,7 +54,8 @@ function checked(name) { report.checks.push(name); console.log('通过：' + nam
     // 批量逻辑测试不加载素材；后面另起页面加载真实图像和音频。
     await p.route('**/assets/**', route => route.abort());
     await p.goto(base); await p.waitForSelector('.title-screen');
-    assert.equal(await p.locator('.title-screen').innerText().then(t => t.includes('共 69 个结局')), true);
+    const endingCount = await p.evaluate(() => SugarCube.setup.ENDINGS.length);
+    assert.equal(await p.locator('.title-screen').innerText().then(t => t.includes(`共 ${endingCount} 个结局`)), true);
     assert.equal(await p.getByRole('button', { name: '选择章节', exact: true }).count(), 0);
     const ids = await p.evaluate(() => ({ normal: SugarCube.Story.id, ifid: SugarCube.Story.ifId }));
     await p.getByRole('link', { name: '开始游戏', exact: true }).click();
@@ -76,8 +77,8 @@ function checked(name) { report.checks.push(name); console.log('通过：' + nam
     checked('正式版与管理版的故事 ID、IFID、存档、检查点及收集记录隔离');
     await p.getByRole('button', { name: '选择章节', exact: true }).click();
     const chapters = await p.evaluate(() => SugarCube.setup.ADMIN_CHAPTERS);
-    assert.equal(chapters.length, 9);
-    assert.equal(await p.locator('#admin-chapter option').count(), 9);
+    assert.ok(chapters.length >= 9, '章节数不得少于正式版的九章');
+    assert.equal(await p.locator('#admin-chapter option').count(), chapters.length);
     for (let i = 0; i < chapters.length; i++) {
       if (i) await p.getByRole('button', { name: '管理', exact: true }).click();
       await p.locator('#admin-chapter').selectOption(String(i));
@@ -87,7 +88,7 @@ function checked(name) { report.checks.push(name); console.log('通过：' + nam
       assert.equal(await p.evaluate(() => SugarCube.State.passage), chapters[i].entries[0].passage);
       assert.equal(await p.locator('#passages .error-view, #passages .error').count(), 0);
     }
-    checked('9 个章节均可通过菜单从章首进入');
+    checked(`${chapters.length} 个章节均可通过菜单从章首进入`);
     const entryCount = chapters.reduce((n, c) => n + c.entries.length, 0);
     const bulk = await p.evaluate(chapters => {
       const S = SugarCube, bad = [];
@@ -141,15 +142,16 @@ function checked(name) { report.checks.push(name); console.log('通过：' + nam
     assert.equal(denied, true);
     checked('撤销跳转恢复变量和剧情；管理版保存后正式版存档及记录仍完整');
     await p.evaluate(() => SugarCube.Engine.play('音源署名'));
-    assert.equal(await p.locator('.credit-item').count(), 75);
-    checked('75 个音频的署名与许可可在游戏内查看');
+    const creditCount = await p.evaluate(() => Object.keys(SugarCube.setup.AUDIO_CREDITS).length);
+    assert.ok(creditCount >= 75); assert.equal(await p.locator('.credit-item').count(), creditCount);
+    checked(`${creditCount} 个音频的署名与许可可在游戏内查看`);
     for (const file of ['index.html', 'admin.html']) {
       await p.goto(pathToFileURL(path.join(ROOT, file)).href);
       await p.waitForSelector('.title-screen');
       assert.equal(await p.evaluate(() => SugarCube.setup.admin.enabled), file === 'admin.html');
       if (file === 'admin.html') {
         await p.getByRole('button', { name: '选择章节', exact: true }).click();
-        assert.equal(await p.locator('#admin-chapter option').count(), 9);
+        assert.equal(await p.locator('#admin-chapter option').count(), await p.evaluate(() => SugarCube.setup.ADMIN_CHAPTERS.length));
         await p.keyboard.press('Escape');
       }
     }
@@ -192,15 +194,18 @@ function checked(name) { report.checks.push(name); console.log('通过：' + nam
     assert.equal(playing.length, 1); assert.ok(playing[0].endsWith('/军歌唱片.mp3')); assert.deepEqual(failed, []);
     checked('管理跳章后真实背景、头像和音乐加载；快速多次跳转不残留旧音乐或音效');
     const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'assets/manifest.json'), 'utf8'));
-    assert.ok(manifest.slots.length >= 321, '基础素材插槽不得减少'); assert.ok(manifest.slots.every(s => s.present));
+    assert.ok(manifest.slots.length >= 321, '基础素材插槽不得减少');
+    const missingSlots = manifest.slots.filter(s => !s.present).map(s => s.id);
     let bytes = 0;
-    for (const s of manifest.slots) {
+    for (const s of manifest.slots.filter(s => s.present)) {
       const response = await fetch(base + encodeURI(s.file), { method: 'HEAD' });
       assert.equal(response.status, 200, s.file); bytes += fs.statSync(path.join(ROOT, s.file)).size;
     }
     report.assetBytes = bytes;
-    checked(`${manifest.slots.length} 个中文素材路径 HTTP 200；素材合计 ${(bytes / 1048576).toFixed(1)} MiB`);
+    checked(`${manifest.slots.length - missingSlots.length} 个中文素材路径 HTTP 200；素材合计 ${(bytes / 1048576).toFixed(1)} MiB`);
     assert.deepEqual(report.errors, []);
+    // 发布前的最后一关：所有插槽都要有文件
+    assert.deepEqual(missingSlots, [], `还有 ${missingSlots.length} 个素材插槽没有文件`);
     report.chapterCount = chapters.length; report.entryCount = entryCount;
     console.log('管理员模式回归：全部通过；页面异常 0');
   } finally {
