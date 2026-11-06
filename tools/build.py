@@ -609,7 +609,8 @@ def render_end(name, tail, ctx):
     if hints or rv:
         box = ['<section class="review">']
         for t in hints:
-            box.append(f'<p class="hint1">{verb(re.sub(r"^💡\s*提示[：:]?\s*", "", t))}</p>')
+            hint_text = re.sub(r"^💡\s*提示[：:]?\s*", "", t)
+            box.append(f'<p class="hint1">{verb(hint_text)}</p>')
         if rv and rv.get("review"):
             box.append(f'<p class="rv"><span class="rv-h">复盘</span>{verb(rv["review"])}</p>')
         box.append("</section>")

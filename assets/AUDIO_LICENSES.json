@@ -1365,6 +1365,19 @@
       ],
       "processing": "Selected, trimmed, normalized and faded; 44.1 kHz stereo 160kbps MP3. ",
       "duration_seconds": 3.8
+    },
+    "assets/bgm/革命歌曲.mp3": {
+      "sources": [
+        {
+          "title": "Original v2 gramophone march (2026-11-06)",
+          "author": "ctgs project procedural composition",
+          "license": "CC0 1.0",
+          "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "source_url": "https://github.com/cqqybrn/ctgs/blob/v2/tools/generate_v2_march.py"
+        }
+      ],
+      "processing": "Original seeded melody; additive brass, bass and synthesized drums; no external samples. Circular tail mixing, gramophone bandpass, stereo 44.1kHz 160kbps MP3.",
+      "duration_seconds": 96
     }
   }
 }
