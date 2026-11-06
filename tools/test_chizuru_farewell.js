@@ -8,9 +8,9 @@ const { pathToFileURL } = require('node:url');
   const browser = await chromium.launch();
   const results = [], errors = [];
   try {
-    const cases = [1, 2].flatMap(name => [0, 1].map(rescued => ({ name, rescued, start: 60 })));
+    const cases = [1, 2].flatMap(name => [0, 1].flatMap(rescued => [0, 1].map(phone => ({ name, rescued, phone, start: 60 }))));
     cases.push({ name: 1, rescued: 1, start: 65 }, { name: 1, rescued: 1, start: 81 });
-    for (const { name, rescued, start } of cases) {
+    for (const { name, rescued, start, phone = 0 } of cases) {
       const context = await browser.newContext();
       await context.route('https://**/*', r => r.abort());
       await context.route('**/assets/**', r => r.abort());
@@ -19,11 +19,11 @@ const { pathToFileURL } = require('node:url');
       p.on('pageerror', e => errors.push(e.message));
       await p.goto(pathToFileURL(path.resolve(__dirname, '../index.html')).href);
       await p.waitForSelector('.title-screen');
-      const result = await p.evaluate(async ({ name, rescued, start }) => {
+      const result = await p.evaluate(async ({ name, rescued, start, phone }) => {
         const S = SugarCube;
         Object.assign(S.State.variables, S.setup.INITIAL_VARIABLES, {
           v001: 12, v011: 8, v012: 6, v013: 9, v016: 0, v018: name, v019: 6,
-          v022: 1, v034: 0, v050: 0, v051: rescued,
+          v022: 1, v034: 0, v050: phone, v051: rescued,
           used: {}, expr: {}, bgm: null, stage: S.setup.freshStage(),
         });
         S.setup.vn.reset(); S.Engine.play('h' + start);
@@ -48,25 +48,28 @@ const { pathToFileURL } = require('node:url');
           } else S.setup.vn.advance(true);
         }
         return {
-          name, rescued, start, steps: n, passage: S.State.passage,
+          name, rescued, start, phone, steps: n, passage: S.State.passage,
           ending: document.querySelector('.ending .name')?.textContent,
           farewell: seen.some(x => x.includes('宫本只送到门口')),
           lastSight: seen.some(x => x.includes('这是你最后一次见他')),
           heartMedicine: seen.some(x => x.includes('心脏的药')),
           choices, seen,
         };
-      }, { name, rescued, start });
+      }, { name, rescued, start, phone });
       results.push(result);
       assert.equal(result.error, undefined, JSON.stringify(result));
       assert.equal(result.ending, 'HE·樱花', JSON.stringify(result));
       assert.equal(result.farewell, start === 60, 'farewell presence incorrect: ' + JSON.stringify(result));
       assert.equal(result.lastSight, start === 60);
       if (process.env.CTGS_REQUIRE_HEART_CUE === '1') assert.equal(result.heartMedicine, start === 60);
-      console.log(`通过：从第${start}话开始，创氏名=${name}、救千鹤=${rescued} → HE·樱花；告别=${result.farewell}；心脏病提示=${result.heartMedicine}`);
+      if (start === 60 && phone && name === 2) assert(result.seen.some(t => t.includes('认你做儿子这件事，不能再办了')));
+      if (start === 60 && !phone && name === 2 && rescued) assert(result.seen.some(t => t.includes('我想认你做儿子')));
+      if (start === 60 && !phone && name === 1) assert(result.seen.some(t => t.includes('你有些东西，是不会交给我的')));
+      console.log(`通过：第${start}话起，姓名=${name}、救援=${rescued}、电话=${phone} → HE·樱花；告别=${result.farewell}；心脏病提示=${result.heartMedicine}`);
       await context.close();
     }
     assert.deepEqual(errors, []);
-    console.log('完整路线四条分支均有告别；直接跳第65/81话会跳过告别；页面异常 0');
+    console.log('八种姓名/救援/电话组合均可告别，台词匹配；直接跳第65/81话会跳过告别；页面异常 0');
   } finally {
     if (process.env.CTGS_TEST_OUTPUT) {
       fs.mkdirSync(process.env.CTGS_TEST_OUTPUT, { recursive: true });

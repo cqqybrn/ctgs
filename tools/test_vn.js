@@ -107,11 +107,15 @@ async function h87Timeline(p, via) {
   assert.equal((await dbg(p)).stage.bg, 'bg/宫本宅_书房_夜');
   await playingOnly(p, '夜·钢琴.mp3');
   await until(p, lineHas('你的书出版了'));
+  assert.equal(await p.evaluate(() => SugarCube.State.variables.expr['宫本千鹤']), '中年');
   assert.equal((await dbg(p)).stage.cg, 'cg/京都书房_共著书稿');
   await until(p, lineHas('1999年3月，东京'));
   assert.equal((await dbg(p)).stage.cg, null);
   await p.waitForFunction(() => decodeURI((document.querySelector('#qf-char img.on') || {}).src || '').endsWith('宫本仁_老年.png'));
   await playingOnly(p, '');   // “BGM：无”之后音乐淡出
+  await until(p, lineHas('请按遗稿处理'));
+  await p.waitForFunction(() => decodeURI((document.querySelector('#qf-char img.on') || {}).src || '').endsWith('宫本千鹤_老年.png'));
+  assert.equal(await portrait(), '宫本千鹤_老年.png', '1999年千鹤来信使用老年身份，不沿用年轻立绘');
   await until(p, `document.querySelector('.ending.qf-on')`);
   await p.waitForTimeout(100);
   assert.equal(await p.locator('.ending.qf-on .name').innerText(), 'HE·宫本仁');
@@ -126,6 +130,23 @@ async function h87Timeline(p, via) {
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
     const base = `http://127.0.0.1:${server.address().port}/`;
     browser = await chromium.launch();
+
+    if (process.argv.includes('--h87-only')) {
+      for (const truth of [0, 1]) {
+        const p = await open(browser, base, 'admin.html');
+        await p.evaluate(truth => {
+          SugarCube.State.variables.v016 = truth;
+          SugarCube.setup.admin.jump('h87', 'current');
+        }, truth);
+        await p.waitForFunction(() => SugarCube.setup.vn.debug().ready);
+        await h87Timeline(p, 'age-' + truth);
+        checked('第87话千鹤真相=' + truth + '：中年/老年立绘、3张CG、音乐和宫本仁结局按年代切换');
+        await p.ctx.close();
+      }
+      assert.deepEqual(report.errors, []);
+      console.log('宫本仁晚年专项回归：全部通过；页面异常 0');
+      return;
+    }
 
     // ---------- 1. 逐句时序：背景、音乐、音效只在走到对应位置时才发生 ----------
     {
@@ -245,6 +266,7 @@ async function h87Timeline(p, via) {
       const p = await open(browser, base, 'index.html', { viewport: { width: 844, height: 390 } });
       await p.evaluate(() => SugarCube.Engine.play('h2.9'));
       await until(p, 'SugarCube.setup.vn.debug().steps[SugarCube.setup.vn.debug().k] === "choice"');
+      await p.waitForFunction(() => document.querySelector('.qf-pick.qf-on')?.classList.contains('qf-more'));
       assert.ok(await p.locator('.qf-pick.qf-on').evaluate(c => c.classList.contains('qf-more')), '横屏装不下时显示“向下还有”提示');
       await p.locator('.qf-pick.qf-on').evaluate(c => { c.scrollTop = c.scrollHeight; });
       await p.waitForFunction(() => !document.querySelector('.qf-pick.qf-on').classList.contains('qf-more'));
