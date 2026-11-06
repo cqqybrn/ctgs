@@ -39,8 +39,9 @@ def load_huas():
             if m:
                 n = int(m.group(1))
                 cur = {"n": n, "title": m.group(2).strip(), "chap": ci, "lines": []}
-                # 第80–89话归入"尾声"（90 以后是 v2 支线，按所在文件归章）
-                if 80 <= n <= 89:
+                # 第80–89话归入"尾声"（90 以后是 v2 支线，按所在文件归章）；
+                # 第82话 v2 起是北行线过场（原 HE·人民的法庭），留在终章
+                if 80 <= n <= 89 and n != 82:
                     cur["chap"] = len(CHAPTER_NAMES)
                 huas.append(cur)
                 continue
