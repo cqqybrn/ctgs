@@ -15,16 +15,16 @@ setup.storageKey = function (name) { return (setup.ADMIN_MODE ? "qf-admin-" : "q
 /* ---------- 中文界面 ---------- */
 (function () {
   const zh = {
-    textAbort: "中止", textCancel: "取消", textClear: "清除", textClose: "关闭", textDelete: "删除",
+    textAbort: "中止", textAborting: "已取消", textCancel: "取消", textClear: "清除", textClose: "关闭", textDelete: "删除",
     textExport: "导出", textImport: "导入", textLoad: "读取", textOff: "关", textOk: "确定",
     textOn: "开", textSave: "保存", textTurn: "回合",
     errorNonexistentPassage: '段落 "{passage}" 不存在',
     warningNoSaves: "当前浏览器不支持存档。",
     warningNoWebStorage: "浏览器存储不可用，存档功能受限。",
     warningDegraded: "部分功能不可用。",
-    savesTitle: "存档", savesHeaderBrowser: "浏览器存档", savesHeaderDisk: "存档文件",
-    savesLabelBrowserClear: "清除全部", savesLabelBrowserExport: "导出全部", savesLabelBrowserImport: "导入",
-    savesLabelDiskLoad: "从文件读取…", savesLabelDiskSave: "保存为文件…",
+    savesTitle: "存档", savesHeaderBrowser: "浏览器存档位", savesHeaderDisk: "单个存档文件（.save）",
+    savesLabelBrowserClear: "清除全部", savesLabelBrowserExport: "导出全部存档包…", savesLabelBrowserImport: "导入全部存档包…",
+    savesLabelDiskLoad: "读取单个存档文件…", savesLabelDiskSave: "保存为单个存档…",
     savesTextBrowserAuto: "自动存档", savesTextBrowserSlot: "存档位", savesTextNoDate: "无日期",
     restartTitle: "回到标题", restartMesgPrompt: "当前进度将丢失（存档不受影响）。确定吗？",
     settingsTitle: "设置", settingsTextReset: "恢复默认",
@@ -32,8 +32,46 @@ setup.storageKey = function (name) { return (setup.ADMIN_MODE ? "qf-admin-" : "q
     autoloadTextCancel: "从头开始", autoloadTextOk: "继续",
     macroBackText: "后退", macroReturnText: "返回",
     jumptoTitle: "跳转", saveErrorDisallowed: "这里不能存档。",
+    saveErrorInvalidData: "文件缺少必要数据或格式不匹配。单个存档是 .save，全部存档包是 .savesbundle",
+    saveErrorDecodeFail: "无法解码存档，请检查文件是否完整或重新下载",
+    saveErrorDiskLoadFail: "读取存档文件失败",
+    saveErrorIdMismatch: "存档不属于当前游戏入口。正式版 index.html 与管理员版 admin.html 的存档不通用",
   };
   Object.keys(zh).forEach(function (k) { try { l10nStrings[k] = zh[k]; } catch (e) {} });
+})();
+
+/* 单个存档误选“导入全部”时，转到引擎原有的磁盘读取，不改写浏览器存档位。 */
+(function () {
+  $(document).on(":dialogopened.qfSaveHelp", function () {
+    const body = document.getElementById("ui-dialog-body");
+    if (!body || !body.classList.contains("saves") || body.querySelector(".qf-save-help")) return;
+    jQuery('<p class="qf-save-help admin-note" role="note"></p>')
+      .text("单个 .save 文件会读取并继续游戏，不覆盖手动存档位；全部 .savesbundle 存档包会替换浏览器存档位。两个入口误选单个 .save 时也可正常读取。" + (setup.ADMIN_MODE ? " 当前是管理员版，不能读取正式版存档。" : " 当前是正式版。"))
+      .prependTo(body);
+    // 引擎的长标签默认只用作 tooltip；同步修改可见文字，避免再次混淆。
+    [["saves-import", "导入存档包", "导入全部存档包…"],
+     ["saves-export", "导出存档包", "导出全部存档包…"],
+     ["saves-disk-load", "读取单个存档", "读取单个存档文件…"],
+     ["saves-disk-save", "保存单个存档", "保存为单个存档…"]].forEach(function (item) {
+      jQuery(body).find('[id="' + item[0] + '"]').text(item[1]).attr("aria-label", item[2]);
+    });
+  });
+  document.addEventListener("change", function (ev) {
+    const input = ev.target;
+    if (!input || input.id !== "saves-import-handler" || !input.files || !input.files[0]) return;
+    const file = input.files[0];
+    if (!/\.save$/i.test(file.name)) return; // .savesbundle 仍交给原来的批量导入器。
+    ev.preventDefault(); ev.stopImmediatePropagation();
+    const loadEvent = { target: { files: [file] } };
+    const load = function () {
+      Save.disk.load(loadEvent).then(function () { Engine.show(); }).catch(function (error) {
+        Dialog.create("读取存档失败", "qf-save-error");
+        Dialog.append(jQuery('<p role="alert"></p>').text(error.message || "读取失败，请核对文件和游戏入口。")[0]).open();
+      });
+    };
+    if (Dialog.isOpen()) { jQuery(document).one(":dialogclosed.qfSingleSave", load); Dialog.close(); }
+    else load();
+  }, true);
 })();
 
 /* ---------- 创氏名（第一章选择，[018]：2 = 宫本仁） ---------- */
