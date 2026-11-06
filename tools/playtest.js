@@ -12,6 +12,7 @@ const URL = 'file://' + path.resolve(__dirname, '..', 'index.html');
   p.on('pageerror', e => pageErrors.push(e.message));
   await p.goto(URL);
   await p.waitForSelector('.title-screen');
+  await p.evaluate(() => { SugarCube.setup.vnAutoFollow = false; });
   // 1) 静态渲染
   const statics = await p.evaluate(() => {
     const bad = [];

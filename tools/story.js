@@ -106,6 +106,7 @@ setup.chapterSelect = (function () {
     const previous = Save.base64.save();
     pending = copy(saved);
     setup.audio.reset();
+    if (setup.vn) setup.vn.reset();
     try { Engine.play(saved.passage); backup = previous; }
     finally { pending = null; }
   }
@@ -113,6 +114,7 @@ setup.chapterSelect = (function () {
     if (!backup) return;
     const saved = backup;
     setup.audio.reset();
+    if (setup.vn) setup.vn.reset();
     await Save.base64.load(saved);
     Engine.show();
     backup = null;
@@ -155,9 +157,26 @@ setup.assetPath = function (id) {
   return "assets/" + kind + "/" + name + ext;
 };
 
+/* ---------- 舞台模式 ----------
+   带章节标签 c0…c7 的段落（剧情话、选项、过渡段）用“固定一屏、逐句推进”的竖屏舞台演出；
+   标题、结局一览、音源署名、青丘书房补课仍是可滚动页面。 */
+setup.isStage = function (name) {
+  try {
+    const t = Story.get(name || State.passage).tags;
+    return t.some(function (x) { return /^c\d+$/.test(x); }) && !t.includes("dojo");
+  } catch (e) { return false; }
+};
+
+/* 舞台模式下，演出宏不再在渲染时立刻执行，而是在正文里留下一个“事件标记”；
+   由 setup.vn（见文末）按剧情顺序、随点按逐步执行，避免背景/人物/声音抢跑到后文。 */
+function qfEvent(out, data) {
+  jQuery('<span class="qf-ev"></span>').attr("data-ev", JSON.stringify(data)).appendTo(out);
+}
+
 Macro.add("bg", {
   handler() {
     const id = this.args[0], cap = this.args[1] || "";
+    if (setup.isStage()) { qfEvent(this.output, { k: "bg", id: id, cap: cap }); return; }
     const fig = jQuery('<figure class="scene noimg"></figure>');
     const img = jQuery('<img alt="" loading="lazy" decoding="async">');
     img.on("load", function () { fig.removeClass("noimg").addClass("ok"); });
@@ -170,14 +189,17 @@ Macro.add("bg", {
 
 Macro.add("expr", {
   handler() {
+    if (setup.isStage()) { qfEvent(this.output, { k: "expr", who: this.args[0], e: this.args[1] }); return; }
     const v = State.variables;
     if (!v.expr) v.expr = {};
     v.expr[this.args[0]] = this.args[1];
   },
 });
 
+/* 舞台模式下，说话人的立绘由舞台层显示，不再用小头像替代主立绘；只有可滚动页面（补课）保留头像。 */
 Macro.add("face", {
   handler() {
+    if (setup.isStage()) return;
     const who = this.args[0];
     const v = State.variables;
     const e = (v.expr && v.expr[who]) || "常态";
@@ -196,6 +218,7 @@ Macro.add("face", {
 Macro.add("hua", {
   handler() {
     State.temporary.huaTitle = this.args[1];
+    if (setup.isStage()) { qfEvent(this.output, { k: "hua", no: this.args[0], title: this.args[1] }); return; }
     jQuery('<header class="hua-head"></header>')
       .append(jQuery('<span class="no"></span>').text("第" + this.args[0] + "话"))
       .append(jQuery('<span class="tt"></span>').text(this.args[1]))
@@ -292,7 +315,9 @@ setup.admin = (function () {
       Object.keys(v).forEach(function (k) { delete v[k]; });
       Object.assign(v, setup.INITIAL_VARIABLES, selected.values);
     }
-    v.used = {}; v.expr = {}; v.bgm = null;
+    // 跳章要同时重置演出状态：否则进入新章会残留上一章的背景、人物与音乐。
+    v.used = {}; v.expr = {}; v.bgm = null; v.stage = setup.freshStage();
+    delete v.qfStep; delete v.qfSeen;
     pending = null;
   });
   function jump(name, preset) {
@@ -302,6 +327,7 @@ setup.admin = (function () {
     const previous = Save.base64.save();
     pending = { passage: name, preset: preset };
     setup.audio.reset();
+    setup.vn.reset();
     try { Engine.play(name); }
     finally { pending = null; }
     backup = previous;
@@ -310,6 +336,7 @@ setup.admin = (function () {
     if (!enabled || !backup) return;
     const saved = backup;
     setup.audio.reset();
+    setup.vn.reset();
     await Save.base64.load(saved);
     Engine.show();
     backup = null;
@@ -387,8 +414,18 @@ Macro.add("audioCredits", {
   },
 });
 
-Macro.add("bgm", { handler() { setup.audio.bgm(this.args[0]); } });
-Macro.add("sfx", { handler() { if (!State.temporary.replaying) setup.audio.sfx(this.args[0]); } });
+Macro.add("bgm", {
+  handler() {
+    if (setup.isStage()) qfEvent(this.output, { k: "bgm", id: this.args[0] || null });
+    else setup.audio.bgm(this.args[0]);
+  },
+});
+Macro.add("sfx", {
+  handler() {
+    if (setup.isStage()) qfEvent(this.output, { k: "sfx", id: this.args[0] });
+    else setup.audio.sfx(this.args[0]);
+  },
+});
 $(document).on(":passageend", function () { setup.audio.sync(); });
 
 /* ---------- 结局记录（跨存档，存在本浏览器） ---------- */
@@ -440,13 +477,18 @@ setup.cpAll = function () {
 Macro.add("checkpoint", {
   handler() {
     const id = this.args[0];
-    try {
-      const all = setup.cpAll();
-      all[id] = { s: Save.base64.save(), t: Date.now() };
-      localStorage.setItem(setup.storageKey("cp"), JSON.stringify(all));
-    } catch (e) { /* 存储不可用或已满：静默跳过 */ }
+    // 舞台模式：等演出推进到该选项画面时再存，检查点里带着“停在选项处”的游标。
+    if (setup.isStage()) { qfEvent(this.output, { k: "cp", id: id }); return; }
+    setup.cpSave(id);
   },
 });
+setup.cpSave = function (id) {
+  try {
+    const all = setup.cpAll();
+    all[id] = { s: Save.base64.save(), t: Date.now() };
+    localStorage.setItem(setup.storageKey("cp"), JSON.stringify(all));
+  } catch (e) { /* 存储不可用或已满：静默跳过 */ }
+};
 setup.loadCP = function (id) {
   const c = setup.cpAll()[id];
   if (!c) return;

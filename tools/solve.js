@@ -9,6 +9,7 @@ const URL = 'file://' + path.resolve(__dirname, '..', 'index.html');
   const p = await b.newPage();
   await p.route('**/assets/**', r => r.abort());
   await p.goto(URL); await p.waitForSelector('.title-screen');
+  await p.evaluate(() => { SugarCube.setup.vnAutoFollow = false; });
   const res = await p.evaluate(async ({ GOAL, MAX }) => {
     const tick = () => new Promise(r => setTimeout(r, 0));
     const V = () => SugarCube.State.variables;

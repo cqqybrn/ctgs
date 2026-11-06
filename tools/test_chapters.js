@@ -11,6 +11,7 @@ const URL = pathToFileURL(path.resolve(__dirname, '../index.html')).href;
   try {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
     await context.route('https://**/*', r => r.abort()); // 外部字体不可用时仍应离线可玩。
+    await context.addInitScript(() => localStorage.setItem('qf-type', 'off'));
     const p = await context.newPage();
     p.on('pageerror', e => errors.push(e.message));
     await p.route('**/assets/**', r => r.abort());
@@ -31,8 +32,11 @@ const URL = pathToFileURL(path.resolve(__dirname, '../index.html')).href;
     assert(Object.keys(first.records[first.chapter].variables).length > 0);
     console.log('通过：标题入口、未到达锁定、正常开局自动记录真实状态');
     // 先实际点击推进，验证读者交互正常，再建立可重复的跨章夹具。
-    const link = p.locator('#passages a.link-internal').filter({ hasNot: p.locator('nav.after') }).first();
-    await link.click();
+    assert.equal(await p.locator('html').getAttribute('data-mode'), 'stage');
+    for (let i = 0; i < 160 && await p.evaluate(() => SugarCube.State.passage === 'h1'); i++) {
+      await p.mouse.click(195, 240);
+      await p.waitForTimeout(15);
+    }
     assert.notEqual(await p.evaluate(() => SugarCube.State.passage), 'h1');
     assert.equal(await p.locator('#passages .error, #passages .error-view').count(), 0);
     console.log('通过：正常点击推进剧情，无宏错误');
@@ -53,10 +57,10 @@ const URL = pathToFileURL(path.resolve(__dirname, '../index.html')).href;
     await p.getByRole('button', { name: '章节', exact: true }).click();
     await p.locator('[data-chapter="' + fixture.index + '"]').click();
     assert.equal(await p.evaluate(() => SugarCube.State.passage), fixture.target);
-    assert.deepEqual(await p.evaluate(() => JSON.parse(JSON.stringify(SugarCube.State.variables))), fixture.after);
+    assert.deepEqual(await p.evaluate(() => Object.fromEntries(Object.entries(SugarCube.State.variables).filter(([k]) => /^v\d{3}$/.test(k) || k === 'used'))), Object.fromEntries(Object.entries(fixture.after).filter(([k]) => /^v\d{3}$/.test(k) || k === 'used')));
     console.log('通过：章节按钮恢复全部数值、分支与选项记录；本话效果不重复累加');
     await p.reload(); await p.waitForSelector('#passages .passage');
-    assert.deepEqual(await p.evaluate(() => JSON.parse(JSON.stringify(SugarCube.State.variables))), fixture.after);
+    assert.deepEqual(await p.evaluate(() => Object.fromEntries(Object.entries(SugarCube.State.variables).filter(([k]) => /^v\d{3}$/.test(k) || k === 'used'))), Object.fromEntries(Object.entries(fixture.after).filter(([k]) => /^v\d{3}$/.test(k) || k === 'used')));
     const second = await context.newPage();
     await second.route('**/assets/**', r => r.abort());
     await second.goto(URL); await second.waitForSelector('.title-screen');

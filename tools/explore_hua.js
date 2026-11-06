@@ -18,6 +18,7 @@ const PRESETS = {
   p.on('pageerror', e => pageErrors.push(e.message));
   await p.goto(URL);
   await p.waitForSelector('.title-screen');
+  await p.evaluate(() => { SugarCube.setup.vnAutoFollow = false; });
   const res = await p.evaluate(async ({ PRESETS, ONLY }) => {
     const tick = () => new Promise(r => setTimeout(r, 0));
     const all = [...document.querySelectorAll('tw-passagedata')].map(x => x.getAttribute('name'));

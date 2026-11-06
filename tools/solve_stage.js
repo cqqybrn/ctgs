@@ -6,6 +6,7 @@ const route = fs.readFileSync(routeFile, 'utf8').split('\n').filter(l => /^\d+\.
   const b = await chromium.launch(); const p = await b.newPage();
   await p.route('**/assets/**', r => r.abort());
   await p.goto('file://' + require('path').resolve(__dirname, '..', 'index.html')); await p.waitForSelector('.title-screen');
+  await p.evaluate(() => { SugarCube.setup.vnAutoFollow = false; });
   const res = await p.evaluate(async ({ route, STOP, GOAL }) => {
     const tick = () => new Promise(r => setTimeout(r, 0));
     const links = () => [...document.querySelectorAll('#passages a.link-internal')].filter(a => !a.closest('nav.after'));

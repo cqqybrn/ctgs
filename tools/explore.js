@@ -11,6 +11,7 @@ const URL = 'file://' + path.resolve(__dirname, '..', 'index.html');
   p.on('pageerror', e => pageErrors.push(e.message));
   await p.goto(URL);
   await p.waitForSelector('.title-screen');
+  await p.evaluate(() => { SugarCube.setup.vnAutoFollow = false; });
   const res = await p.evaluate(async (MAX) => {
     const tick = () => new Promise(r => setTimeout(r, 0));
     const tried = new Set(), visited = new Set();

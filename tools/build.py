@@ -843,13 +843,15 @@ def build_html(huas, admin_mode=False):
         css = f.read()
     with open(os.path.join(ROOT, "tools", "story.js"), encoding="utf-8") as f:
         js = f.read()
+    with open(os.path.join(ROOT, "tools", "vn.js"), encoding="utf-8") as f:
+        js += "\n" + f.read()
     with open(os.path.join(ROOT, "tools", "ui.tw"), encoding="utf-8") as f:
         ui = f.read()
     # 固定界面段落
     for m in re.finditer(r"^:: (\S+)(?: \[([^\]]*)\])?\n(.*?)(?=^:: |\Z)", ui, re.S | re.M):
         passages[m.group(1)] = m.group(3).strip()
         ptags[m.group(1)] = (m.group(2) or "").split()
-    init = ["<<set $used to {}>>", "<<set $expr to {}>>", "<<set $bgm to null>>"]
+    init = ["<<set $used to {}>>", "<<set $expr to {}>>", "<<set $bgm to null>>", "<<set $stage to setup.freshStage()>>"]
     initial_vars = {f"v{v}": 0 for v in sorted(used_vars | {f"{x:03d}" for x in range(1, 33)})}
     for v in initial_vars:
         init.append(f"<<set ${v} to 0>>")
@@ -884,6 +886,9 @@ def build_html(huas, admin_mode=False):
                "setup.CHAPTERS = " + json.dumps(chap_names, ensure_ascii=False) + ";\n"
                "setup.ENDINGS = " + json.dumps(endings, ensure_ascii=False) + ";\n"
                "setup.EPILOGUE = " + json.dumps(epi_map, ensure_ascii=False) + ";\n"
+               "setup.FACE_CAST = " + json.dumps(M.FACE_CAST, ensure_ascii=False) + ";\n"
+               "setup.BG_FOCUS = " + json.dumps(M.BG_FOCUS, ensure_ascii=False) + ";\n"
+               "setup.HOME_WEAR = " + json.dumps(M.HOME_WEAR, ensure_ascii=False) + ";\n"
                "setup.ASSETS = " + json.dumps({s["id"]: s["file"] for s in slots.values()}, ensure_ascii=False) + ";\n")
     with open(os.path.join(ROOT, "tools", "sugarcube", "format.js"), encoding="utf-8") as f:
         src = f.read()

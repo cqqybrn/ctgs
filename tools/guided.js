@@ -21,6 +21,7 @@ const URL = 'file://' + path.resolve(__dirname, '..', 'index.html');
     HTMLMediaElement.prototype.load = function () {};
   });
   await p.goto(URL); await p.waitForSelector('.title-screen');
+  await p.evaluate(() => { SugarCube.setup.vnAutoFollow = false; });
   const res = await p.evaluate(async ({ route, GOAL, FORCE, AVOID }) => {
     const tick = () => new Promise(r => setTimeout(r, 0));
     const links = () => [...document.querySelectorAll('#passages a.link-internal')].filter(a => !a.closest('nav.after'));

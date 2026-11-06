@@ -1,8 +1,11 @@
 :: StoryInterface
-<div id="app"><header id="bar" data-passage="Bar"></header><main id="passages"></main></div>
+<div id="app"><div id="qf-stage"><div id="qf-bg" class="qf-layer"></div><div id="qf-cg" class="qf-layer"></div><div id="qf-char" class="qf-layer"></div><div id="qf-shade"></div><div id="qf-place" aria-hidden="true"></div><header id="bar" data-passage="Bar"></header><main id="passages"></main><nav id="qf-tools" data-passage="Tools" aria-label="工具栏"></nav><div id="qf-banner" aria-live="polite"></div><div id="qf-fx"></div></div></div>
 
 :: Bar
-<div class="bar-in"><span class="chap"><<if setup.admin.enabled>>管理 · <</if>><<print setup.chapLabel()>></span><nav class="tools"><<link "后退">><<run Engine.backward()>><</link>><<link "存档">><<run UI.saves()>><</link>><<link "结局">><<goto "结局一览">><</link>><<if !setup.admin.enabled>><<link "章节">><<run setup.chapterSelect.open()>><</link>><</if>><<if setup.admin.enabled>><<link "管理">><<run setup.admin.open()>><</link>><</if>><<link "音乐">><<run setup.audio.toggle()>><</link>></nav></div>
+<div class="bar-in"><button type="button" class="qf-ic" data-qf="prev" aria-label="上一句">‹</button><span class="chap"><<if setup.admin.enabled>>管理 · <</if>><<print setup.chapLabel()>></span><span class="bar-end"><<if setup.admin.enabled>><button type="button" class="qf-txt" data-qf="admin">管理</button><</if>><button type="button" class="qf-ic" data-qf="menu" aria-label="菜单">≡</button></span></div>
+
+:: Tools
+<button type="button" data-qf="log">回看</button><button type="button" data-qf="save">存档</button><button type="button" data-qf="ends">结局</button><<if !setup.admin.enabled>><button type="button" data-qf="chapters">章节</button><</if>><button type="button" data-qf="music" class="qf-music">音乐</button>
 
 :: Start [title]
 <<bgm "bgm/主题">>

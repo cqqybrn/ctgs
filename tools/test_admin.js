@@ -29,8 +29,8 @@ function storyPassages(text) {
 }
 function sameStory(a, b) {
   const left = storyPassages(a), right = storyPassages(b);
-  // 新增美术允许调整背景/立绘提示；仍严格比较台词、数值、选项与跳转。
-  const plot = body => body === undefined ? body : body.replace(/&lt;&lt;(?:bg|expr)\s+[\s\S]*?&gt;&gt;\s*/g, '');
+  // 允许沿用原舞台的背景/立绘/配乐演出修正；台词、数值、选项与跳转必须一致。
+  const plot = body => body === undefined ? body : body.replace(/&lt;&lt;(?:bg|expr|bgm)\s+[\s\S]*?&gt;&gt;\s*/g, '');
   const changed = [...new Set([...Object.keys(left), ...Object.keys(right)])].filter(k => plot(left[k]) !== plot(right[k]));
   assert.deepEqual(changed, [], '剧情正文发生差异的段落');
 }
@@ -44,16 +44,19 @@ function checked(name) { report.checks.push(name); console.log('通过：' + nam
     const adminText = fs.readFileSync(path.join(ROOT, 'admin.html'), 'utf8');
     sameStory(normalText, before);
     sameStory(adminText, normalText);
-    checked('两版剧情正文、变量与分支逻辑与 HEAD 一致（允许美术提示调整）');
+    checked('两版剧情正文、变量与分支逻辑与 HEAD 一致（允许背景、立绘、配乐提示调整）');
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
     const base = `http://127.0.0.1:${server.address().port}/`;
     browser = await chromium.launch();
     const context = await browser.newContext();
+    await context.route('https://**/*', r => r.abort());
     const p = await context.newPage();
     p.on('pageerror', e => report.errors.push(e.message));
     // 批量逻辑测试不加载素材；后面另起页面加载真实图像和音频。
     await p.route('**/assets/**', route => route.abort());
     await p.goto(base); await p.waitForSelector('.title-screen');
+    // 批量入口检查停在指定话；真实点按和自动过场由 test_vn.js 单独验证。
+    await p.evaluate(() => { SugarCube.setup.vnAutoFollow = false; });
     const endingCount = await p.evaluate(() => SugarCube.setup.ENDINGS.length);
     assert.equal(await p.locator('.title-screen').innerText().then(t => t.includes(`共 ${endingCount} 个结局`)), true);
     assert.equal(await p.getByRole('button', { name: '选择章节', exact: true }).count(), 1);
@@ -70,6 +73,7 @@ function checked(name) { report.checks.push(name); console.log('通过：' + nam
       return ['qf-ends', 'qf-dojo', 'qf-cp'].map(k => [k, localStorage.getItem(k)]);
     });
     await p.goto(base + 'admin.html'); await p.waitForSelector('.title-screen');
+    await p.evaluate(() => { SugarCube.setup.vnAutoFollow = false; });
     const adminInitial = await p.evaluate(() => ({ enabled: SugarCube.setup.admin.enabled, id: SugarCube.Story.id, ifid: SugarCube.Story.ifId, saves: SugarCube.Save.browser.size, ends: SugarCube.setup.endsSeen(), cp: SugarCube.setup.cpAll(), dojo: SugarCube.setup.dojoSeen() }));
     assert.equal(adminInitial.enabled, true);
     assert.notEqual(adminInitial.id, ids.normal); assert.notEqual(adminInitial.ifid, ids.ifid);
@@ -183,16 +187,16 @@ function checked(name) { report.checks.push(name); console.log('通过：' + nam
     await media.evaluate(() => SugarCube.setup.admin.open());
     await media.locator('#admin-chapter').selectOption('0');
     await media.getByRole('button', { name: '进入所选话', exact: true }).click();
-    await media.locator('.face').first().scrollIntoViewIfNeeded();
-    await media.waitForFunction(() => [...document.querySelectorAll('.face')].some(x => x.naturalWidth > 0));
+    // 竖屏舞台：背景由舞台层显示（人物立绘与 CG 在 tools/test_vn.js 里逐句验证）。
+    await media.waitForFunction(() => { const i = document.querySelector('#qf-bg img.on'); return !!i && i.naturalWidth > 0 && decodeURI(i.src).endsWith('/玄海滩_清晨.jpg'); });
     await media.waitForFunction(() => window.testAudio.some(a => decodeURI(a.src).endsWith('/海风.mp3') && a.currentTime > .3 && !a.paused));
     await media.evaluate(() => { SugarCube.setup.admin.jump('h10', 'fresh'); SugarCube.setup.admin.jump('h17', 'favorable'); SugarCube.setup.admin.jump('h13', 'favorable'); });
-    await media.locator('.scene img').first().scrollIntoViewIfNeeded();
-    await media.waitForFunction(() => [...document.querySelectorAll('.scene img')].every(x => x.naturalWidth > 0));
+    await media.waitForFunction(() => { const i = document.querySelector('#qf-bg img.on'); return !!i && i.naturalWidth > 0; });
+    assert.equal(await media.evaluate(() => SugarCube.State.passage), 'h13');
     await media.waitForFunction(() => window.testAudio.some(a => decodeURI(a.src).endsWith('/军歌唱片.mp3') && a.currentTime > .3 && !a.paused));
     const playing = await media.evaluate(() => window.testAudio.filter(a => !a.paused && !a.ended).map(a => decodeURI(a.src)));
     assert.equal(playing.length, 1); assert.ok(playing[0].endsWith('/军歌唱片.mp3')); assert.deepEqual(failed, []);
-    checked('管理跳章后真实背景、头像和音乐加载；快速多次跳转不残留旧音乐或音效');
+    checked('管理跳章后真实背景和音乐加载；快速多次跳转不残留旧音乐或音效');
     const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'assets/manifest.json'), 'utf8'));
     assert.ok(manifest.slots.length >= 321, '基础素材插槽不得减少');
     const missingSlots = manifest.slots.filter(s => !s.present).map(s => s.id);
