@@ -88,6 +88,14 @@ setup.chapLabel = function () {
   return "";
 };
 
+/* 新剧情标记只补缺失字段：旧存档不会凭空获得通信、申诉或已核验状态。 */
+setup.northDefaults = { v058: 0, v059: 0, v060: 0, v061: 0, v062: 0, v063: 0, v064: 0, v065: 0 };
+$(document).on(":passageinit.qfNorthDefaults", function () {
+  Object.keys(setup.northDefaults).forEach(function (key) {
+    if (!Object.prototype.hasOwnProperty.call(State.variables, key)) State.variables[key] = 0;
+  });
+});
+
 /* 正式版章节回访：保存渲染前的真实状态，不能在跳章时重复执行本话增减值。 */
 setup.chapterSelect = (function () {
   const enabled = true; // 正式版与管理版均可使用同级路线传送门；记录键仍按模式隔离。
@@ -114,7 +122,7 @@ setup.chapterSelect = (function () {
     Object.keys(result).forEach(index => {
       const record = result[index];
       // 只迁移新增标记，不把残缺/损坏的旧记录补成一份伪造的完整状态。
-      if (record && record.variables && typeof record.variables === "object" && !Array.isArray(record.variables)) record.variables = Object.assign({ v058: 0 }, record.variables);
+      if (record && record.variables && typeof record.variables === "object" && !Array.isArray(record.variables)) record.variables = Object.assign({}, setup.northDefaults, record.variables);
     });
     Object.keys(result).forEach(index => { if (!valid(result[index], index)) delete result[index]; });
     return result;
@@ -415,7 +423,8 @@ setup.admin = (function () {
     }
   });
   function entry(name) {
-    return setup.ADMIN_CHAPTERS.some(function (c) { return c.entries.some(function (e) { return e.passage === name; }); });
+    return setup.ADMIN_CHAPTERS.some(function (c) { return c.entries.some(function (e) { return e.passage === name; }); })
+      || setup.ROUTES.some(function (route) { return route.ending === name; });
   }
   $(document).on(":passageinit.qfAdmin", function (ev) {
     if (!enabled || !pending || ev.detail.passage.name !== pending.passage) return;

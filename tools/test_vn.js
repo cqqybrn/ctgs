@@ -30,7 +30,8 @@ const shot = async (p, name) => { if (output) { fs.mkdirSync(output, { recursive
 // 在舞台空白处点按（不落在顶栏、工具栏、选项上）
 async function tap(p) {
   const box = await p.locator('#qf-stage').boundingBox();
-  await p.mouse.click(box.x + box.width / 2, box.y + box.height * 0.3);
+  // 等舞台稳定且可接收点击，避免切场时用旧 boundingBox 坐标点到遮罩。
+  await p.locator('#qf-stage').click({ position: { x: box.width / 2, y: box.height * 0.3 } });
   await p.waitForTimeout(75);
 }
 async function until(p, pred, max = 400) {
@@ -172,7 +173,10 @@ async function h87Timeline(p, via) {
     {
       const p = await open(browser, base, 'index.html', { type: true });
       await startGame(p);
-      await p.waitForTimeout(150);
+      // 开场第一句很短，150ms 后可能已自然打完；选一条长句验证首次补完，
+      // 否则正常推进下一句会被误报为“首次点击未补完”。
+      await until(p, lineHas('两年前，我还是钟路街头'));
+      await p.waitForFunction(() => SugarCube.setup.vn.debug().typing);
       let d = await dbg(p);
       assert.equal(d.typing, true, '默认逐字显示');
       const k0 = d.k;
