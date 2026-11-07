@@ -135,6 +135,9 @@ def simple_node(s, hua):
         if name in ("黑屏", "白屏"):
             return None
         return {"k": "bg", "slot": slot(kind, name, hua), "cap": name.replace("_", " · ")}
+    m = re.match(r"🖼\s*退场[：:]\s*(.+)", s)
+    if m:
+        return {"k": "exit", "who": m.group(1).strip()}
     m = re.match(r"🖼\s*立绘[：:]\s*(.+)", s)
     if m:
         who, expr = char_name(m.group(1))
@@ -461,6 +464,8 @@ def comp(nodes, ctx):
             out.append(f'<<bg {q(nd["slot"])} {q(nd["cap"])}>>')
         elif k == "char":
             out.append(f'<<expr {q(nd["who"])} {q(nd["expr"])}>>')
+        elif k == "exit":
+            out.append(f'<<portraitExit {q(nd["who"])}>>')
         elif k == "bgm":
             out.append(f'<<bgm {q(nd["slot"])}>>' if nd["slot"] else "<<bgm>>")
         elif k == "sfx":

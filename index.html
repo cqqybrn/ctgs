@@ -902,6 +902,13 @@ Macro.add("expr", {
   },
 });
 
+// 显式离场按演出时序执行，不能在整话预渲染时提前清掉人物。
+Macro.add("portraitExit", {
+  handler() {
+    if (setup.isStage()) qfEvent(this.output, { k: "exit", who: this.args[0] });
+  },
+});
+
 /* 舞台模式下，说话人的立绘由舞台层显示，不再用小头像替代主立绘；只有可滚动页面（补课）保留头像。 */
 Macro.add("face", {
   handler() {
@@ -1336,8 +1343,13 @@ setup.vn = (function () {
     const img = document.createElement("img");
     img.alt = ""; img.decoding = "async";
     if (opt.pos) img.style.objectPosition = opt.pos;
-    img.onload = function () { img.classList.add("on"); if (opt.instant) drop(); else setTimeout(drop, 520); };
+    img.onload = function () {
+      // 离场或换景后，旧请求即使迟到也不应重新把旧头像亮起来。
+      if ((box.getAttribute("data-src") || "") !== key) { img.remove(); return; }
+      img.classList.add("on"); if (opt.instant) drop(); else setTimeout(drop, 520);
+    };
     img.onerror = function () {
+      if ((box.getAttribute("data-src") || "") !== key) { img.remove(); return; }
       if (opt.fallback && !img.getAttribute("data-fb")) { img.setAttribute("data-fb", "1"); img.src = opt.fallback; return; }
       if (img.parentNode) img.parentNode.removeChild(img);
       drop();
@@ -1400,6 +1412,12 @@ setup.vn = (function () {
         // 第87话的宫本仁（姜仁宇）没有对话头像：由 🖼 立绘 指令按年代直接立在场上，直到下一次指令或下一话。
         if (LEAD.indexOf(ev.who) >= 0) s.lead = ev.who;
         if ((s.who || s.lead) === ev.who) render(silent);
+        break;
+      case "exit":
+        if (!ev.who || s.who === ev.who) s.who = null;
+        if (!ev.who || s.lead === ev.who) s.lead = null;
+        D.dim = false;
+        render(silent);
         break;
       case "bgm":
         if (silent) v.bgm = ev.id || null; else setup.audio.bgm(ev.id);
@@ -2214,6 +2232,10 @@ setup.vn = (function () {
 &lt;&lt;expr &quot;宫本谦造&quot; &quot;平静&quot;&gt;&gt;
 &lt;&lt;bgm &quot;bgm/阴郁的宅邸&quot;&gt;&gt;
 &lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;社论的草稿，你是在南山庄的书房里交给宫本的。闵社长说，宫本先生想先看看。&quot;&quot;&quot;&lt;/p&gt;
+&lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;你进门时，他扶着书桌站起，又缓缓坐了回去。一只手按在胸口，没有立刻松开。&quot;&quot;&quot;&lt;/p&gt;
+&lt;p class=&quot;say you&quot;&gt;&lt;span class=&quot;who&quot;&gt;你&lt;/span&gt;&lt;span class=&quot;t&quot;&gt;&quot;&quot;&quot;先生？&quot;&quot;&quot;&lt;/span&gt;&lt;/p&gt;
+&lt;p class=&quot;say&quot;&gt;&lt;&lt;face &quot;宫本谦造&quot;&gt;&gt;&lt;span class=&quot;who&quot;&gt;宫本谦造&lt;/span&gt;&lt;span class=&quot;t&quot;&gt;&quot;&quot;&quot;心脏的老毛病。稍等一会儿。&quot;&quot;&quot;&lt;/span&gt;&lt;/p&gt;
+&lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;小药瓶就放在他手边。等呼吸平了，他把瓶子收进左边第二个抽屉，伸手接过你的稿子。&quot;&quot;&quot;&lt;/p&gt;
 &lt;p class=&quot;say&quot;&gt;&lt;&lt;face &quot;宫本谦造&quot;&gt;&gt;&lt;span class=&quot;who&quot;&gt;宫本谦造&lt;/span&gt;&lt;span class=&quot;t&quot;&gt;&quot;&quot;&quot;&quot;弃一姓之私，就万世之公。&quot;——这句是你写的？很漂亮。&quot;&quot;&quot;&lt;/span&gt;&lt;/p&gt;
 &lt;p class=&quot;say&quot;&gt;&lt;&lt;face &quot;宫本谦造&quot;&gt;&gt;&lt;span class=&quot;who&quot;&gt;宫本谦造&lt;/span&gt;&lt;span class=&quot;t&quot;&gt;&quot;&quot;&quot;只差一样东西：署名。&quot;&quot;&quot;&lt;/span&gt;&lt;/p&gt;
 &lt;p class=&quot;say&quot;&gt;&lt;&lt;face &quot;宫本谦造&quot;&gt;&gt;&lt;span class=&quot;who&quot;&gt;宫本谦造&lt;/span&gt;&lt;span class=&quot;t&quot;&gt;&quot;&quot;&quot;想好叫什么了吗？&quot;&quot;&quot;&lt;/span&gt;&lt;/p&gt;
@@ -6280,6 +6302,8 @@ setup.vn = (function () {
 &lt;&lt;expr &quot;宫本谦造&quot; &quot;沉思&quot;&gt;&gt;
 &lt;&lt;bgm &quot;bgm/奚琴&quot;&gt;&gt;
 &lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;宫本读那本账，读得很慢，像在读一本有意思的地方志。&quot;&quot;&quot;&lt;/p&gt;
+&lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;书案左手边放着那只小药瓶。如今来誊稿，你总会先看一眼它在不在——他的心脏病，这两年发作得比从前勤。&quot;&quot;&quot;&lt;/p&gt;
+&lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;他把药瓶挪到伸手够得着的地方，手才重新落回账页上。&quot;&quot;&quot;&lt;/p&gt;
 &lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;书房的窗外是南山的夜。天很晴，看得见星星。&quot;&quot;&quot;&lt;/p&gt;
 &lt;p class=&quot;say&quot;&gt;&lt;&lt;face &quot;宫本谦造&quot;&gt;&gt;&lt;span class=&quot;who&quot;&gt;宫本谦造&lt;/span&gt;&lt;span class=&quot;t&quot;&gt;&quot;&quot;&quot;黑岩君很能干。他攒了我三条罪状，这里有他三十条。&quot;&quot;&quot;&lt;/span&gt;&lt;/p&gt;
 &lt;p class=&quot;say&quot;&gt;&lt;&lt;face &quot;宫本谦造&quot;&gt;&gt;&lt;span class=&quot;who&quot;&gt;宫本谦造&lt;/span&gt;&lt;span class=&quot;t&quot;&gt;&quot;&quot;&quot;可是仁君，账本是刀。刀不能先拔。先拔刀的人，总是显得急。&quot;&quot;&quot;&lt;/span&gt;&lt;/p&gt;
@@ -6317,7 +6341,8 @@ setup.vn = (function () {
 &lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;他在门口站了一下，看了你一眼。&quot;&quot;&quot;&lt;/p&gt;
 &lt;p class=&quot;say&quot;&gt;&lt;&lt;face &quot;宫本谦造&quot;&gt;&gt;&lt;span class=&quot;who&quot;&gt;宫本谦造&lt;/span&gt;&lt;span class=&quot;t&quot;&gt;&quot;&quot;&quot;……别太晚。&quot;&quot;&quot;&lt;/span&gt;&lt;/p&gt;
 &lt;&lt;include &quot;h45.6&quot;&gt;&gt;
-&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="478" name="h45.6" tags="c4" position="2800,900" size="100,100">&lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;门关上了。汽车发动的声音从坡下传上来，越来越远。&quot;&quot;&quot;&lt;/p&gt;
+&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="478" name="h45.6" tags="c4" position="2800,900" size="100,100">&lt;&lt;portraitExit &quot;宫本谦造&quot;&gt;&gt;
+&lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;门关上了。汽车发动的声音从坡下传上来，越来越远。&quot;&quot;&quot;&lt;/p&gt;
 &lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;千鹤今晚在女学校值宿。女佣睡在后院的厢房里。&quot;&quot;&quot;&lt;/p&gt;
 &lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;这座房子里，只剩下你，和一部黑色的电话。&quot;&quot;&quot;&lt;/p&gt;
 &lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;天玑说过：宫本那边的电话，一样都不要碰。&quot;&quot;&quot;&lt;/p&gt;
@@ -6980,6 +7005,7 @@ setup.vn = (function () {
 &lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;2-7-3-1。&quot;&quot;&quot;&lt;/p&gt;
 &lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;他把便笺压在镇纸底下，露出一角。然后拿起了礼帽。&quot;&quot;&quot;&lt;/p&gt;
 &lt;p class=&quot;say&quot;&gt;&lt;&lt;face &quot;宫本谦造&quot;&gt;&gt;&lt;span class=&quot;who&quot;&gt;宫本谦造&lt;/span&gt;&lt;span class=&quot;t&quot;&gt;&quot;&quot;&quot;我去南山庄。今晚不回来了。&quot;&quot;&quot;&lt;/span&gt;&lt;/p&gt;
+&lt;&lt;portraitExit &quot;宫本谦造&quot;&gt;&gt;
 &lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;门关上了。汽车发动的声音从坡下传上来，越来越远。&quot;&quot;&quot;&lt;/p&gt;
 &lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;你站在书桌前，看着那一角便笺。镇纸是一块青石，刻成一只蹲着的蟾蜍。蟾蜍也看着你。&quot;&quot;&quot;&lt;/p&gt;
 &lt;p class=&quot;n&quot;&gt;&quot;&quot;&quot;你没有碰它。你只是把那四个数字又看了一遍。你早就背得出来了。&quot;&quot;&quot;&lt;/p&gt;

@@ -74,8 +74,13 @@ setup.vn = (function () {
     const img = document.createElement("img");
     img.alt = ""; img.decoding = "async";
     if (opt.pos) img.style.objectPosition = opt.pos;
-    img.onload = function () { img.classList.add("on"); if (opt.instant) drop(); else setTimeout(drop, 520); };
+    img.onload = function () {
+      // 离场或换景后，旧请求即使迟到也不应重新把旧头像亮起来。
+      if ((box.getAttribute("data-src") || "") !== key) { img.remove(); return; }
+      img.classList.add("on"); if (opt.instant) drop(); else setTimeout(drop, 520);
+    };
     img.onerror = function () {
+      if ((box.getAttribute("data-src") || "") !== key) { img.remove(); return; }
       if (opt.fallback && !img.getAttribute("data-fb")) { img.setAttribute("data-fb", "1"); img.src = opt.fallback; return; }
       if (img.parentNode) img.parentNode.removeChild(img);
       drop();
@@ -138,6 +143,12 @@ setup.vn = (function () {
         // 第87话的宫本仁（姜仁宇）没有对话头像：由 🖼 立绘 指令按年代直接立在场上，直到下一次指令或下一话。
         if (LEAD.indexOf(ev.who) >= 0) s.lead = ev.who;
         if ((s.who || s.lead) === ev.who) render(silent);
+        break;
+      case "exit":
+        if (!ev.who || s.who === ev.who) s.who = null;
+        if (!ev.who || s.lead === ev.who) s.lead = null;
+        D.dim = false;
+        render(silent);
         break;
       case "bgm":
         if (silent) v.bgm = ev.id || null; else setup.audio.bgm(ev.id);

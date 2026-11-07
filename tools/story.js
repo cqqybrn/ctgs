@@ -328,6 +328,13 @@ Macro.add("expr", {
   },
 });
 
+// 显式离场按演出时序执行，不能在整话预渲染时提前清掉人物。
+Macro.add("portraitExit", {
+  handler() {
+    if (setup.isStage()) qfEvent(this.output, { k: "exit", who: this.args[0] });
+  },
+});
+
 /* 舞台模式下，说话人的立绘由舞台层显示，不再用小头像替代主立绘；只有可滚动页面（补课）保留头像。 */
 Macro.add("face", {
   handler() {
