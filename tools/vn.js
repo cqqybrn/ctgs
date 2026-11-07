@@ -19,6 +19,33 @@ setup.vn = (function () {
   const V = function () { return State.variables; };
   const $id = function (id) { return document.getElementById(id); };
   const html = document.documentElement;
+  let fastMode = "off", fastTimer = null, holdTimer = null, holdPointer = null, suppressFastClick = false;
+  function syncFast() {
+    html.classList.toggle("qf-fast", fastMode !== "off");
+    $('[data-qf="fast"]').text(fastMode === "off" ? "快进" : "停止").attr("aria-pressed", fastMode !== "off" ? "true" : "false");
+  }
+  function setFast(mode) {
+    if (mode !== "off" && (!isStageMode() || Dialog.isOpen() || !D.ready || document.hidden)) mode = "off";
+    fastMode = mode;
+    if (fastTimer) clearInterval(fastTimer);
+    fastTimer = null;
+    syncFast();
+    if (mode !== "off") { fastTimer = setInterval(fastTick, 90); fastTick(); }
+  }
+  function stopFast() {
+    if (holdTimer) clearTimeout(holdTimer);
+    holdTimer = null; holdPointer = null;
+    setFast("off");
+  }
+  function fastTick() {
+    if (fastMode === "off") return;
+    if (!isStageMode() || Dialog.isOpen() || document.hidden) { stopFast(); return; }
+    if (!D.ready || D.busy) return;
+    const s = D.steps[D.k];
+    if (!s || s.t === "choice" || s.t === "card" || s.t === "ending") { stopFast(); return; }
+    if (D.typing) D.typing.finish();
+    advance(true);
+  }
   function stage() {
     const v = V();
     if (!v.stage || typeof v.stage !== "object") v.stage = setup.freshStage();
@@ -308,6 +335,7 @@ setup.vn = (function () {
     if (s.t === "line") {
       if (o.instant || !typingOn()) s.el.classList.add("qf-done"); else startTyping(s.el);
     } else s.el.classList.add("qf-done");
+    if (fastMode !== "off" && (s.t === "choice" || s.t === "card" || s.t === "ending")) stopFast();
   }
   function follow(step) {
     const a = step.el.querySelector("a");
@@ -356,6 +384,7 @@ setup.vn = (function () {
     goTo(D.k + 1);
   }
   function prev() {
+    stopFast();
     if (isStageMode() && D.ready && !D.busy) {
       if (D.typing) D.typing.cancel();
       let j = D.k - 1;
@@ -388,6 +417,7 @@ setup.vn = (function () {
     D.ready = true;
     if (k === null) goTo(0); else replay(k);
     setup.audio.sync();
+    syncFast();
   }
 
   /* ---------- 面板 ---------- */
@@ -448,6 +478,12 @@ setup.vn = (function () {
     ev.preventDefault();
     const what = this.getAttribute("data-qf");
     if (Dialog.isOpen()) return;
+    if (what === "fast") {
+      if (suppressFastClick) { suppressFastClick = false; return; }
+      setFast(fastMode === "off" ? "toggle" : "off");
+      return;
+    }
+    stopFast();
     if (what === "prev") prev();
     else if (what === "log") openLog();
     else if (what === "menu") openMenu();
@@ -457,19 +493,40 @@ setup.vn = (function () {
     else if (what === "chapters") setup.chapterSelect.open();
     else if (what === "admin") setup.admin.open();
   });
+  $(document).on("pointerdown.qfFast", '[data-qf="fast"]', function (ev) {
+    if (ev.button !== 0 || Dialog.isOpen()) return;
+    suppressFastClick = false;
+    holdPointer = ev.originalEvent.pointerId;
+    if (this.setPointerCapture) this.setPointerCapture(holdPointer);
+    if (holdTimer) clearTimeout(holdTimer);
+    holdTimer = setTimeout(function () { holdTimer = null; suppressFastClick = true; setFast("hold"); }, 350);
+  });
+  $(document).on("pointerup.qfFast pointercancel.qfFast", function () {
+    if (holdTimer) clearTimeout(holdTimer);
+    holdTimer = null; holdPointer = null;
+    if (fastMode === "hold") setFast("off");
+  });
+  $(document).on("contextmenu.qfFast", '[data-qf="fast"]', function (ev) { ev.preventDefault(); });
+  $(document).on(":dialogopened.qfFast", stopFast);
+  $(document).on("visibilitychange.qfFast", function () { if (document.hidden) stopFast(); });
+  $(window).on("blur.qfFast pagehide.qfFast", stopFast);
+  if (Save.onLoad && typeof Save.onLoad.add === "function") Save.onLoad.add(stopFast);
   $(document).on("keydown.qfVn", function (ev) {
     if (!isStageMode() || Dialog.isOpen()) return;
     if (/^(INPUT|SELECT|TEXTAREA|BUTTON|A|SUMMARY)$/.test(ev.target.tagName)) return;
+    if (ev.key === "Control") { if (!ev.repeat) setFast("hold"); return; }
+    if (fastMode !== "off") stopFast();
     if (ev.key === " " || ev.key === "Enter" || ev.key === "ArrowRight" || ev.key === "PageDown") { ev.preventDefault(); advance(); }
     else if (ev.key === "ArrowLeft" || ev.key === "PageUp") { ev.preventDefault(); prev(); }
   });
+  $(document).on("keyup.qfFast", function (ev) { if (ev.key === "Control" && holdPointer === null && fastMode === "hold") setFast("off"); });
 
   return Object.freeze({
-    advance: advance, prev: prev, openLog: openLog, openMenu: openMenu,
-    reset: function () { D.log = []; D.logBase = []; D.boot = false; },
+    advance: advance, prev: prev, openLog: openLog, openMenu: openMenu, setFast: setFast,
+    reset: function () { stopFast(); D.log = []; D.logBase = []; D.boot = false; },
     debug: function () {
       return { k: D.k, ready: D.ready, typing: !!D.typing, busy: D.busy, stage: clone(stage()), log: D.log.length,
-               steps: D.steps.map(function (s) { return s.t; }), unknown: D.unknown.slice() };
+                 steps: D.steps.map(function (s) { return s.t; }), unknown: D.unknown.slice(), fast: fastMode !== "off", fastMode: fastMode };
     },
   });
 })();

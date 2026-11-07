@@ -205,6 +205,17 @@ setup.chapterSelect = (function () {
       });
       card.appendTo(parent);
     });
+    jQuery('<h3>剧情分流（非独立结局）</h3>').appendTo(parent);
+    setup.STORY_BRANCHES.forEach(function (branch) {
+      const card = jQuery('<section class="branch-card"></section>').attr("data-branch", branch.id);
+      jQuery('<h4></h4>').text(branch.name).appendTo(card);
+      jQuery('<p></p>').text(branch.entryLabel).appendTo(card);
+      jQuery('<button type="button">从救援分叉开始测试</button>').on("click", function () {
+        try { (onJump || testJump)(branch.entry, "favorable", branch.values); Dialog.close(); }
+        catch (e) { status.text("跳转失败：" + e.message); }
+      }).appendTo(card);
+      card.appendTo(parent);
+    });
   }
   function open() {
     if (!enabled) return;
@@ -243,12 +254,14 @@ setup.chapterSelect = (function () {
     box.append(form);
     setup.CHAPTER_NAV.forEach(chapter => {
       const saved = all[chapter.index];
+      const failedRescue = chapter.index === 8 && saved && saved.passage === "h92";
       const button = jQuery('<button type="button" class="chapter-choice"></button>');
       button.attr("data-chapter", chapter.index)
-        .text(chapter.name + (saved ? " · 真实记录：第" + (/^h(\d+)/.exec(saved.passage) || [0, ""])[1] + "话" : " · 已解锁测试"));
+        .text(chapter.name + (failedRescue ? " · 从第93话救援测试（第92话失败记录保留）" : saved ? " · 真实记录：第" + (/^h(\d+)/.exec(saved.passage) || [0, ""])[1] + "话" : " · 已解锁测试"));
       button.on("click", function () {
         try {
-          if (presetInput.val() === "auto") jump(chapter.index);
+          if (presetInput.val() === "auto" && !failedRescue) jump(chapter.index);
+          else if (presetInput.val() === "auto" && failedRescue) testJump("h93", "favorable");
           else testJump(chapter.entries[0].passage, presetInput.val());
           Dialog.close();
         }

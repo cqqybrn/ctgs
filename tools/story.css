@@ -97,6 +97,12 @@ html[data-mode="page"] #bar { background: linear-gradient(#0a1417f2 55%, transpa
   background: transparent; border: 0; min-height: max(44px, calc(var(--u) * 13)); cursor: pointer;
 }
 #qf-tools button:hover, #qf-tools button:focus-visible { color: var(--accent); background: #ffffff0d; outline: none; }
+#qf-tools [data-qf="fast"] { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+#qf-tools [data-qf="fast"][aria-pressed="true"] { color: var(--accent); background: #d4c89b20; }
+html.qf-fast #qf-bg img, html.qf-fast #qf-char img, html.qf-fast #qf-cg { transition-duration: 0s; }
+.branch-card { border: 1px solid #c6c5a533; border-radius: 8px; padding: 12px; margin: 10px 0; }
+.branch-card h4 { margin: 0 0 6px; }
+.branch-card button { min-height: 44px; white-space: normal; }
 .qf-music::after { content: " 开"; color: #7f8d84; }
 html.muted .qf-music::after { content: " 关"; }
 html[data-mode="page"] #qf-tools { display: none; }

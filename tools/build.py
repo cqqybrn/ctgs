@@ -15,7 +15,7 @@ import asset_meta as M  # noqa: E402
 
 CHAPTER_NAMES = ["序章", "第一章·创氏改名", "第二章·京城站", "第三章·辞典", "第四章·黑岩",
                  "第五章·府民馆", "第六章·解放", "第七章·反民特委",
-                 "救援分流", "北行后续"]
+                 "素月救援分流", "北行后续"]
 SKIP_HUA = {8}           # 演出模板，不生成
 GALLERY_HUA = 89         # 结局一览，由程序生成
 EPILOGUE_RANGE = range(83, 87)
@@ -886,14 +886,23 @@ def build_html(huas, admin_mode=False):
     for route in route_portals:
         if route["entry"] not in passages or route["ending"] not in passages:
             raise ValueError("路线入口不存在：" + route["name"])
+    story_branches = [{"id": "suyue-rescue", "name": "救素月", "entry": "h91",
+                       "entryLabel": "第91话·选择找具泰山，进入第93话救援；不是赠名独立线",
+                       "values": {"v034": 0, "v022": 1, "v039": 0, "v024": 0, "v056": 0,
+                                  "v038": 0, "v012": 5, "v058": 0, "v019": 6, "v010": 8}}]
     ending_huas = {e["hua"] for e in endings if e["he"]}
     chapter_navigation = [dict(c, entries=[e for e in c["entries"] if e["hua"] not in ending_huas]) for c in navigation]
     chapter_navigation = [c for c in chapter_navigation if c["entries"]]
+    for chapter in chapter_navigation:
+        if chapter["index"] == 8:
+            # 第92话是报信失败，不应成为“救援”按钮的默认入口；仍可手动选择。
+            chapter["entries"].sort(key=lambda e: e["hua"] != 93)
     data_js = ("setup.VARNAMES = " + json.dumps(varnames, ensure_ascii=False) + ";\n"
                "setup.ADMIN_MODE = " + json.dumps(admin_mode) + ";\n"
                "setup.INITIAL_VARIABLES = " + json.dumps(initial_vars, ensure_ascii=False) + ";\n"
                "setup.CHAPTER_NAV = " + json.dumps(chapter_navigation, ensure_ascii=False) + ";\n"
                "setup.ROUTES = " + json.dumps(route_portals, ensure_ascii=False) + ";\n"
+               "setup.STORY_BRANCHES = " + json.dumps(story_branches, ensure_ascii=False) + ";\n"
                "setup.ADMIN_CHAPTERS = " + json.dumps(chapter_navigation if admin_mode else [], ensure_ascii=False) + ";\n"
                "setup.AUDIO_CREDITS = " + json.dumps(audio_credits, ensure_ascii=False) + ";\n"
                "setup.CHAPTERS = " + json.dumps(chap_names, ensure_ascii=False) + ";\n"

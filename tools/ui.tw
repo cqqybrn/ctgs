@@ -5,7 +5,7 @@
 <div class="bar-in"><button type="button" class="qf-ic" data-qf="prev" aria-label="上一句">‹</button><span class="chap"><<if setup.admin.enabled>>管理 · <</if>><<print setup.chapLabel()>></span><span class="bar-end"><<if setup.admin.enabled>><button type="button" class="qf-txt" data-qf="admin">管理</button><</if>><button type="button" class="qf-ic" data-qf="menu" aria-label="菜单">≡</button></span></div>
 
 :: Tools
-<button type="button" data-qf="log">回看</button><button type="button" data-qf="save">存档</button><button type="button" data-qf="ends">结局</button><<if !setup.admin.enabled>><button type="button" data-qf="chapters">章节</button><</if>><button type="button" data-qf="music" class="qf-music">音乐</button>
+<button type="button" data-qf="log">回看</button><button type="button" data-qf="save">存档</button><button type="button" data-qf="fast" aria-pressed="false" title="点击开关快进，长按临时快进；遇选项和结局停止">快进</button><button type="button" data-qf="ends">结局</button><<if !setup.admin.enabled>><button type="button" data-qf="chapters">章节</button><</if>><button type="button" data-qf="music" class="qf-music">音乐</button>
 
 :: Start [title]
 <<bgm "bgm/主题">>
